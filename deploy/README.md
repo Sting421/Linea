@@ -1,7 +1,15 @@
 # Hosted API and voice worker
 
-The actual frontend is https://linea.aldrinvitorillo.dev. Both web and API use
-source commit `098e52a8a6e2ef44169f8446c200c82fbcc0c020` as of 4 October 2026.
+The actual frontend is https://linea.aldrinvitorillo.dev. As of 05:36 on
+4 October 2026 (Asia/Singapore), the API and worker use source commit
+`311bd5e36f6a357384a05d34fd466f031eed3795`; the frontend remains on
+`098e52a8a6e2ef44169f8446c200c82fbcc0c020`.
+`linea-api` and the privately scoped `linea-voice` worker are running. Voice
+remains disabled for automatic startup on boot. The separately installed
+preflight script matches the API release, and the already applied
+`manual_call_hours` migration was not reapplied. See
+[the deployment record](DEPLOYMENT-20261004.md) for checks and verification limits.
+
 Web releases live in `/opt/linea/web/releases/<commit>`, selected by
 `/opt/linea/web/current`; `systemd/linea-web.service` binds Next.js to loopback
 port 3000. `/etc/linea/web.env` supplies connected mode, the HTTPS API/app origins,

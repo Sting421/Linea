@@ -1,5 +1,30 @@
 # Implementation Notes
 
+## API and scoped worker deployment — 4 October 2026
+
+At 05:36 Asia/Singapore, API/worker commit
+`311bd5e36f6a357384a05d34fd466f031eed3795` was deployed to the active immutable
+release. `/opt/linea/ops/preflight-calling.py` now matches that commit. The
+already applied `manual_call_hours` migration was not reapplied. `linea-api`
+was restarted; provider configuration checks and preflight passed before the
+authorized scoped `linea-voice` startup. Both services are running, with an
+advancing real worker heartbeat and no worker restarts at verification.
+
+The user confirmed the actual Agora notification Secret and enabled callback.
+Model access, owned voice number/SIP association, speech configuration and
+non-mutating callback/completion authentication checks passed. The deployed
+dashboard handler evaluated against real configured account records reports
+`voice_connected=true`, including outside automatic calling hours. This was
+an operator backend check; an authenticated browser session and phone audio
+were not exercised. No call was placed or acceptance evidence fabricated.
+Global live mode remains gated; voice is not enabled for automatic boot startup.
+The frontend remains at `098e52a8a6e2ef44169f8446c200c82fbcc0c020`.
+
+47 targeted tests and hosted dependency/service-identity checks passed.
+See [the deployment record](deploy/DEPLOYMENT-20261004.md) for the snapshot.
+Earlier statements below describing the old active release, an unverified
+notification Secret or an inactive worker are historical.
+
 ## Manual calls at any time — 4 October 2026
 
 The user explicitly requested that manual calls work at any hour for immediate
@@ -26,7 +51,7 @@ database accepted a manual placement while rejecting an automatic placement
 outside normal hours. All transaction writes were rolled back: no phone call,
 retained test call, or consent change was produced. The RPC remains executable
 only by the service role, not anonymous or authenticated browser roles. The
-hosted Python release and inactive worker still require the teammate's deployment.
+hosted API/worker deployment is now complete as recorded above.
 
 ## Calling rejection recovery and worker diagnostics — 4 October 2026
 
