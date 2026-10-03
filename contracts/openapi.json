@@ -1641,6 +1641,11 @@
             "title": "Stop",
             "default": false
           },
+          "end_call": {
+            "type": "boolean",
+            "title": "End Call",
+            "default": false
+          },
           "advice": {
             "type": "boolean",
             "title": "Advice",

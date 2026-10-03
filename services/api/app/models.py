@@ -144,6 +144,7 @@ class Turn(StrictModel):
     text: str = Field(min_length=1, max_length=4000)
     consent: Literal["yes", "no", "ambiguous"] | None = None
     stop: bool = False
+    end_call: bool = False
     advice: bool = False
     answers: dict[Literal["sleep", "medicine", "feeling", "anything"], str] = Field(
         default_factory=dict

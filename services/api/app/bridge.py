@@ -5,6 +5,7 @@ vendor endpoint is exposed by the demo API.
 """
 
 import hashlib
+import logging
 
 from .conversation import turn
 from .interpretation import prepare
@@ -31,11 +32,15 @@ class BrainBridge:
             ):
                 raise ValueError("Turn identity was reused with different elder text")
             return call.processed_turns[turn_id]
-        interpreted = (
-            Turn(turn_id=turn_id, text=text)
-            if call.emergency_latched
-            else self.classifier.classify(text, call, profile)
-        )
+        try:
+            interpreted = self.classifier.classify(text, call, profile)
+        except Exception:
+            if not call.emergency_latched:
+                raise
+            # Once established, the fixed response never depends on another
+            # successful model request. Failed interpretation cannot end a call.
+            logging.getLogger(__name__).warning("Emergency control unavailable; retaining response")
+            interpreted = Turn(turn_id=turn_id, text=text)
         interpreted.turn_id, interpreted.text = turn_id, text
         interpreted = prepare(interpreted, call, profile, history)
         reply = turn(call, profile, interpreted)

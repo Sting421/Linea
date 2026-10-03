@@ -5,6 +5,7 @@ import httpx
 import pytest
 from app.bridge import BrainBridge
 from app.interpreter import OpenAIClassifier
+from app.models import Facts
 from test_conversation import setup
 
 
@@ -175,3 +176,91 @@ def test_concern_dose_result_cannot_overwrite_evidenced_answer():
     ).classify("I took it but I might have taken it twice.", c, p)
     assert result.medicine_result == result.concerns[0].medicine_result == "taken"
     assert result.concerns[0].possible_dose_error is True
+
+
+def test_two_concerns_cannot_overwrite_each_other_with_shared_episode_id():
+    p, c = setup()
+    model = classifier(
+        {
+            "concerns": [
+                {"incident_id": "episode", "concern": "CHEST_PAIN", "current": True},
+                {"incident_id": "episode", "concern": "BREATHING", "current": True},
+            ]
+        }
+    )
+    BrainBridge(model).completion("My chest hurts and I can't breathe.", "first", c, p, [])
+    assert {f.concern for f in c.facts.values()} == {"CHEST_PAIN", "BREATHING"}
+    assert {a.concern for a in c.alerts} == {"CHEST_PAIN", "BREATHING"}
+    assert len(c.facts) == len(c.alerts) == 2
+    original_ids = set(c.facts)
+    # The provider repeats its shared ID; clarification must use the same derived ID.
+    BrainBridge(model).completion("It is still happening.", "second", c, p, [])
+    assert set(c.facts) == original_ids and len(c.alerts) == 2
+
+
+def test_new_concern_cannot_replace_a_previously_saved_different_concern():
+    p, c = setup()
+    c.facts["episode"] = Facts(incident_id="episode", concern="FALL", quote="I fell.")
+    result = classifier(
+        {
+            "concerns": [
+                {"incident_id": "episode", "concern": "DIZZINESS", "current": True},
+            ]
+        }
+    ).classify("I am also dizzy now.", c, p)
+    assert result.concerns[0].incident_id != "episode"
+    assert c.facts["episode"].concern == "FALL"
+
+
+@pytest.mark.parametrize(
+    "stop,evidence,expected",
+    [
+        (True, "Please stop calling me", True),
+        (True, "invented", False),
+        (True, "", False),
+        (False, None, False),
+    ],
+)
+def test_latched_emergency_accepts_only_evidenced_withdrawal(stop, evidence, expected):
+    p, c = setup()
+    c.emergency_latched = True
+    requests = []
+
+    def forbidden(*args):
+        pytest.fail("Emergency controls must not perform retrieval")
+
+    model = classifier(
+        {"stop": stop, "end_call": False, "evidence": evidence},
+        requests,
+        SimpleNamespace(retrieve=forbidden),
+    )
+    result = model.classify("Please stop calling me", c, p)
+    assert result.stop is expected and not result.concerns and not result.answers
+    assert len(requests) == 1
+    assert requests[0]["response_format"]["json_schema"]["name"] == "linea_emergency_control"
+
+
+def test_latched_emergency_survives_control_model_failure():
+    p, c = setup()
+    c.emergency_latched = True
+
+    def unavailable(*args):
+        raise httpx.ReadTimeout("private utterance")
+
+    reply = BrainBridge(SimpleNamespace(classify=unavailable)).completion(
+        "Hello?",
+        "new",
+        c,
+        p,
+        [],
+    )
+    assert "call 911" in reply
+    assert c.emergency_latched and not c.intentional_end
+
+
+def test_latched_emergency_end_call_does_not_withdraw_future_consent():
+    p, c = setup()
+    c.emergency_latched = True
+    model = classifier({"stop": False, "end_call": True, "evidence": "end this call"})
+    result = model.classify("Please end this call", c, p)
+    assert result.end_call and not result.stop

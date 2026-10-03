@@ -230,6 +230,47 @@ def test_restart_restores_emergency_and_pending_commands(runtime):
     assert restarted.current(call.id).emergency_latched
 
 
+def test_elder_withdrawal_after_emergency_ends_call_but_preserves_alert(runtime):
+    call = connected_call(runtime)
+    _, finish = runtime.completion(call.id, call.legs[-1].id, "1", "My chest hurts now.")
+    finish()
+    runtime.bridge.classifier.classify = lambda text, *_: Turn(
+        turn_id="unused",
+        text=text,
+        stop=True,
+    )
+    reply, finish = runtime.completion(call.id, call.legs[-1].id, "2", "Please stop calling me.")
+    finish()
+    saved = runtime.repo.saved[call.id]
+    assert saved.emergency_latched and saved.alerts[0].tier == "emergency"
+    assert saved.alerts[0].handled_at is None and not saved.complete
+    assert saved.intentional_end and saved.state == "ended" and saved.retry_at is None
+    assert runtime.repo.profile.consent == "declined"
+    assert "call 911" in reply and "stop future scheduled calls" in reply
+    assert any(cmd["kind"] == "end" for cmd in runtime.repo.commands)
+
+
+@pytest.mark.parametrize("emergency", [False, True])
+def test_ending_only_this_call_preserves_future_consent(runtime, emergency):
+    call = connected_call(runtime)
+    if emergency:
+        _, finish = runtime.completion(call.id, call.legs[-1].id, "1", "My chest hurts now.")
+        finish()
+    runtime.bridge.classifier.classify = lambda text, *_: Turn(
+        turn_id="unused",
+        text=text,
+        end_call=True,
+    )
+    reply, finish = runtime.completion(call.id, call.legs[-1].id, "2", "Please end this call now.")
+    finish()
+    saved = runtime.repo.saved[call.id]
+    assert saved.intentional_end and saved.state == "ended" and saved.retry_at is None
+    assert runtime.repo.profile.consent == "granted" and not saved.complete
+    assert saved.emergency_latched is emergency
+    assert "end this call now" in reply and "stop future" not in reply
+    assert any(cmd["kind"] == "end" for cmd in runtime.repo.commands)
+
+
 def test_known_emergency_keeps_fixed_speech_when_database_lease_is_unavailable(runtime):
     call = connected_call(runtime)
     runtime.repo.fail = True
@@ -612,6 +653,7 @@ def test_strict_interpreter_schema_and_exact_evidence_validation():
     schema = output_schema()
     assert "due" not in schema["$defs"]["ExtractedFacts"]["properties"]
     assert "quote" not in schema["$defs"]["ExtractedFacts"]["properties"]
+    assert "medicine_result" not in schema["$defs"]["ExtractedFacts"]["properties"]
     assert set(schema["properties"]) == set(schema["required"])
     assert requests[0]["model"] == "gpt-4.1-mini-2025-04-14" and not requests[0]["store"]
 

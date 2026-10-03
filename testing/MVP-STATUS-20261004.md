@@ -33,7 +33,7 @@ The original historical record is preserved, not rewritten to manufacture a pass
   The corpus and its hash-checked index ship with the backend. Rebuild with
   `python scripts/build-curated-index.py` after corpus changes. This command
   makes one external batch embedding request using the configured OpenAI key.
-- Each elder turn uses one embedding request plus the existing single structured
+- Each ordinary elder turn uses one embedding request plus the single structured
   interpretation request. No second conversational model is added. Elder query
   embeddings are not stored. Retrieval failure logs a generic diagnostic and
   continues structured interpretation; deterministic policy remains authoritative.
@@ -66,10 +66,24 @@ The original historical record is preserved, not rewritten to manufacture a pass
 - Dashboard refreshes discard responses older than the latest applied result.
   Overlapping polls cannot restore an old active-call button after a newer ended
   state. Slow requests can still update the page while later polls are pending.
+- Different concern types cannot overwrite each other's saved facts when the
+  classifier reuses one incident ID. The additional concern receives a stable
+  derived ID that can be reused on later turns. Medicine results are emitted
+  once at the top level and copied into medicine concerns only after validation.
+- Explicitly ending the current call preserves consent for future scheduled
+  calls. Withdrawing future permission still sets consent to declined. Both
+  suppress retries/reconnection and terminate the current session without
+  marking incomplete work complete or resolving existing alerts.
+- A latched emergency no longer ignores explicit ending/withdrawal requests.
+  It uses a small structured control request, skips retrieval, and keeps its
+  retained safety state. The request has a 1.5-second HTTP timeout; on model
+  failure the fixed emergency behavior remains available. This does not prove
+  the audible response target, and a failed interpretation cannot honor an
+  unrecognized ending request. Normal phone hangup remains available.
 
 ## Verification and limits
 
-The retained backend suite passed (175 cases, none skipped), including 13 real
+The retained backend suite passed (186 cases, none skipped), including 13 real
 PostgreSQL integration cases against an isolated local PostgreSQL 17 cluster.
 Those tests applied all migrations and verified lease serialization, atomic
 writes, manual versus automatic calling hours, cross-account row-level security,
@@ -107,7 +121,7 @@ clarification failing to update its existing concern. Deterministic unit-test
 success must not be presented as proof of model accuracy. The deployment model
 has not been changed by evaluation-only comparisons.
 
-The latest configured-model run (`gpt-4.1-mini-2025-04-14`) passed the runner's
+A previous configured-model run (`gpt-4.1-mini-2025-04-14`) passed the runner's
 core checks in 40/41 cases, with all expected severity outcomes matched. In
 `chest_resolved_with_delayed_red_flags`, it gave the Emergency response but omitted
 the separately required BREATHING concern record. This failure remains open.
@@ -119,6 +133,26 @@ its remaining recovered-fall case stayed pending and asked about other episode
 features rather than declaring Routine. It ran before the final dose-evidence
 gate change and is not evidence for the configured/deployed model. Its local
 report is `.local/model-check-20261003T224306290250.json`. No model was switched.
+
+A grouped-concern schema experiment was removed after it introduced regressions
+in the broader evaluation. Its targeted passes were insufficient to justify
+shipping it. The retained changes keep the original concern-list format.
+Four real API checks of the new emergency controls correctly distinguished
+future-call withdrawal, ending only this call, reassurance, and refusing advice.
+They took about 0.7–1.2 seconds each, excluding phone audio. Unit/runtime tests
+also cover control-model failure and preservation of unresolved alerts/consent.
+The browser reached the local sign-in and signup screens without a build error;
+the browser session was signed out, so this does not verify authenticated screens.
+
+The latest retained-schema full run passed 40/41 core cases, with no HTTP errors:
+`.local/model-check-20261003T230416662877.json`. The previously missing breathing
+record, fainting category, and isolated uncertain-dose cases passed this run.
+However, `medicine_reported_large_excess` was classified Significant rather than
+the required Emergency. This is an unresolved safety-interpretation failure and
+blocks claiming MVP-05/06 complete. A prior targeted pass for the same utterance
+does not cancel that failure. The model remains `gpt-4.1-mini-2025-04-14`; an
+evaluation-only comparison of the abandoned grouped schema with GPT-4.1 also
+failed four core cases and did not justify a model switch.
 
 Still requiring deployed/device evidence: the corrected complete four-beat call;
 family browser microphone/playback and briefing/LISTEN; provider callback delivery;

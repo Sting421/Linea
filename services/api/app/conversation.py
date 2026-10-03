@@ -48,12 +48,14 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
     if c.state not in ("connected",):
         raise ValueError("A connected phone leg is required")
     c.transcript.append({"speaker": "elder", "text": t.text, "at": now().isoformat()})
-    if t.stop:
-        p.consent = "declined"
-        p.consent_words, p.consent_at = t.text, now()
+    if t.stop or t.end_call:
         c.intentional_end = True
         c.retry_at = None
         c.mode = "ENDING"
+        c.active_question = None
+    if t.stop:
+        p.consent = "declined"
+        p.consent_words, p.consent_at = t.text, now()
     c.answers.update(t.answers)
     if t.medicine_result is not None:
         c.medicine_result = t.medicine_result
@@ -115,15 +117,24 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
         assessments.append((facts, result))
         if result.tier == "emergency":
             c.emergency_latched = True
-    if c.emergency_latched:
+    if c.intentional_end:
+        c.mode = "ENDING"
+        reminder = (
+            " Please call 911 now, or ask someone nearby to call." if c.emergency_latched else ""
+        )
+        decision = (
+            "I will stop future scheduled calls and let your family know."
+            if t.stop
+            else "I will end this call now."
+        )
+        reply = f"I understand, {p.preferred_name}. {decision}{reminder} Take care."
+    elif c.emergency_latched:
         c.mode = "EMERGENCY"
         reply = (
             ""
             if c.family and not any(result.tier == "emergency" for _, result in assessments)
             else emergency(p)
         )
-    elif c.intentional_end:
-        reply = f"I understand, {p.preferred_name}. I will stop future scheduled calls and let your family know. Take care."
     elif p.consent != "granted":
         if t.consent == "yes":
             p.consent, p.consent_words, p.consent_at = "granted", t.text, now()
