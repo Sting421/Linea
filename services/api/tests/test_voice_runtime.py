@@ -9,7 +9,7 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from app.agora_runtime import AgoraRuntime, PlacementRejected
+from app.agora_runtime import AgoraRuntime, PlacementRejected, placement_diagnostic
 from app.interpreter import OpenAIClassifier, output_schema
 from app.models import CheckIn, Facts, Profile, Turn, now
 from app.provider_routes import install_provider_routes
@@ -286,8 +286,9 @@ def test_provider_rejection_releases_leg_but_ambiguous_response_does_not(
     runtime.repo.jobs[job["id"]] = job.copy()
     runtime.repo.request = lambda method, path, **kw: [runtime.repo.jobs[job["id"]].copy()]
     definite = status in (401, 403, 404, 422)
-    with pytest.raises(PlacementRejected if definite else httpx.HTTPStatusError):
+    with pytest.raises(PlacementRejected if definite else httpx.HTTPStatusError) as error:
         runtime.process_command(job)
+    assert error.value.provider_diagnostic == {"reason": "unrecognized", "fields_mentioned": []}
     saved = runtime.current(call.id)
     if definite:
         assert saved.state == "ended" and saved.legs[-1].state == "failed"
@@ -320,6 +321,37 @@ def test_worker_logs_status_without_private_provider_content(caplog):
     assert "private-" not in caplog.text
     log_failure("Worker tick", HTTPException(503, "private-database-marker"))
     assert "HTTP status=503" in caplog.text and "private-" not in caplog.text
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        {"reason": "InvalidFieldValue", "detail": "tts.params.api_key private-secret +12025550100"},
+        {"reason": "private-secret", "detail": {"api_key": "private-secret"}},
+        {"reason": ["private-secret"], "detail": None},
+        ["private-secret"],
+    ],
+)
+def test_placement_diagnostic_only_emits_known_vocabulary(body, caplog):
+    from app.worker import log_failure
+
+    response = httpx.Response(400, json=body, request=httpx.Request("POST", "https://api.test"))
+    error = httpx.HTTPStatusError("private-secret", request=response.request, response=response)
+    error.provider_diagnostic = placement_diagnostic(response)
+    log_failure("Provider command", error)
+    assert "private-secret" not in caplog.text and "+12025550100" not in caplog.text
+    if isinstance(body, dict) and body.get("reason") == "InvalidFieldValue":
+        assert error.provider_diagnostic == {
+            "reason": "InvalidFieldValue",
+            "fields_mentioned": ["api_key", "params", "tts"],
+        }
+
+
+def test_placement_diagnostic_handles_non_json_response():
+    assert placement_diagnostic(httpx.Response(400, text="private-secret")) == {
+        "reason": "unrecognized",
+        "fields_mentioned": [],
+    }
 
 
 def test_family_token_is_not_presence_and_listen_still_detects_emergency(runtime):

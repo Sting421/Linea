@@ -17,11 +17,79 @@ from .conversation import opening
 from .models import now
 
 
+def placement_diagnostic(response):
+    """Extract only known public vocabulary; never log arbitrary provider text."""
+    reasons = {
+        "ServiceNotEnabled",
+        "AccountSuspended",
+        "InternalError",
+        "InvalidPermission",
+        "InvalidRequestBody",
+        "MissingRequiredField",
+        "InvalidFieldValue",
+        "ResourceQuotaLimitExceeded",
+        "ConcurrencyLimitExceeded",
+        "ServiceUnavailable",
+        "ResourceAllocationFailed",
+        "TaskConflict",
+        "TaskNotFound",
+        "TaskOperationTimeout",
+        "NotImplemented",
+    }
+    fields = {
+        "name",
+        "properties",
+        "channel",
+        "token",
+        "agent_rtc_uid",
+        "remote_rtc_uids",
+        "enable_string_uid",
+        "asr",
+        "tts",
+        "llm",
+        "vendor",
+        "credential_mode",
+        "params",
+        "model",
+        "voice",
+        "language",
+        "url",
+        "api_key",
+        "style",
+        "greeting_message",
+        "failure_message",
+        "max_history",
+        "parameters",
+        "opt_out",
+        "sip",
+        "to_number",
+        "from_number",
+        "rtc_uid",
+        "rtc_token",
+        "pipeline_id",
+    }
+    try:
+        body = response.json()
+    except ValueError:
+        body = {}
+    if not isinstance(body, dict):
+        body = {}
+    reason = body.get("reason")
+    detail = body.get("detail")
+    return {
+        "reason": reason if isinstance(reason, str) and reason in reasons else "unrecognized",
+        "fields_mentioned": sorted(fields.intersection(re.findall(r"[A-Za-z_]+", detail)))
+        if isinstance(detail, str)
+        else [],
+    }
+
+
 class PlacementRejected(RuntimeError):
     """Provider explicitly refused a placement before creating a call."""
 
-    def __init__(self, status_code):
+    def __init__(self, status_code, diagnostic=None):
         self.status_code = status_code
+        self.provider_diagnostic = diagnostic
         super().__init__(f"Phone provider rejected placement (HTTP {status_code})")
 
 
@@ -100,8 +168,12 @@ class AgoraRuntime:
         # Keep conflicts, timeouts, throttling and server errors ambiguous: an agent
         # may exist even when the caller did not receive its identity.
         if response.status_code in (401, 403, 404, 422):
-            raise PlacementRejected(response.status_code)
-        response.raise_for_status()
+            raise PlacementRejected(response.status_code, placement_diagnostic(response))
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            exc.provider_diagnostic = placement_diagnostic(response)
+            raise
         agent = response.json().get("agent_id")
         if not isinstance(agent, str) or not agent:
             raise ValueError("Agora did not return a session identity")

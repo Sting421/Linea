@@ -32,6 +32,11 @@ def log_failure(operation, error):
         type(error).__name__,
         status if isinstance(status, int) else "unavailable",
     )
+    diagnostic = getattr(error, "provider_diagnostic", None)
+    if diagnostic:
+        logging.getLogger(__name__).error(
+            "Provider placement diagnostic: %s", json.dumps(diagnostic, sort_keys=True)
+        )
 
 
 def tick(runtime, *, execute=False, push=False, role="voice"):
