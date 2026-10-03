@@ -92,8 +92,14 @@ if [[ $voice_active == 1 ]]; then systemctl is-active --quiet linea-voice; fi
 if [[ $notifications_active == 1 || "$push" == --enable-push ]]; then
   systemctl is-active --quiet linea-notifications
 fi
-curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8000/health
-echo
+/opt/linea/venv/bin/python - "$commit" <<'PY'
+import json, sys, urllib.request
+with urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=10) as response:
+    health = json.load(response)
+if health.get('status') != 'ok' or health.get('build') != sys.argv[1]:
+    raise SystemExit('The running API did not confirm the intended release; rolling back.')
+print(json.dumps(health))
+PY
 trap - ERR
 systemctl enable --now linea-retention.timer
 echo "Deployed: $release"

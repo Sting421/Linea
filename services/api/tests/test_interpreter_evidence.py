@@ -45,6 +45,58 @@ def test_profile_medicine_cannot_skip_medicine_question():
     assert not c.complete
 
 
+def test_interpreter_failure_preserves_report_and_can_recover_without_skipping_question(caplog):
+    p, c = setup()
+    c.active_question, c.active_prompt = "medicine", "Have you taken your medicine today?"
+
+    def unavailable(*args):
+        raise httpx.ReadTimeout("private-error-with-token")
+
+    bridge = BrainBridge(SimpleNamespace(classify=unavailable))
+    reply = bridge.completion("private-reported-answer", "failed", c, p, [])
+    assert "Please say it again" in reply and c.interpretation_failures == 1
+    assert c.active_question == "medicine" and c.answers == {} and not c.complete
+    assert c.alerts[0].quote == "private-reported-answer"
+    assert c.alerts[0].assessment == "pending" and c.alerts[0].tier is None
+    assert "ReadTimeout" in caplog.text and "private-" not in caplog.text
+    assert bridge.completion("private-reported-answer", "failed", c, p, []) == reply
+    assert c.interpretation_failures == 1 and len(c.transcript) == 2
+    recovered = classifier({"medicine_result": "taken", "evidence": {"medicine": "I took it"}})
+    BrainBridge(recovered).completion("I took it", "retry-answer", c, p, [])
+    assert c.interpretation_failures == 0 and c.medicine_result == "taken"
+    assert len(c.alerts) == 1  # Keep the unassessed earlier report visible.
+
+
+def test_three_interpreter_failures_end_incomplete_without_withdrawing_consent():
+    p, c = setup()
+
+    def unavailable(*args):
+        raise ValueError("invalid provider output")
+
+    bridge = BrainBridge(SimpleNamespace(classify=unavailable))
+    for i in range(3):
+        reply = bridge.completion("Please listen", str(i), c, p, [])
+    assert c.mode == "ENDING" and c.intentional_end and not c.complete
+    assert c.active_question is None and c.retry_at is None
+    assert p.consent == "granted" and "incomplete" in reply
+    assert len(c.alerts) == 1 and c.alerts[0].revision == 3
+
+
+def test_interpreter_failure_does_not_interrupt_existing_family_audio():
+    p, c = setup()
+    c.family = [p.owner_id]
+    c.mode = "LISTEN"
+
+    def unavailable(*args):
+        raise httpx.ReadTimeout("unavailable")
+
+    reply = BrainBridge(SimpleNamespace(classify=unavailable)).completion(
+        "hello", "failed", c, p, []
+    )
+    assert reply == "" and c.mode == "LISTEN" and not c.intentional_end
+    assert c.transcript[-1]["speaker"] == "elder"
+
+
 @pytest.mark.parametrize("quote", [None, "", "invented"])
 def test_unsupported_routine_answers_and_dose_status_are_discarded(quote):
     p, c = setup()

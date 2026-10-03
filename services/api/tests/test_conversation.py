@@ -129,6 +129,20 @@ def test_out_of_order_answers_skip_completed_beats():
     assert "anything else" in reply and c.active_question == "anything"
 
 
+def test_profile_drug_name_from_legacy_interpreter_cannot_satisfy_medicine_beat():
+    p, c = setup()
+    c.active_question = "sleep"
+    reply = turn(
+        c,
+        p,
+        Turn(
+            turn_id="sleep", text="I slept well", answers={"sleep": "well", "medicine": p.medicine}
+        ),
+    )
+    assert c.active_question == "medicine" and p.medicine in reply
+    assert "medicine" not in c.answers and not c.complete
+
+
 def test_two_inconclusive_clarifications_do_not_loop():
     p, c = setup()
     turn(

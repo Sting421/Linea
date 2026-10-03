@@ -2,6 +2,39 @@
 
 ## Current handoff
 
+### Follow-up: failed interpretation and skipped medicine in the next phone test
+
+The teammate's terminal confirmed the running symlink still targeted `1d66ce2`,
+so the newly observed calls did not run the preceding handoff fixes. Both saved
+calls copied the profile medicine name after the sleep answer; no dose answer was
+reported. Preserve those historical records. The earlier completion flag is not
+evidence of a complete four-beat check-in.
+
+The interpreter evidence gate already rejects that copied answer. A second guard
+now prevents a legacy/external drug-name answer from satisfying the medicine beat.
+On interpretation failure, the bridge preserves the elder's exact report in a
+pending connection alert and transcript, asks for a repeat without advancing the
+question, and returns a normal completion response. Three consecutive failures
+end the call as incomplete without withdrawing future-call consent or scheduling
+a redial. Existing emergency behavior and family LISTEN silence are preserved.
+Logs now expose exception class/upstream HTTP status without private message text.
+Database/runtime failures can still return 503; this is not a blanket success mask.
+
+Health now includes the configured release hash. The release updater verifies that
+the restarted API reports its intended hash before declaring success, rolling back
+on mismatch. No database migration is required.
+
+Two real GPT-4.1 synthetic checks passed: a sleep answer led to the Biogesic dose
+question, and mild lower-back pain was retained without silence, an invented fall,
+or a severity label. This symptom alone is outside the five supported categories.
+Retrieval timed out for the first sample; the configured fallback interpretation
+still asked the medicine question. These checks made no calls or database writes.
+Browser-audio reliability remains deferred; the reported brief join/disconnection
+was observed on the old release and has not been revalidated on the current build.
+The follow-up backend suite passed 202 tests, including the 13 PostgreSQL cases
+and streaming/non-streaming interpretation-outage recovery. The updater passed
+Bash syntax validation. No frontend files changed in this follow-up.
+
 The user requested a bounded handoff so phone testing can resume. No further
 feature expansion is part of this pass. Backend verification passed 195 tests,
 including 13 PostgreSQL integration tests; frontend verification passed 41 tests,

@@ -110,6 +110,50 @@ def connected_call(runtime):
     return call
 
 
+def test_interpretation_outage_returns_speech_persists_and_releases_lease(runtime):
+    call = connected_call(runtime)
+
+    def unavailable(*args):
+        raise httpx.ReadTimeout("private provider error")
+
+    runtime.bridge.classifier.classify = unavailable
+    for i in range(3):
+        reply, finish = runtime.completion(call.id, call.legs[-1].id, str(i), "My back hurts")
+        assert reply
+        finish()
+        assert not runtime.repo.leases
+    saved = runtime.repo.call(call.id)
+    assert saved.state == "ended" and not saved.complete and saved.intentional_end
+    assert saved.interpretation_failures == 3
+    assert runtime.repo.commands[-1]["kind"] == "end"
+    assert saved.alerts[0].assessment == "pending"
+
+
+@pytest.mark.parametrize("stream", [True, False])
+def test_provider_endpoint_returns_recovery_audio_instead_of_503(runtime, monkeypatch, stream):
+    monkeypatch.setenv("LINEA_CUSTOM_LLM_BEARER", "completion-private")
+    call = connected_call(runtime)
+
+    def unavailable(*args):
+        raise ValueError("unusable semantic output")
+
+    runtime.bridge.classifier.classify = unavailable
+    app = FastAPI()
+    install_provider_routes(app, runtime)
+    url = f"/provider/checkins/{call.id}/legs/{call.legs[-1].id}/chat/completions"
+    with TestClient(app) as client:
+        reply = client.post(
+            url,
+            headers={"Authorization": "Bearer completion-private"},
+            json={"stream": stream, "messages": [{"role": "user", "content": "My back hurts"}]},
+        )
+        assert reply.status_code == 200 and "Please say it again" in reply.text
+        if stream:
+            assert "[DONE]" in reply.text
+    assert not runtime.repo.leases
+    assert runtime.repo.call(call.id).alerts[0].quote == "My back hurts"
+
+
 def provider_status_voice(status):
     voice = object.__new__(AgoraRuntime)
     voice.base = "/api/conversational-ai-agent/v2/projects/test"

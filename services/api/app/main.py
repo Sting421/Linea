@@ -140,6 +140,7 @@ def create_app(path=None, clock=None, runtime=None):
     def health():
         return {
             "status": "ok",
+            "build": os.getenv("LINEA_BUILD_ID", "unknown"),
             "mode": mode,
             "voice_connected": bool(voice_ready and runtime.worker_ready("voice")),
             "push_connected": push_ready(),

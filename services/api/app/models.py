@@ -223,6 +223,7 @@ class CheckIn(StrictModel):
     family_joined_at: datetime | None = None
     farewell_asked: bool = False
     consent_clarifications: int = 0
+    interpretation_failures: int = Field(default=0, ge=0)
     text_expired: bool = False
     processed_events: list[str] = Field(default_factory=list)
     processed_turns: dict[str, str] = Field(default_factory=dict)

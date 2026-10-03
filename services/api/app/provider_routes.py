@@ -171,9 +171,15 @@ def install_provider_routes(app, runtime):
             reply, finish = await run_in_threadpool(
                 runtime.completion, cid, lid, str(turn_id), content
             )
-        except HTTPException:
+        except HTTPException as exc:
+            logging.getLogger("uvicorn.error").warning(
+                "Completion runtime rejected request: HTTP status=%s", exc.status_code
+            )
             raise
         except Exception as exc:
+            logging.getLogger("uvicorn.error").warning(
+                "Completion runtime failed: error=%s", type(exc).__name__
+            )
             raise HTTPException(503, "Interpretation is temporarily unavailable") from exc
         tasks.add_task(finish)
         identity = f"chatcmpl-{lid}-{turn_id}"

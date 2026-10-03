@@ -20,8 +20,13 @@ def emergency(p: Profile) -> str:
 
 
 def next_question(c: CheckIn, p: Profile) -> str:
+    # A legacy/external interpreter may copy the profile medicine name here.
+    # Only a dose result can satisfy this beat, never the drug name itself.
+    if c.answers.get("medicine") not in ("taken", "not_taken", "unknown"):
+        c.answers.pop("medicine", None)
     for beat, question in QUESTIONS.items():
         if beat not in c.answers:
+            c.complete = False
             c.active_question = beat
             return question.format(medicine=p.medicine)
     c.complete = True
