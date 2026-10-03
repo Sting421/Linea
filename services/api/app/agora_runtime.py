@@ -215,7 +215,14 @@ class AgoraRuntime:
         agent = quote(call.legs[-1].provider_agent_id, safe="")
         response = self.client.get(f"{self.base}/calls/{agent}")
         response.raise_for_status()
-        return response.json()
+        status = response.json()
+        # The live telephony endpoint returns uppercase states, while published
+        # SDK schemas also describe lowercase values. Normalize at the boundary.
+        if isinstance(status.get("state"), str):
+            status["state"] = status["state"].lower()
+        if status.get("reason") == "user_hangup":
+            status["reason"] = "hangup"
+        return status
 
     def find_agent(self, leg):
         response = self.client.get(

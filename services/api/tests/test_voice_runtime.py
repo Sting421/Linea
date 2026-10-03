@@ -110,6 +110,56 @@ def connected_call(runtime):
     return call
 
 
+def provider_status_voice(status):
+    voice = object.__new__(AgoraRuntime)
+    voice.base = "/api/conversational-ai-agent/v2/projects/test"
+    voice.client = httpx.Client(
+        base_url="https://api.agora.io",
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json=status)),
+    )
+    return voice
+
+
+@pytest.mark.parametrize("state", ["ANSWERED", "answered"])
+def test_polling_provider_answer_enables_family_join(runtime, state):
+    call = connected_call(runtime)
+    saved = runtime.repo.saved[call.id]
+    saved.state = saved.legs[-1].state = "ringing"
+    runtime.voice = provider_status_voice({"state": state})
+    runtime.reconcile_call(call.id)
+    assert runtime.current(call.id).state == "connected"
+    assert runtime.current(call.id).transcript
+
+
+@pytest.mark.parametrize("initial_state", ["ringing", "connected"])
+@pytest.mark.parametrize("state,reason", [("HANGUP", "user_hangup"), ("hangup", "hangup")])
+def test_provider_user_hangup_ends_without_automatic_redial(runtime, initial_state, state, reason):
+    call = connected_call(runtime)
+    saved = runtime.repo.saved[call.id]
+    saved.state = saved.legs[-1].state = initial_state
+    runtime.voice = provider_status_voice(
+        {"state": state, "reason": reason, "stop_ts": int(at().timestamp())}
+    )
+    runtime.reconcile_call(call.id)
+    ended = runtime.current(call.id)
+    assert ended.state == "ended" and ended.intentional_end and ended.ended_at
+    assert ended.retry_at is None and ended.legs[-1].state == "ended"
+    assert not ended.complete
+    assert runtime.repo.commands[-1]["kind"] == "end"
+
+
+def test_completion_verifies_uppercase_answer_when_callback_is_missing(runtime):
+    runtime.repo.profile.consent = "pending"
+    call = connected_call(runtime)
+    saved = runtime.repo.saved[call.id]
+    saved.state = saved.legs[-1].state = "ringing"
+    runtime.voice = provider_status_voice({"state": "ANSWERED"})
+    reply, finish = runtime.completion(call.id, call.legs[-1].id, "hello", "Hello")
+    finish()
+    assert reply and runtime.current(call.id).state == "connected"
+    assert runtime.repo.profile.consent == "pending"
+
+
 def test_placement_idempotency_consent_hours_and_foreign_owner(runtime):
     p = runtime.repo.profile
     first = runtime.place(p.id, p.owner_id, request_id="same")

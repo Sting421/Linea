@@ -371,7 +371,7 @@ class RuntimeService:
                 "ANSWERED": "connected",
                 "HANGUP": "dropped" if leg.state == "connected" else "no_answer",
             }.get(job["kind"])
-            if job["kind"] == "HANGUP" and leg.state == "connected":
+            if job["kind"] == "HANGUP":
                 target = call.model_copy(deep=True)
                 target.legs = [leg]
                 reason = self.voice.call_status(target).get("reason")
