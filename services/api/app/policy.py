@@ -12,7 +12,11 @@ def assess(f: Facts) -> Assessment:
             resume=True,
         )
     # Emergency evidence has priority, including an actual other person in need.
-    if f.red_flags or (f.concern == "CHEST_PAIN" and f.current is True):
+    if (
+        f.red_flags
+        or f.reported_large_excess_or_poisoning is True
+        or (f.concern == "CHEST_PAIN" and f.current is True)
+    ):
         return Assessment(
             tier="emergency",
             reason="Reported emergency feature; immediate help required",
@@ -57,6 +61,15 @@ def assess(f: Facts) -> Assessment:
                 reason="No approved omission policy for this medicine",
                 review=True,
                 resume=True,
+            )
+        if f.medicine_result is None:
+            return Assessment(
+                tier="significant" if f.clarification_failures >= 2 else None,
+                reason="No dose answer established",
+                question="Have you taken your listed medicine for this dose period?"
+                if f.clarification_failures < 2
+                else None,
+                unresolved=True,
             )
         if f.medicine_result == "unknown" and f.clarification_failures < 2:
             return Assessment(
@@ -179,9 +192,12 @@ def assess(f: Facts) -> Assessment:
         return Assessment(
             tier="significant",
             reason="Reported ongoing, recurrent, or unusual concern",
-            question=question if f.emergency_features_absent is not True else None,
+            question=question
+            if f.emergency_features_absent is not True and f.clarification_failures < 2
+            else None,
             resume=f.resolved is True and f.emergency_features_absent is True,
             review=f.concern in ("CHEST_PAIN", "DIZZINESS"),
+            unresolved=f.emergency_features_absent is not True,
         )
     if routine:
         return Assessment(tier="routine", reason="Required recovery facts established", resume=True)
@@ -190,6 +206,7 @@ def assess(f: Facts) -> Assessment:
             tier="significant",
             reason="Uncertainty remains after clarification",
             review=f.concern in ("CHEST_PAIN", "DIZZINESS"),
+            unresolved=True,
         )
     return Assessment(
         tier=None,

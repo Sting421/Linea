@@ -339,6 +339,19 @@
           "default": null,
           "title": "Instruction Conflict"
         },
+        "reported_large_excess_or_poisoning": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True for a reported large excess of tablets/medicine, a handful taken, an overdose, or poisoning. Feeling well does not negate the report. An uncertain first dose or a possible single extra dose alone does not establish this fact. Preserve subject and actual/negated/hypothetical context.",
+          "title": "Reported Large Excess Or Poisoning"
+        },
         "possible_dose_error": {
           "anyOf": [
             {

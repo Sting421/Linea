@@ -103,7 +103,13 @@ def output_schema():
     schema["properties"]["medicine_result"] = {
         "type": ["string", "null"],
         "enum": ["taken", "not_taken", "unknown", None],
-        "description": "An explicit dose report, not an inference from dropping, finding, or handling a tablet. Those actions leave the dose result unreported (null).",
+        "description": (
+            "Whether today's medicine was explicitly reported taken, missed (not_taken), "
+            "or uncertain (unknown), independently of whether its drug name is known. "
+            "Supply evidence.medicine for this result even when medicine is unnamed. "
+            "Do not infer from dropping, finding, or handling a tablet; those actions "
+            "leave the dose result unreported (null)."
+        ),
     }
     schema["properties"]["concerns"]["description"] = (
         "Include each supported concern reported or clarified in the latest utterance. "
@@ -161,7 +167,8 @@ Extraction definitions (facts only; the server applies policy):
   does not erase a feature that actually occurred during this episode.
 - Passing out/fainting during exercise is faint_exertion; fainting while lying
   down is faint_lying_down. A reported handful, large excess, or poisoning is
-  overdose_poisoning even without symptoms. The medicine concern covers dose
+  reported_large_excess_or_poisoning=true even without symptoms; it may also
+  have the overdose_poisoning red flag. The medicine concern covers dose
   errors and overdose as well as omissions; never omit it because a dose was taken.
 - An explicit taken dose plus uncertainty about a SECOND dose means
   medicine_result=taken and possible_dose_error=true, not an unknown first dose.

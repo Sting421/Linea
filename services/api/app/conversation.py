@@ -98,7 +98,11 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
                 old.actual_fall = facts.context != "near_event"
             if ranks[result.tier] >= ranks[old.tier]:
                 old.tier = result.tier
-            old.assessment = "complete" if result.tier else "pending"
+            old.assessment = (
+                "complete"
+                if old.tier == "emergency" or (result.tier and not result.unresolved)
+                else "pending"
+            )
         else:
             c.alerts.append(
                 Alert(
@@ -111,7 +115,7 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
                     tier=result.tier,
                     quote=facts.quote,
                     reason=result.reason,
-                    assessment="complete" if result.tier else "pending",
+                    assessment="complete" if result.tier and not result.unresolved else "pending",
                 )
             )
         assessments.append((facts, result))

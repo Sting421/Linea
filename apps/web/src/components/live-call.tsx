@@ -458,7 +458,7 @@ export function LiveCall({
                 {call.alerts.map((a) => (
                   <div key={a.id}>
                     <strong>{a.concern.replaceAll('_', ' ')}</strong>
-                    <TierBadge tier={a.tier} />
+                    <TierBadge tier={a.tier} assessment={a.assessment} />
                   </div>
                 ))}
               </div>

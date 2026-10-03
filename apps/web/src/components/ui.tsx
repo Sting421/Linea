@@ -244,12 +244,19 @@ export function OutcomeBadge({ status }: { status: Outcome }) {
     </span>
   );
 }
-export function TierBadge({ tier }: { tier: Alert['tier'] }) {
+export function TierBadge({
+  tier,
+  assessment,
+}: {
+  tier: Alert['tier'];
+  assessment?: Alert['assessment'];
+}) {
   const s = tier ? tiers[tier] : { className: 'status-neutral', label: 'Assessment pending' };
   return (
     <span className={`badge ${s.className}`}>
       <Circle size={7} fill="currentColor" />
       {titleCase(s.label)}
+      {tier && tier !== 'emergency' && assessment === 'pending' ? ' · Unresolved' : ''}
     </span>
   );
 }
@@ -307,7 +314,7 @@ export function AlertCard({
             {alert.subject === 'other' ? ' · Another person' : ''}
           </small>
         </div>
-        <TierBadge tier={alert.tier} />
+        <TierBadge tier={alert.tier} assessment={alert.assessment} />
       </div>
       <p className="alert-evidence">
         {alert.quote
@@ -408,7 +415,7 @@ export function AlertLog({
                 {a.subject === 'other' && <small>Another person</small>}
               </td>
               <td data-label="Level">
-                <TierBadge tier={a.tier} />
+                <TierBadge tier={a.tier} assessment={a.assessment} />
               </td>
               <td className="log-evidence" data-label="Reported detail">
                 <p>

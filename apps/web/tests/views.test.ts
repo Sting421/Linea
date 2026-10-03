@@ -6,7 +6,7 @@ import { Monitoring, DayView } from '../src/components/monitor';
 import { Onboarding } from '../src/components/onboarding';
 import { LiveCall } from '../src/components/live-call';
 import type { Dashboard, Profile, CheckIn } from '../src/lib/types';
-import { Shell, AlertLog } from '../src/components/ui';
+import { Shell, AlertLog, TierBadge } from '../src/components/ui';
 import { requiresSetup, profileSetupId } from '../src/lib/setup-state';
 const p: Profile = {
   id: 'rosa',
@@ -50,6 +50,22 @@ const c: CheckIn = {
   farewell_asked: false,
 };
 const d = { profile: p, profiles: [p], checkins: [c], alerts: [], mode: 'demo' } as Dashboard;
+test('unresolved assessments retain severity without presenting assessment as complete', () => {
+  const pending = renderToStaticMarkup(
+    createElement(TierBadge, { tier: 'significant', assessment: 'pending' }),
+  );
+  assert.match(pending, /Significant/);
+  assert.match(pending, /Unresolved/);
+  const assessed = renderToStaticMarkup(
+    createElement(TierBadge, { tier: 'significant', assessment: 'complete' }),
+  );
+  assert.doesNotMatch(assessed, /Unresolved/);
+  const emergency = renderToStaticMarkup(
+    createElement(TierBadge, { tier: 'emergency', assessment: 'pending' }),
+  );
+  assert.match(emergency, /Emergency/);
+  assert.doesNotMatch(emergency, /Unresolved/);
+});
 test('monitoring markup contains accessible calendar outcomes and metric definitions', () => {
   const html = renderToStaticMarkup(
     createElement(Monitoring, {

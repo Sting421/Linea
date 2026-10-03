@@ -31,6 +31,12 @@ def main():
         help="Make paid model/embedding requests with synthetic text",
     )
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--cases-file",
+        type=Path,
+        default=ROOT / "linea/policy-fixtures.yaml",
+        help="Synthetic YAML cases only; defaults to the 41 policy fixtures",
+    )
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument(
         "--model", help="Evaluation-only model override; does not change deployment"
@@ -42,9 +48,7 @@ def main():
     args = parser.parse_args()
     if not 0 <= args.request_interval <= 60:
         parser.error("Request interval must be between 0 and 60 seconds")
-    cases = yaml.safe_load((ROOT / "linea/policy-fixtures.yaml").read_text(encoding="utf-8"))[
-        "cases"
-    ]
+    cases = yaml.safe_load(args.cases_file.read_text(encoding="utf-8"))["cases"]
     if args.case:
         names = set(args.case)
         if names - {c["id"] for c in cases}:
@@ -170,12 +174,22 @@ def main():
                 "consent": p.consent,
                 "mode": c.mode,
                 "active_question": c.active_question,
+                "complete": c.complete,
+                "intentional_end": c.intentional_end,
+                "answers": c.answers,
                 "alerts": [a.model_dump(mode="json") for a in c.alerts],
                 "facts": {k: v.model_dump() for k, v in c.facts.items()},
                 "replies": replies,
             }
             errors = []
-            for key in ("tier", "medicine_result", "consent"):
+            for key in (
+                "tier",
+                "medicine_result",
+                "consent",
+                "complete",
+                "intentional_end",
+                "mode",
+            ):
                 if key in expected and expected[key] != actual[key]:
                     errors.append(key)
             if expected.get("minimum_tier") and RANKS[tier] < RANKS[expected["minimum_tier"]]:
@@ -228,6 +242,7 @@ def main():
     output.parent.mkdir(parents=True, exist_ok=True)
     report = {
         "model": model.model,
+        "cases_file": str(args.cases_file.resolve()),
         "workers": args.workers,
         "request_interval_seconds": args.request_interval,
         "tested_at": datetime.now(timezone.utc).isoformat(),

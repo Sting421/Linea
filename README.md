@@ -26,6 +26,11 @@ Latest implementation and observed phone results are in
 [the MVP status record](testing/MVP-STATUS-20261004.md). It distinguishes working
 phone evidence, corrected defects, and remaining device/deployment checks.
 
+Current MVP scope: one family account, phone-to-AI check-ins, consent, saved
+records, scheduling, call endings, and dashboard results. Browser-to-phone
+participation and notifications are deferred. Finish implementation and automated
+checks first; the user will then test the deployed phone flow.
+
 When integrations are ready, follow [the MVP verification guide](testing/README.md).
 It includes ordered test steps, observable pass conditions, all 41 conversation
 fixtures plus 10 held-out phrases, and a results template. Create a private run

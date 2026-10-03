@@ -9,6 +9,23 @@ repeatable checks with observable pass conditions. **These live tests have not
 been run.** A working demo, saved credentials, or HTTP 200 does not establish
 that phone calls, semantic interpretation, account isolation, or push work.
 
+## Current implementation handoff scope
+
+The user deferred browser-to-phone participation and notifications. Keep those
+historical acceptance cases below as deferred, not passed. For this MVP handoff,
+finish automated implementation checks, deploy, then let the user test:
+
+1. A normally created account and elder profile with persisted settings.
+2. A phone-to-AI call covering consent, sleep, medicine, feeling, and closing.
+3. A concern and clarification with the correct saved evidence and alert.
+4. Phone hangup and an explicit spoken ending, with no stale active-call button.
+5. Reloaded transcript, summary, medicine result, and calendar/dashboard totals.
+6. Scheduled calls and retry/reconnection behavior in the authorized test scope.
+
+Repeat complete phone-to-AI runs for recording readiness. No browser audio join
+or push receipt is required for these runs. This scoped handoff does not certify
+all 22 historical acceptance requirements or enable unrestricted live operation.
+
 ## Start a test run
 
 1. Pull `keith-branch` and record the exact commit being deployed. If the server
@@ -21,7 +38,7 @@ that phone calls, semantic interpretation, account isolation, or push work.
 3. Current MVP scope is one family account: prepare one phone for the elder and
    one browser session for the signed-in profile owner. Use an unrelated account B
    separately for isolation checks. Contacts are not invited app users. Multiple
-   simultaneous family accounts and notification delivery are deferred by the user;
+   simultaneous family accounts, browser audio joining, and notification delivery are deferred by the user;
    mark those subchecks deferred, not passed. See `MVP-STATUS-20261004.md` for the
    latest observed evidence and remaining device checks.
 4. Install the pinned Python requirements in the local virtual environment.
@@ -43,10 +60,9 @@ that phone calls, semantic interpretation, account isolation, or push work.
    checks separately in an isolated environment. If a required setup is
    unavailable, mark the case BLOCKED and retain that acceptance requirement.
 
-The phone tester speaks the scripts; the family tester verifies the screens
-and notifications; the engineer checks state, timings, identity, and delivery
-logs. One person can cover several roles, but family audio needs separate
-devices with headphones to distinguish real two-way audio from local playback.
+The phone tester speaks the scripts; the family tester verifies the screens;
+the engineer checks state, timings, identity, and provider logs. One person can
+cover several roles. Browser audio and notification tests are deferred.
 
 ## Record a result
 
@@ -60,6 +76,10 @@ It defaults to one worker and six seconds between model requests. Reports go to
 ignored `.local/model-check-*.json`; existing reports are never overwritten.
 Use `--case CASE_ID` to narrow a recheck, or `--model SNAPSHOT` for an evaluation
 comparison only. Neither option changes deployment configuration.
+
+Use `--cases-file testing/model-edge-cases.yaml` for additional synthetic
+cases covering reported excess doses, context, normal completion, and ending.
+Only cases actually present in a dated report count as executed evidence.
 
 The runner checks only the named core outcomes in its report, not every prose
 expectation in the fixture. Review the returned facts and responses as well.

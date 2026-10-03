@@ -145,6 +145,8 @@ def test_two_inconclusive_clarifications_do_not_loop():
     assert c.alerts[0].tier == "significant"
     assert c.facts["fall"].clarification_failures == 2
     assert c.alerts[0].revision == 2
+    assert c.alerts[0].assessment == "pending"
+    assert c.alerts[0].reason == "Uncertainty remains after clarification"
 
 
 def test_short_answer_binds_to_semantic_active_question():

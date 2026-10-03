@@ -154,6 +154,57 @@ def test_unknown_recovery_never_becomes_routine():
     assert not assess(f("FALL", resolved=True)).resume
 
 
+@pytest.mark.parametrize("subject", ["elder", "other"])
+def test_reported_large_excess_needs_no_second_red_flag_or_symptoms(subject):
+    result = assess(
+        f(
+            "MEDICINE_NOT_TAKEN",
+            subject=subject,
+            reported_large_excess_or_poisoning=True,
+            medicine_result="taken",
+            possible_dose_error=True,
+            current=False,
+            resolved=True,
+        )
+    )
+    assert result.tier == "emergency" and not result.resume and result.question is None
+
+
+@pytest.mark.parametrize("context", ["negated", "hypothetical", "remote_assessed"])
+def test_large_excess_context_does_not_create_an_actual_emergency(context):
+    result = assess(
+        f("MEDICINE_NOT_TAKEN", context=context, reported_large_excess_or_poisoning=True)
+    )
+    assert result.tier is None and not result.new_event
+
+
+def test_possible_single_extra_dose_does_not_imply_large_excess():
+    result = assess(
+        f(
+            "MEDICINE_NOT_TAKEN",
+            possible_dose_error=True,
+            reported_large_excess_or_poisoning=False,
+            medicine_result="taken",
+        )
+    )
+    assert result.tier == "significant"
+
+
+def test_significant_concern_stops_questions_after_two_failed_clarifications():
+    result = assess(f("DIZZINESS", current=True, clarification_failures=2))
+    assert result.tier == "significant" and result.unresolved
+    assert result.question is None and not result.resume
+
+
+@pytest.mark.parametrize("attempts,tier", [(0, None), (2, "significant")])
+def test_missing_dose_answer_never_becomes_an_established_omission(attempts, tier):
+    result = assess(
+        f("MEDICINE_NOT_TAKEN", due=True, approved_medicine=True, clarification_failures=attempts)
+    )
+    assert result.tier == tier and result.unresolved and not result.resume
+    assert "No dose answer" in result.reason
+
+
 @pytest.mark.parametrize(
     "concern,known,question",
     [

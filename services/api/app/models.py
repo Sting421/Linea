@@ -124,6 +124,15 @@ class Facts(StrictModel):
     refusal: bool | None = None
     adverse_effect: bool | None = None
     instruction_conflict: bool | None = None
+    reported_large_excess_or_poisoning: bool | None = Field(
+        default=None,
+        description=(
+            "True for a reported large excess of tablets/medicine, a handful taken, "
+            "an overdose, or poisoning. Feeling well does not negate the report. "
+            "An uncertain first dose or a possible single extra dose alone does not "
+            "establish this fact. Preserve subject and actual/negated/hypothetical context."
+        ),
+    )
     possible_dose_error: bool | None = None
     repeated_unknown: bool | None = None
     approved_medicine: bool | None = None
@@ -137,6 +146,7 @@ class Assessment(StrictModel):
     resume: bool = False
     new_event: bool = True
     review: bool = False
+    unresolved: bool = False
 
 
 class Turn(StrictModel):
