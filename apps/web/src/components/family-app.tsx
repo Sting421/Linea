@@ -2,11 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Bell, RefreshCw, ShieldCheck, ArrowRight, Check } from 'lucide-react';
+import { Bell, RefreshCw, ShieldCheck, Check } from 'lucide-react';
 import { api, post } from '@/lib/api';
-import { localDate } from '@/lib/semantics';
+import { localDate, titleCase } from '@/lib/semantics';
 import type { Dashboard, Alert, CheckIn } from '@/lib/types';
-import { Shell, Panel, Empty, AlertCard } from './ui';
+import { Shell, Panel, Empty, AlertLog } from './ui';
+import { requiresSetup, profileSetupId, SETUP_STORAGE_KEY } from '@/lib/setup-state';
 import { Monitoring, DayView } from './monitor';
 import { Onboarding } from './onboarding';
 import { LiveCall } from './live-call';
@@ -26,10 +27,21 @@ export function FamilyApp({
     [notice, setNotice] = useState(''),
     [month, setMonth] = useState(''),
     [filter, setFilter] = useState('open');
+  const [setupNeeded, setSetupNeeded] = useState<boolean | null>(null);
   const refresh = useCallback(async () => {
     try {
       const d = await api<Dashboard>('dashboard');
       setData(d);
+      setSetupNeeded((current) => {
+        if (current !== null) return current;
+        let completed = null;
+        try {
+          completed = localStorage.getItem(SETUP_STORAGE_KEY);
+        } catch {
+          /* Setup can still finish in memory when storage is disabled. */
+        }
+        return requiresSetup(d, completed);
+      });
       setMonth((m) => m || localDate(d.profile?.timezone ?? 'Asia/Manila').slice(0, 7));
       setError('');
     } catch (e) {
@@ -45,7 +57,7 @@ export function FamilyApp({
     setBusy(true);
     try {
       await post(`checkins/${a.checkin_id}/alerts/${a.id}/handle`);
-      setNotice('Alert marked handled. Its history and day outcome are preserved.');
+      setNotice('Alert marked handled.');
       await refresh();
     } catch (e) {
       setError((e as Error).message);
@@ -65,7 +77,11 @@ export function FamilyApp({
     }
   }
   return (
-    <Shell section={section} profile={data?.profile ?? null}>
+    <Shell
+      section={setupNeeded ? 'Setup' : section}
+      profile={data?.profile ?? null}
+      setup={setupNeeded !== false || (!!data && !data.profile)}
+    >
       {error && (
         <div className="error-banner" role="alert">
           <p>{error}</p>
@@ -83,18 +99,34 @@ export function FamilyApp({
           </button>
         </div>
       )}
-      {!data ? (
+      {!data || setupNeeded === null ? (
         <div className="loading-state" role="status">
           <div className="skeleton skeleton-heading" />
           <div className="skeleton skeleton-card" />
           <p>Loading your family workspace…</p>
         </div>
-      ) : !data.profile || section === 'Elder profile' ? (
+      ) : setupNeeded || !data.profile || section === 'Elder profile' ? (
         <Onboarding
           key={data.profile?.id ?? 'new'}
           profile={data.profile ?? undefined}
-          onSaved={async () => {
-            setNotice('Profile saved. Elder consent is recorded during the first call.');
+          mode={setupNeeded || !data.profile ? 'setup' : 'edit'}
+          onSaved={async (p) => {
+            try {
+              localStorage.setItem(SETUP_STORAGE_KEY, profileSetupId(p));
+            } catch {
+              /* No personal details are stored here. */
+            }
+            setData((current) =>
+              current
+                ? {
+                    ...current,
+                    profile: p,
+                    profiles: [p, ...current.profiles.filter((existing) => existing.id !== p.id)],
+                  }
+                : current,
+            );
+            setSetupNeeded(false);
+            setNotice(setupNeeded ? 'Setup complete.' : 'Profile saved.');
             await refresh();
             router.push('/');
           }}
@@ -125,12 +157,11 @@ export function FamilyApp({
         <>
           <div className="page-heading">
             <div>
-              <p className="eyebrow">CONTEXT FOR EVERY CONCERN</p>
-              <h1>Stay informed. Be there.</h1>
-              <p>Review what was reported and decide how to follow up.</p>
+              <h1>Alerts</h1>
+              <p>{data.profile.preferred_name} · Concern and call history</p>
             </div>
             <span className="badge status-neutral">
-              {data.alerts.filter((a) => !a.handled_at).length} awaiting review
+              {data.alerts.filter((a) => !a.handled_at).length} Awaiting Review
             </span>
           </div>
           <div className="filter-bar" role="group" aria-label="Alert history filter">
@@ -149,26 +180,14 @@ export function FamilyApp({
               </button>
             ))}
           </div>
-          <div className="alerts-grid">
-            {data.alerts
-              .filter(
-                (a) => filter === 'all' || (filter === 'open' ? !a.handled_at : !!a.handled_at),
-              )
-              .map((a) => (
-                <Panel key={a.id}>
-                  <AlertCard
-                    alert={a}
-                    timezone={data.profile!.timezone}
-                    onHandle={() => void handle(a)}
-                  />
-                  {a.local_date && (
-                    <Link className="text-button alert-day-link" href={`/day/${a.local_date}`}>
-                      View day record <ArrowRight size={14} />
-                    </Link>
-                  )}
-                </Panel>
-              ))}
-          </div>
+          <AlertLog
+            alerts={data.alerts.filter(
+              (a) => filter === 'all' || (filter === 'open' ? !a.handled_at : !!a.handled_at),
+            )}
+            timezone={data.profile.timezone}
+            busy={busy}
+            onHandle={(a) => void handle(a)}
+          />
           {!data.alerts.some(
             (a) => filter === 'all' || (filter === 'open' ? !a.handled_at : !!a.handled_at),
           ) && (
@@ -181,7 +200,7 @@ export function FamilyApp({
           )}
         </>
       ) : section === 'Settings' ? (
-        <SettingsView setNotice={setNotice} />
+        <SettingsView setNotice={setNotice} onReviewSetup={() => setSetupNeeded(true)} />
       ) : (
         <Monitoring
           data={data}
@@ -195,7 +214,13 @@ export function FamilyApp({
     </Shell>
   );
 }
-function SettingsView({ setNotice }: { setNotice: (v: string) => void }) {
+function SettingsView({
+  setNotice,
+  onReviewSetup,
+}: {
+  setNotice: (v: string) => void;
+  onReviewSetup: () => void;
+}) {
   const [config, setConfig] = useState<{
       mode: string;
       checks: { name: string; state: string }[];
@@ -242,12 +267,20 @@ function SettingsView({ setNotice }: { setNotice: (v: string) => void }) {
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">MAKE THE CONNECTION YOURS</p>
-          <h1>Your workspace, thoughtfully set up.</h1>
-          <p>Notifications, data practices, and connection status.</p>
+          <h1>Settings</h1>
+          <p>Notifications and data retention</p>
         </div>
       </div>
       <div className="settings-grid">
+        <Panel>
+          <div className="panel-heading">
+            <h2>Workspace setup</h2>
+          </div>
+          <p className="muted">Review the elder details, routine, and contacts.</p>
+          <button className="button secondary" onClick={onReviewSetup}>
+            Review setup
+          </button>
+        </Panel>
         <Panel>
           <div className="panel-heading">
             <h2>Family notifications</h2>
@@ -296,11 +329,9 @@ function SettingsView({ setNotice }: { setNotice: (v: string) => void }) {
         <Panel className="config-panel">
           <div className="panel-heading">
             <h2>Connection status</h2>
-            <span className="badge status-neutral">Local demo</span>
+            <span className="badge status-neutral">Local Demo</span>
           </div>
-          <p className="muted">
-            A transparent view of what is running and what still needs connecting.
-          </p>
+          <p className="muted">Service availability</p>
           {config ? (
             <ul className="config-list">
               {config.checks.map((c) => (
@@ -309,7 +340,7 @@ function SettingsView({ setNotice }: { setNotice: (v: string) => void }) {
                   <span
                     className={`badge ${c.state === 'ready' ? 'status-green' : 'status-neutral'}`}
                   >
-                    {c.state.replaceAll('_', ' ')}
+                    {titleCase(c.state)}
                   </span>
                 </li>
               ))}

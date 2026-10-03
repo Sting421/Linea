@@ -14,9 +14,10 @@ import {
   Check,
 } from 'lucide-react';
 import type { CheckIn, Profile } from '@/lib/types';
-import { callLabel, formatTime } from '@/lib/semantics';
+import { callLabel, formatTime, titleCase } from '@/lib/semantics';
 import { post } from '@/lib/api';
-import { Panel, TierBadge } from './ui';
+import { Panel, TierBadge, Avatar, MetricHelp } from './ui';
+import { BotAvatar } from 'bot-avatars';
 type Result = { call: CheckIn; reply?: string; briefing?: string };
 export function LiveCall({
   call,
@@ -87,28 +88,19 @@ export function LiveCall({
       </Link>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">A LINE THAT CONNECTS</p>
           <h1>
-            {call.state === 'ended'
-              ? 'The call has ended.'
-              : `On the line with ${profile.preferred_name}.`}
+            {call.state === 'ended' ? 'The call has ended.' : `Call · ${profile.preferred_name}`}
           </h1>
           <p>Demo call · no microphone or phone connection is active.</p>
         </div>
         <span className={`badge ${call.state === 'connected' ? 'status-green' : 'status-neutral'}`}>
-          {callLabel(call.state)}
+          {titleCase(callLabel(call.state))}
         </span>
       </div>
       <div className="live-layout">
         <Panel className="live-room">
           <div className="live-orbit">
-            <div className="avatar huge">
-              {profile.name
-                .split(' ')
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join('')}
-            </div>
+            <Avatar name={profile.name} size="huge" />
           </div>
           <h2>{profile.preferred_name}</h2>
           <p className="muted">
@@ -122,7 +114,14 @@ export function LiveCall({
           </p>
           <div className="participant-row">
             <span className="participant">
-              <span className="key-dot purple" />
+              <BotAvatar
+                type="circle"
+                shading="plastic"
+                size={32}
+                state={busy ? 'working' : 'default'}
+                paused={!busy || call.mode === 'LISTEN' || call.state === 'ended'}
+                aria-hidden="true"
+              />
               Linea · {call.mode.toLowerCase()}
             </span>
             {joined && (
@@ -185,10 +184,12 @@ export function LiveCall({
               </Link>
             )}
           </div>
-          <p className="fine-print">
-            Leave disconnects only you. Ending for everyone is an intentional end and does not
-            handle alerts.
-          </p>
+          <MetricHelp label="Call controls">
+            <p>
+              Leave disconnects only you. Ending for everyone is an intentional end and does not
+              handle alerts.
+            </p>
+          </MetricHelp>
           {error && (
             <p role="alert" className="error-message">
               {error}
@@ -198,15 +199,16 @@ export function LiveCall({
         <Panel className="simulation-panel">
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">LOCAL REVIEW TOOLS</p>
               <h2>Call simulator</h2>
             </div>
             <Play size={18} />
           </div>
-          <p className="muted">
-            These scripted examples feed structured facts into the real policy. They do not test
-            speech recognition or semantic classification.
-          </p>
+          <MetricHelp label="About the simulator">
+            <p>
+              These scripted examples feed structured facts into the real policy. They do not test
+              speech recognition or semantic classification.
+            </p>
+          </MetricHelp>
           {call.state === 'ringing' ||
           (call.state === 'reconnecting' && leg?.state === 'ringing') ? (
             <div className="simulation-actions">

@@ -19,6 +19,23 @@ app scaffold. The subsequent scaffold and verification report is in
 `IMPLEMENTATION-NOTES.md`. The user's native dark purple/yellow direction
 supersedes the earlier warm off-white palette.
 
+**Product interface refinement, 3 October 2026:** The user rejected promotional
+copy inside the product. Navigation and headings are now operational, alert
+history is a log, metric explanations open on hover/focus, and first-use setup is
+four steps with final review. Existing profile edits use compact sections.
+Seeded demo data must pass first-use configuration; the local completion marker
+contains owner/profile IDs only and has no consent authority. The supplied
+gradient is the human avatar background. Libraries.dev was installed/read and
+its bot avatar identifies Linea in the call view. Current frontend verification
+includes synthetic interaction tests; saved browser permissions still block
+visual inspection. See the updated design guidelines and implementation notes.
+
+Monitoring now includes selected-month daily activity, recorded-day outcome,
+and medicine report charts. In-progress, incomplete, missing, and upcoming
+records have distinct meanings. Tables use shared geometry and numeric alignment;
+all pills use Title Case. Tooltip hover/focus/Escape behavior is covered by
+synthetic component tests; full browser visual review remains outstanding.
+
 ## 1. Current product
 
 **One-sentence description:** Linea is a voice-first, fully automated welfare

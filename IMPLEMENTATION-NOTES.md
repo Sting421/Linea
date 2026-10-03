@@ -18,12 +18,12 @@ English conversation, and the five agreed concerns remain the scope.
 | Deliverable | Implementation |
 | --- | --- |
 | Native dark visual system | `apps/web/src/app/globals.css`: charcoal/purple/yellow 60/30/10 composition, softly raised/inset surfaces, semantic colors, control/card geometry, focus and reduced-motion rules |
-| Brand assets | Local SVG Linea line mark and code-native voice illustration; no remote asset or font dependency |
+| Brand assets | Local SVG Linea line mark, user-supplied gradient for human avatars, and Libraries.dev bot avatar in the call participant row; no remote asset or font dependency |
 | Sign-in | Demo entry and Supabase magic-link/callback scaffolding; server-side API proxy keeps backend bearer credentials out of the browser |
-| Onboarding / profile | Three-step elder, routine, and trusted-contact form; E.164 phone validation, local timezone/calling hours, one medicine, up to three contacts; elder consent cannot be set by this form |
-| Monitoring | Current-month calendar, day links, daily call card, recorded concerns, medication report counts, and accessible distribution charts/tables |
+| Onboarding / profile | First-use four-step elder/routine/contacts/review flow, including prefilled demo setup; compact section tabs for subsequent edits; E.164 validation, local calling hours, one medicine, up to three contacts; elder consent cannot be set by this form |
+| Monitoring | Shared month control, daily logical check-in activity chart (completed/in progress/incomplete), recorded-day outcome ring, medicine report bars with count/share tables, calendar/day links, daily call card, and recorded concerns |
 | Day record | Summary, reported medicine state, alert quotations, handled state, phone-leg history, retry/reconnection label, collapsible transcript, and expired-text state |
-| Alerts | Open/all/handled views, retained exact quotation, explicit pending/Routine/Significant/Emergency labels, live-call link, idempotent handling |
+| Alerts | Open/all/handled log with recorded time, concern, exact quotation, tier, handled state, live-call/day links, and expandable assessment metadata; compact rows on monitoring |
 | Live-call surface | Join/briefing, LISTEN display, simulated mute, member Leave, separate native-dialog End call for everyone, and scripted local review tools; no real microphone is requested in demo |
 | Settings | Browser subscription registration seam, retention explanation, truthful provider connection status |
 | Policy | Structured facts and deterministic five-concern rules; no keyword triage or model-supplied tiers |
@@ -103,8 +103,14 @@ from Call now: manual calls do not consume the automatic initial-attempt budget.
 - Backend: 68 tests passed for policy, conversation, lifecycle, scheduler,
   expiry, schema interpretation boundaries, authentication failure, and API
   journeys, including fresh onboarding through consent and completed history.
-- Frontend: 14 automated origin-security, aggregation, and rendered-markup checks passed. These
-  prove the tested content/definitions; they do not prove browser interaction.
+- Frontend: 24 automated checks passed, covering origin security, aggregation,
+  rendered markup, and synthetic DOM interactions for onboarding/profile edits.
+  First-use gating, final-save-only configuration, contact limits, review/edit,
+  failed-save behavior, and later-page completion are tested with mocked API data.
+  Dashboard aggregation preserves phone-leg identity, month boundaries, pending
+  records, missing days, and upcoming dates. Hover/focus/Escape tooltip behavior
+  and movement between trigger and tooltip are checked in a synthetic DOM.
+  These do not prove actual browser appearance or behavior.
 - TypeScript and optimized Next.js build are checked separately. See the final
   verification record below for the current result.
 - Declared principal text/badge foreground/background pairs pass source-level
@@ -193,7 +199,7 @@ Final checks on 3 October 2026:
 | Check | Current evidence |
 | --- | --- |
 | Backend pytest | 68 passed, 1 dependency deprecation warning |
-| Frontend tests | 14 passed, 0 failed |
+| Frontend tests | 24 passed, 0 failed |
 | TypeScript | Passed |
 | Optimized Next.js build | Passed; all declared app/API routes generated |
 | Web formatting | Passed |
@@ -212,6 +218,39 @@ the original request Host rather than NextURL's loopback-normalized hostname.
 This allows the browser's actual `127.0.0.1` origin while retaining strict
 scheme/host/port matching. Five regression checks cover loopback normalization,
 localhost/HTTPS, foreign origins, forwarded-host spoofing, and cross-site metadata.
+
+Product interface refinement: promotional navigation/footer copy and hero
+sections were removed. Monitoring, profile, alerts, settings, and sign-in now
+use operational headings and compact surfaces. Metric definitions live in
+hover/focus tooltips with Escape dismissal; recorded-day coverage is a small badge.
+Alert evidence stays visible, with assessment metadata expandable.
+
+Monitoring now shows daily check-in activity, a recorded-day outcome ring, and
+medicine report bars. A single month control updates the calendar, charts, and
+month-based metrics. Open alerts remain an operational count across history.
+Tables share quiet header surfaces, aligned body/header spacing, right-aligned
+tabular numbers, clear actions, and responsive alert rows. Pills use Title Case
+in their rendered text, including backend service-state labels.
+
+First-use demo setup is prefilled from existing sample data, then reviewed and
+saved across four steps. A browser marker holds only owner/profile IDs; it has
+no consent authority and stores no names, phone numbers, or health details.
+Fresh live accounts require setup because they have no profile; existing live
+profiles establish prior configuration. Settings offers Review setup without
+deleting data. Consent stays under backend policy, including existing sample
+consent when reviewing the demo profile.
+
+The user-requested `npx skills add Jakubantalik/Libraries.dev` installation
+completed for Codex. The installed skill and bot-avatar reference were read.
+`bot-avatars` 0.2.1 identifies Linea in the call participant row, with busy state
+from the actual pending operation and paused state in idle/LISTEN/ended views.
+The supplied gradient is preserved at `apps/web/public/avatar-gradient.png` for
+human avatars. The skill is available to subsequent Codex turns.
+
+Browser visual review was attempted again against the existing app tab; a saved
+user permission setting blocks access to `http://127.0.0.1:3000`. No alternate
+browser, screenshot renderer, or HTTP page-fetch workaround was used. Synthetic
+DOM tests mock all API calls and do not access or render the blocked app URL.
 
 Scaffold delivery is complete at the local source/build/test level. Integration
 and acceptance work above remains required before any live-product claim.

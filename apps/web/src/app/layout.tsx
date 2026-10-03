@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 export const metadata: Metadata = {
-  title: 'Linea · Keeping families connected',
+  title: 'Linea',
   description: 'Voice-first automated welfare check-ins for older adults.',
   icons: { icon: '/linea-mark.svg' },
 };

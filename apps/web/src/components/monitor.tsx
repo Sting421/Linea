@@ -23,7 +23,8 @@ import {
   callLabel,
   concernLabel,
 } from '@/lib/semantics';
-import { Panel, Empty, OutcomeBadge, AlertCard } from './ui';
+import { Panel, Empty, OutcomeBadge, AlertCard, Avatar, MetricHelp } from './ui';
+import { MonitoringCharts } from './monitor-charts';
 
 export function Monitoring({
   data,
@@ -63,9 +64,8 @@ export function Monitoring({
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">YOUR DAILY CONNECTION</p>
-          <h1>A little closer to home.</h1>
-          <p>Check in on {p.preferred_name}, wherever you are.</p>
+          <h1>Monitoring</h1>
+          <p>{p.preferred_name} · Daily check-ins</p>
         </div>
         <Link className="button secondary" href="/profile">
           <ShieldCheck size={17} /> Elder profile
@@ -73,23 +73,14 @@ export function Monitoring({
       </div>
       <Panel className="connection-card">
         <div className="connection-profile">
-          <div className="avatar large">
-            {p.name
-              .split(' ')
-              .map((n) => n[0])
-              .slice(0, 2)
-              .join('')}
-          </div>
+          <Avatar name={p.name} size="large" />
           <div>
-            <span className="eyebrow">YOUR LOVED ONE</span>
             <h2>{p.preferred_name}</h2>
-            <p>
-              {p.name} <span className="text-dot">·</span> Daily voice check-in
-            </p>
+            <p>{p.phone}</p>
           </div>
         </div>
         <div className="connection-schedule">
-          <span className="eyebrow">{active ? 'CURRENT CHECK-IN' : 'DAILY CALL'}</span>
+          <span className="eyebrow">{active ? 'Current check-in' : 'Daily call'}</span>
           <strong>{active ? callLabel(active.state) : p.call_time}</strong>
           <span>
             <Clock3 size={14} />
@@ -117,38 +108,64 @@ export function Monitoring({
               ? 'Consent is asked on the first call'
               : p.consent === 'declined'
                 ? 'Calling stopped · consent declined'
-                : 'Demo · no phone call is placed'}
+                : 'Simulated call'}
           </small>
         </div>
       </Panel>
+      <div className="month-navigation dashboard-range">
+        <h3>{heading}</h3>
+        <div>
+          <button className="icon-button" aria-label="Previous month" onClick={() => move(-1)}>
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            className="icon-button"
+            aria-label="Next month"
+            onClick={() => move(1)}
+            disabled={month >= today.slice(0, 7)}
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
       <div className="stat-grid">
         <Panel className="stat-card">
           <span className="stat-icon">
             <Phone size={19} />
           </span>
-          <span className="eyebrow">CHECK-INS COMPLETED</span>
+          <span className="eyebrow">Completed check-ins</span>
           <div className="stat-value">
             {metrics.completed}
             <span> / {metrics.total}</span>
           </div>
-          <p>{heading} · logical check-ins</p>
+          <MetricHelp label="Check-ins">
+            <p>
+              Completed logical check-ins out of all recorded check-ins for {heading}. Repeat call
+              legs count within their check-in.
+            </p>
+          </MetricHelp>
         </Panel>
         <Panel className="stat-card">
           <span className="stat-icon">
             <Pill size={19} />
           </span>
-          <span className="eyebrow">MEDICINE REPORTED TAKEN</span>
+          <span className="eyebrow">Medicine reported taken</span>
           <div className="stat-value">
             {metrics.medicine.taken}
             <span> / {metrics.dosePeriods}</span>
           </div>
-          <p>Reported dose periods · not verified doses</p>
+          <MetricHelp label="Dose reports">
+            <p>
+              Reported dose periods · not verified doses. Unknown reports stay separate from not
+              taken.
+            </p>
+          </MetricHelp>
         </Panel>
         <Panel className="stat-card">
           <span className="stat-icon accent">
             <Bell size={19} />
           </span>
-          <span className="eyebrow">AWAITING FAMILY REVIEW</span>
+          <span className="eyebrow">Open alerts</span>
           <div className="stat-value">
             {unhandled.length}
             <span> alerts</span>
@@ -158,30 +175,15 @@ export function Monitoring({
           </Link>
         </Panel>
       </div>
+      <MonitoringCharts calls={calls} month={month} today={today} medicine={p.medicine} />
       <div className="monitor-grid">
         <Panel className="calendar-panel">
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">ONE DAY AT A TIME</p>
               <h2>Check-in calendar</h2>
+              <p>{heading}</p>
             </div>
             <CalendarDays size={19} />
-          </div>
-          <div className="month-navigation">
-            <h3>{heading}</h3>
-            <div>
-              <button className="icon-button" aria-label="Previous month" onClick={() => move(-1)}>
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                className="icon-button"
-                aria-label="Next month"
-                onClick={() => move(1)}
-                disabled={month >= today.slice(0, 7)}
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
           </div>
           <div className="calendar" role="group" aria-label={`${heading} check-in outcomes`}>
             {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
@@ -237,152 +239,43 @@ export function Monitoring({
               No record
             </span>
           </div>
-          <p className="fine-print">
-            Colors describe recorded outcomes. They do not establish medical safety.
-          </p>
+          <MetricHelp label="Calendar outcomes">
+            <p>
+              Colors describe recorded outcomes. They do not establish medical safety. Significant
+              and Emergency events stay red after an alert is handled.
+            </p>
+          </MetricHelp>
         </Panel>
         <Panel className="attention-panel">
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">WHEN YOU’RE NEEDED</p>
-              <h2>Family attention</h2>
+              <h2>Latest alerts</h2>
             </div>
             <Link className="icon-button" href="/alerts" aria-label="All alerts">
               <ArrowUpRight size={19} />
             </Link>
           </div>
           {unhandled.length ? (
-            <AlertCard
-              alert={unhandled[0]}
-              timezone={p.timezone}
-              onHandle={() => onHandle(unhandled[0])}
-            />
+            <div className="attention-list">
+              {unhandled.slice(0, 3).map((a) => (
+                <AlertCard
+                  key={a.id}
+                  alert={a}
+                  timezone={p.timezone}
+                  disabled={busy}
+                  onHandle={() => onHandle(a)}
+                />
+              ))}
+            </div>
           ) : (
             <Empty
               title="Nothing awaiting review"
               body="New concerns and call updates will appear here."
             />
           )}
-          <div className="reassurance-note">
-            <ShieldCheck size={19} />
-            <p>
-              Linea listens. You stay connected.
-              <br />
-              <span>Every concern keeps its context and history.</span>
-            </p>
-          </div>
         </Panel>
       </div>
-      <Panel className="month-summary">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">THE MONTH SO FAR</p>
-            <h2>A clearer picture, at a glance.</h2>
-          </div>
-          <span className="muted small-text">
-            {heading} · {p.timezone}
-          </span>
-        </div>
-        <div className="summary-grid">
-          <Distribution
-            title="Recorded day outcomes"
-            total={Object.keys(metrics.days).length}
-            rows={[
-              {
-                label: 'Completed normally',
-                value: metrics.outcomes.green,
-                color: 'var(--status-green)',
-              },
-              {
-                label: 'Needs a look',
-                value: metrics.outcomes.yellow,
-                color: 'var(--status-yellow)',
-              },
-              {
-                label: 'Family attention',
-                value: metrics.outcomes.red,
-                color: 'var(--status-red)',
-              },
-            ]}
-          />
-          <Distribution
-            title={`${p.medicine} reports`}
-            total={metrics.dosePeriods}
-            rows={[
-              {
-                label: 'Reported taken',
-                value: metrics.medicine.taken,
-                color: 'var(--purple-light)',
-              },
-              {
-                label: 'Reported not taken',
-                value: metrics.medicine.not_taken,
-                color: 'var(--yellow)',
-              },
-              { label: 'Unknown', value: metrics.medicine.unknown, color: 'var(--text-muted)' },
-            ]}
-          />
-        </div>
-        <p className="fine-print">
-          Coverage: {Object.keys(metrics.days).length} days with records. Missing days are not
-          missed doses. Repeat call legs count within their check-in.
-        </p>
-      </Panel>
     </>
-  );
-}
-export function Distribution({
-  title,
-  total,
-  rows,
-}: {
-  title: string;
-  total: number;
-  rows: { label: string; value: number; color: string }[];
-}) {
-  return (
-    <div className="distribution">
-      <h3>{title}</h3>
-      {total ? (
-        <>
-          <div
-            className="distribution-track"
-            role="img"
-            aria-label={rows.map((r) => `${r.label}: ${r.value} of ${total}`).join('; ')}
-          >
-            {rows
-              .filter((r) => r.value)
-              .map((r) => (
-                <span
-                  key={r.label}
-                  style={{ width: `${(r.value / total) * 100}%`, background: r.color }}
-                />
-              ))}
-          </div>
-          <table className="distribution-table">
-            <caption className="sr-only">
-              {title}, {total} records
-            </caption>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.label}>
-                  <th scope="row">
-                    <i style={{ background: r.color }} />
-                    {r.label}
-                  </th>
-                  <td>
-                    {r.value}
-                    <span> / {total}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      ) : (
-        <p className="muted">No reports in this month yet.</p>
-      )}
-    </div>
   );
 }
 export function DayView({
@@ -403,9 +296,8 @@ export function DayView({
       </Link>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">{p.preferred_name.toUpperCase()}’S CHECK-IN</p>
           <h1>{formatDate(date)}</h1>
-          <p>Every answer and call attempt, together.</p>
+          <p>{p.preferred_name} · Day record</p>
         </div>
         {aggregateDays(calls)[date] && <OutcomeBadge status={aggregateDays(calls)[date]} />}
       </div>

@@ -55,12 +55,62 @@ reported taken, yellow for reported not taken, and neutral for unknown; this
 does not certify adherence or establish health. Calendar-outcome charts use
 their outcome colors because outcome is the plotted category.
 
-Scaffold geometry uses 10px command/input radii, 18–22px card radii, fully
+Scaffold geometry uses 10px command/input radii, 14–16px card radii, fully
 rounded identity/status elements, and small chart-mark radii. Main controls
 have at least 44px touch areas. Body content is 16px; supporting metadata is
 smaller, with checked token contrast. System sans faces avoid an external font
 dependency. Motion is confined to short control transitions and respects
-reduced motion. No moving chart/number decoration is required.
+reduced motion. No moving chart/number decoration is required. The Libraries.dev
+agent avatar pauses in LISTEN/ended/idle states and moves only while an agent
+operation is pending; its own reduced-motion handling remains intact.
+
+### Product interface refinement — 3 October 2026
+
+Keep in-app copy operational: Monitoring, Alerts, Elder profile, Settings.
+The brand description, pronunciation, and tagline remain brand material; they
+do not occupy navigation, screen headings, or workspace footers. Remove
+promotional sidebars and oversized reassurance sections.
+
+First use enters a four-step configuration flow: Elder details → Call routine
+→ Contacts → Review. Save only at the final step, show validation and save
+errors, and mark setup complete only after a successful backend save. Seeded
+demo data is prefilled but never skips first-use setup. The demo completion
+marker is scoped to owner/profile and contains no names, phones, or health
+details. Existing live profiles already establish completed configuration;
+fresh live profiles still require setup. This marker grants no consent.
+Settings provides Review setup. Ordinary profile edits use compact section tabs
+and a small consent readout with expandable evidence.
+
+Alert history is a log with date/time, concern, tier, exact reported evidence,
+handled status, and explicit actions. Assessment/notification metadata expands
+in place; critical quotations remain readable without a hover. Small monitoring
+alert rows share the same semantics. The table becomes labeled rows on phones.
+
+Display concise recorded-day and dose/check-in counts. Put metric definitions
+and missing-data explanations in hover tooltips that also open on keyboard or
+touch focus. Tooltips dismiss on pointer exit, blur, or Escape; they do not
+require a click or toggle persistently on click. Keep assessment and transcript
+disclosures expandable on demand, with exact evidence always visible. Use the supplied purple/blue
+gradient image for family/elder avatar backgrounds with legible initials;
+human avatars remain distinct from the Libraries.dev Linea bot avatar.
+
+Monitoring is a dashboard of recorded information for the selected month:
+daily completed/in-progress/incomplete logical check-in bars, a recorded-day outcome ring,
+and medicine report bars. Use a single month control for these charts and the
+calendar. Show the elder's timezone on the call card. Missing days use a hollow
+marker and future dates are marked upcoming; neither implies a failed call.
+The outcome ring compares portions of recorded days, with counts and shares in
+a readable table. Medicine uses the latest report per local day, preserving
+Unknown independently of Reported not taken. Chart colors describe categories;
+they do not indicate clinical improvement or establish medical safety.
+
+Table headers use a quiet recessed surface and the same padding as their body
+columns. Align labels left and numeric counts/shares right with tabular figures.
+Use consistent row dividers and subtle hover/focus feedback. Alert log columns
+have explicit widths; quotes wrap without truncation and actions have their own
+labeled column. On phones the log becomes labeled rows and report tables stay
+compact. All pill labels use Title Case in their rendered text, including dynamic
+service states, consent, call state, counts, and setup progress.
 
 Source-level foreground/background checks pass for the declared principal
 text and badge pairs. Actual browser contrast, zoom, responsive layout,
@@ -157,8 +207,8 @@ the conventions without importing Ovanova's domain meanings.
 
 Charts should help family understand check-ins and follow-up. Define each
 metric's source, unit, denominator, reporting window, timezone, and empty or
-partial-data behavior before drawing it. These are implementation constraints;
-the exact chart inventory and layout belong to the upcoming design phase.
+partial-data behavior before drawing it. The current inventory is the monitoring
+dashboard documented above; additional candidate views still require product scope.
 
 | Candidate view | Required meaning |
 | --- | --- |

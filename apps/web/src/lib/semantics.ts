@@ -1,4 +1,34 @@
 import type { CheckIn, Outcome } from './types';
+export const titleCase = (value: string) =>
+  value.replaceAll('_', ' ').replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+
+// Count logical check-ins, never their reconnect/retry phone legs.
+export function dailyActivity(calls: CheckIn[], month: string, today: string) {
+  const [year, number] = month.split('-').map(Number);
+  const count = new Date(Date.UTC(year, number, 0)).getUTCDate();
+  const byDate = new Map<string, CheckIn[]>();
+  for (const call of calls) {
+    if (!call.local_date.startsWith(`${month}-`)) continue;
+    const records = byDate.get(call.local_date) ?? [];
+    records.push(call);
+    byDate.set(call.local_date, records);
+  }
+  return Array.from({ length: count }, (_, index) => {
+    const date = `${month}-${String(index + 1).padStart(2, '0')}`;
+    const records = byDate.get(date) ?? [];
+    const completed = records.filter((call) => call.complete).length;
+    const inProgress = records.filter((call) => !call.complete && call.state !== 'ended').length;
+    return {
+      date,
+      day: index + 1,
+      total: records.length,
+      completed,
+      inProgress,
+      incomplete: records.length - completed - inProgress,
+      upcoming: date > today,
+    };
+  });
+}
 export const outcomes = {
   green: { label: 'Completed normally', short: 'Completed', className: 'status-green' },
   yellow: { label: 'Needs a look', short: 'Attention', className: 'status-yellow' },

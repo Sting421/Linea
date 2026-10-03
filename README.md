@@ -10,8 +10,9 @@ engineering/model session.
 
 The workspace includes the family web app in `apps/web`, FastAPI policy/API
 in `services/api`, a Supabase migration in `supabase`, contracts, and checks.
-The local demo covers onboarding, monitoring summaries/charts, calendar/day
-records, alerts, and simulated family call controls. The elder uses a regular
+The local demo starts with a four-step setup/review flow, then provides monitoring
+daily activity/outcome/medicine charts, calendar/day records, an alert log, and simulated family call
+controls. Settings → Review setup can reopen configuration. The elder uses a regular
 phone. Current design is native dark, purple/yellow, with soft raised/inset
 surfaces and explicit status meanings.
 
@@ -33,6 +34,10 @@ cd services/api
 `pnpm dev` starts the family web app after the API is started separately.
 Repository: [Sting421/Linea](https://github.com/Sting421/Linea).
 Provider integration and live publishing remain follow-up work.
+
+`scaffold` contains the original runnable foundation. `ui-ux-first-pass`
+builds on it with first-use setup, interface refinements, dashboard charts,
+consistent tables/pills, and hover/focus tooltips.
 
 **Description:** Linea is a voice-first, fully automated welfare check system
 purpose-built for older adults.

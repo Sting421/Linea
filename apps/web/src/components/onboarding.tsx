@@ -1,19 +1,26 @@
 'use client';
-import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Plus, Trash2, Phone, ShieldCheck } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Check, Plus, Trash2, Pencil, ShieldCheck } from 'lucide-react';
 import type { Profile, Contact } from '@/lib/types';
 import { api } from '@/lib/api';
-import { Panel } from './ui';
+import { titleCase } from '@/lib/semantics';
+import { Avatar, MetricHelp, Panel } from './ui';
+
+const steps = ['Elder details', 'Call routine', 'Contacts', 'Review'];
 export function Onboarding({
   profile,
   onSaved,
+  mode = 'setup',
 }: {
   profile?: Profile;
-  onSaved: (p: Profile) => void;
+  onSaved: (p: Profile) => void | Promise<void>;
+  mode?: 'setup' | 'edit';
 }) {
+  const setup = mode === 'setup';
   const [step, setStep] = useState(0),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const [form, setForm] = useState({
     name: profile?.name ?? '',
     preferred_name: profile?.preferred_name ?? '',
@@ -34,7 +41,32 @@ export function Onboarding({
       contacts: f.contacts.map((c, i) => (i === index ? { ...c, [key]: value } : c)),
     }));
   }
+  function go(next: number) {
+    setError('');
+    setStep(next);
+    requestAnimationFrame(() => headingRef.current?.focus());
+  }
   async function save() {
+    const phonePattern = /^\+[1-9][0-9]{7,14}$/;
+    let invalid: { step: number; message: string } | null = null;
+    if (!form.name.trim() || !form.preferred_name.trim() || !phonePattern.test(form.phone))
+      invalid = { step: 0, message: 'Enter the elder name and a phone number with country code.' };
+    else if (!form.medicine.trim() || form.call_time < '06:00' || form.call_time >= '21:00')
+      invalid = {
+        step: 1,
+        message: 'Check the medicine and choose a call time between 06:00 and 21:00.',
+      };
+    else if (
+      form.contacts.some(
+        (c) => !c.name.trim() || !c.relationship.trim() || !phonePattern.test(c.phone),
+      )
+    )
+      invalid = { step: 2, message: 'Complete each contact name, relationship, and phone number.' };
+    if (invalid) {
+      go(invalid.step);
+      setError(invalid.message);
+      return;
+    }
     setBusy(true);
     setError('');
     try {
@@ -42,7 +74,7 @@ export function Onboarding({
         method: profile ? 'PUT' : 'POST',
         body: JSON.stringify(form),
       });
-      onSaved(p);
+      await onSaved(p);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -50,59 +82,126 @@ export function Onboarding({
     }
   }
   return (
-    <>
+    <div className={setup ? 'onboarding' : 'profile-editor'}>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">A FAMILIAR VOICE. A SIMPLE ROUTINE.</p>
-          <h1>{profile ? 'Your loved one’s profile.' : 'Let’s bring your family closer.'}</h1>
-          <p>
-            {profile
-              ? 'Keep the daily check-in and trusted contacts up to date.'
-              : 'Set up a daily phone check-in. No app needed for your loved one.'}
-          </p>
+          <h1>{setup ? 'Set up daily check-ins' : 'Elder profile'}</h1>
+          {setup && <p>Configure the profile, routine, and family contacts.</p>}
         </div>
+        {setup && <span className="badge status-neutral">Step {step + 1} Of 4</span>}
       </div>
+      {!setup && profile && (
+        <div className="profile-strip">
+          <Avatar name={profile.name} size="large" />
+          <div>
+            <h2>{profile.preferred_name}</h2>
+            <p>{profile.phone}</p>
+          </div>
+          <div className="consent-status">
+            <span>Call consent</span>
+            <strong
+              className={`badge ${profile.consent === 'granted' ? 'status-green' : profile.consent === 'declined' ? 'status-red' : 'status-neutral'}`}
+            >
+              {titleCase(profile.consent)}
+            </strong>
+          </div>
+          <MetricHelp label="Consent record">
+            <p>Consent belongs to your loved one. Setting up their profile does not grant it.</p>
+            {profile.consent_words && <p>“{profile.consent_words}”</p>}
+          </MetricHelp>
+        </div>
+      )}
       <div className="setup-layout">
-        <Panel className="setup-panel">
-          <ol className="stepper" aria-label="Setup steps">
-            {['Your loved one', 'Daily routine', 'Trusted contacts'].map((label, i) => (
-              <li key={label} className={i === step ? 'active' : i < step ? 'done' : ''}>
-                <span>{i < step ? <Check size={14} /> : i + 1}</span>
-                <strong>{label}</strong>
+        {setup ? (
+          <ol className="setup-steps" aria-label="Setup steps">
+            {steps.map((label, i) => (
+              <li
+                key={label}
+                className={i === step ? 'active' : i < step ? 'done' : ''}
+                aria-current={i === step ? 'step' : undefined}
+              >
+                <span>{i < step ? <Check size={15} /> : i + 1}</span>
+                <div>
+                  <strong>{label}</strong>
+                  <small>
+                    {
+                      [
+                        'Name and phone',
+                        'Schedule and medicine',
+                        'Who to contact',
+                        'Confirm configuration',
+                      ][i]
+                    }
+                  </small>
+                </div>
               </li>
             ))}
           </ol>
+        ) : (
+          <nav className="profile-sections" aria-label="Profile sections">
+            {steps.slice(0, 3).map((label, i) => (
+              <button
+                key={label}
+                type="button"
+                className={step === i ? 'selected' : ''}
+                aria-pressed={step === i}
+                disabled={busy}
+                onClick={() => go(i)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        )}
+        <Panel className="setup-panel">
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (step < 2) setStep(step + 1);
+              if (setup && step < 3) go(step + 1);
               else void save();
             }}
           >
+            <div className="form-section-heading">
+              <h2 ref={headingRef} tabIndex={-1}>
+                {steps[step]}
+              </h2>
+              <p>
+                {
+                  [
+                    'How Linea addresses and calls your loved one.',
+                    'Times are local to your loved one.',
+                    'Add up to three trusted people.',
+                    'Check the details before saving.',
+                  ][step]
+                }
+              </p>
+            </div>
             {step === 0 && (
               <>
-                <h2>Who are we checking in on?</h2>
-                <p className="muted">Use the name they know and feel comfortable hearing.</p>
-                <label>
-                  Full name
-                  <input
-                    required
-                    maxLength={80}
-                    value={form.name}
-                    onChange={(e) => field('name', e.target.value)}
-                    placeholder="Rosa Santos"
-                  />
-                </label>
-                <label>
-                  Preferred name and honorific
-                  <input
-                    required
-                    maxLength={80}
-                    value={form.preferred_name}
-                    onChange={(e) => field('preferred_name', e.target.value)}
-                    placeholder="Nanay Rosa"
-                  />
-                </label>
+                <div className="form-row">
+                  <label>
+                    Full name
+                    <input
+                      required
+                      maxLength={80}
+                      value={form.name}
+                      onChange={(e) => field('name', e.target.value)}
+                      placeholder="Rosa Santos"
+                      autoComplete="off"
+                    />
+                  </label>
+                  <label>
+                    Preferred name
+                    <input
+                      required
+                      maxLength={80}
+                      value={form.preferred_name}
+                      onChange={(e) => field('preferred_name', e.target.value)}
+                      placeholder="Nanay Rosa"
+                    />
+                    <small>Include their usual honorific.</small>
+                  </label>
+                </div>
                 <label>
                   Phone number
                   <input
@@ -113,7 +212,7 @@ export function Onboarding({
                     onChange={(e) => field('phone', e.target.value)}
                     placeholder="+639123456789"
                   />
-                  <small>Include the country code. The call reaches their regular phone.</small>
+                  <small>Include the country code, e.g. +63.</small>
                 </label>
                 <label>
                   Timezone
@@ -131,38 +230,43 @@ export function Onboarding({
                     ))}
                   </select>
                 </label>
+                {setup && (
+                  <div className="setup-consent-note">
+                    <ShieldCheck size={17} />
+                    <span>Consent is requested from your loved one on the first call.</span>
+                  </div>
+                )}
               </>
             )}
             {step === 1 && (
               <>
-                <h2>A routine they can count on.</h2>
-                <p className="muted">One daily call, one listed medicine, and time to talk.</p>
+                <div className="form-row">
+                  <label>
+                    Daily call time
+                    <input
+                      type="time"
+                      min="06:00"
+                      max="20:59"
+                      required
+                      value={form.call_time}
+                      onChange={(e) => field('call_time', e.target.value)}
+                    />
+                    <small>Calling hours: 06:00–21:00.</small>
+                  </label>
+                  <label>
+                    Language
+                    <input value="English" readOnly />
+                  </label>
+                </div>
                 <label>
-                  Daily call time
-                  <input
-                    type="time"
-                    min="06:00"
-                    max="20:59"
-                    required
-                    value={form.call_time}
-                    onChange={(e) => field('call_time', e.target.value)}
-                  />
-                  <small>
-                    In {form.timezone}. Automatic calls are placed between 06:00 and 21:00.
-                  </small>
-                </label>
-                <label>
-                  Listed medicine
+                  Medicine
                   <input
                     required
                     maxLength={80}
                     value={form.medicine}
                     onChange={(e) => field('medicine', e.target.value)}
                   />
-                  <small>
-                    Losartan is the demo medicine. Other medicines require human omission-policy
-                    review.
-                  </small>
+                  <small>One medicine per check-in.</small>
                 </label>
                 <label>
                   Medicine due time
@@ -172,25 +276,18 @@ export function Onboarding({
                     value={form.medicine_time}
                     onChange={(e) => field('medicine_time', e.target.value)}
                   />
-                  <small>
-                    Use their existing prescribed schedule. Linea gives no dosing instructions.
-                  </small>
+                  <small>Use the existing prescribed schedule.</small>
                 </label>
-                <div className="inset-note">
-                  <ShieldCheck size={20} />
+                <MetricHelp label="Medicine policy">
                   <p>
-                    Calls use English for this MVP. Linea asks for consent on the first call and
-                    continues only after a clear yes.
+                    Losartan is the demo medicine. Other medicines require omission-policy review.
+                    Linea gives no dosing instructions.
                   </p>
-                </div>
+                </MetricHelp>
               </>
             )}
             {step === 2 && (
               <>
-                <h2>Keep trusted people close.</h2>
-                <p className="muted">
-                  Add up to three contacts. Identify someone nearby for the emergency script.
-                </p>
                 {form.contacts.map((c, i) => (
                   <fieldset className="contact-form" key={i}>
                     <legend>Contact {i + 1}</legend>
@@ -239,6 +336,7 @@ export function Onboarding({
                           type="button"
                           className="text-button"
                           aria-label={`Remove contact ${i + 1}`}
+                          disabled={busy}
                           onClick={() =>
                             setForm((f) => ({
                               ...f,
@@ -246,7 +344,8 @@ export function Onboarding({
                             }))
                           }
                         >
-                          <Trash2 size={15} /> Remove
+                          <Trash2 size={15} />
+                          Remove
                         </button>
                       )}
                     </div>
@@ -256,6 +355,7 @@ export function Onboarding({
                   <button
                     type="button"
                     className="button secondary"
+                    disabled={busy}
                     onClick={() =>
                       setForm((f) => ({
                         ...f,
@@ -266,13 +366,112 @@ export function Onboarding({
                       }))
                     }
                   >
-                    <Plus size={16} /> Add contact
+                    <Plus size={16} />
+                    Add contact
                   </button>
                 )}
-                <p className="fine-print">
-                  Listing a contact does not send an invitation or a message. Alerts reach
-                  authorized family accounts through the web app.
-                </p>
+                <MetricHelp label="How contacts are used">
+                  <p>
+                    A nearby contact is named in an emergency response. Adding a contact does not
+                    send an invitation; alerts go to authorized family accounts.
+                  </p>
+                </MetricHelp>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                <div className="setup-review-profile">
+                  <Avatar name={form.name} size="large" />
+                  <div>
+                    <h3>{form.preferred_name}</h3>
+                    <p>{form.name}</p>
+                  </div>
+                </div>
+                <div className="review-section">
+                  <div>
+                    <h3>Elder details</h3>
+                    <button
+                      type="button"
+                      className="text-button"
+                      aria-label="Edit elder details"
+                      onClick={() => go(0)}
+                    >
+                      <Pencil size={14} />
+                      Edit
+                    </button>
+                  </div>
+                  <dl>
+                    <div>
+                      <dt>Phone</dt>
+                      <dd>{form.phone}</dd>
+                    </div>
+                    <div>
+                      <dt>Timezone</dt>
+                      <dd>{form.timezone}</dd>
+                    </div>
+                  </dl>
+                </div>
+                <div className="review-section">
+                  <div>
+                    <h3>Call routine</h3>
+                    <button
+                      type="button"
+                      className="text-button"
+                      aria-label="Edit call routine"
+                      onClick={() => go(1)}
+                    >
+                      <Pencil size={14} />
+                      Edit
+                    </button>
+                  </div>
+                  <dl>
+                    <div>
+                      <dt>Daily call</dt>
+                      <dd>{form.call_time} · English</dd>
+                    </div>
+                    <div>
+                      <dt>Medicine</dt>
+                      <dd>
+                        {form.medicine} · {form.medicine_time}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+                <div className="review-section">
+                  <div>
+                    <h3>Contacts</h3>
+                    <button
+                      type="button"
+                      className="text-button"
+                      aria-label="Edit contacts"
+                      onClick={() => go(2)}
+                    >
+                      <Pencil size={14} />
+                      Edit
+                    </button>
+                  </div>
+                  <ul>
+                    {form.contacts.map((c, i) => (
+                      <li key={i}>
+                        <span>
+                          {c.name}
+                          <small>{c.relationship}</small>
+                        </span>
+                        <span>
+                          {c.phone}
+                          {c.nearby && <small>Nearby</small>}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="setup-consent-note">
+                  <ShieldCheck size={17} />
+                  <span>Saving does not grant call consent.</span>
+                </div>
+                {profile && (
+                  <span className="badge status-neutral">Existing Call Consent Preserved</span>
+                )}
               </>
             )}
             {error && (
@@ -281,52 +480,31 @@ export function Onboarding({
               </p>
             )}
             <div className="form-actions">
-              {step > 0 && (
+              {setup && step > 0 && (
                 <button
                   type="button"
                   className="button secondary"
-                  onClick={() => setStep(step - 1)}
+                  disabled={busy}
+                  onClick={() => go(step - 1)}
                 >
-                  <ArrowLeft size={16} /> Back
+                  <ArrowLeft size={16} />
+                  Back
                 </button>
               )}
               <button className="button primary" disabled={busy}>
                 {busy
                   ? 'Saving…'
-                  : step < 2
-                    ? 'Continue'
-                    : profile
-                      ? 'Save profile'
-                      : 'Create profile'}
-                {!busy && <ArrowRight size={16} />}
+                  : setup
+                    ? step < 3
+                      ? 'Continue'
+                      : 'Finish setup'
+                    : 'Save changes'}
+                {!busy && (setup && step < 3 ? <ArrowRight size={16} /> : <Check size={16} />)}
               </button>
             </div>
           </form>
         </Panel>
-        <aside className="setup-aside">
-          <div className="empty-symbol">
-            <Phone size={30} />
-          </div>
-          <h2>
-            Care starts with
-            <br />a conversation.
-          </h2>
-          <p>
-            Linea calls at the same time each day, listens to how they feel, and keeps you informed.
-          </p>
-          <div className="inset-note">
-            <ShieldCheck size={20} />
-            <p>Consent belongs to your loved one. Setting up their profile does not grant it.</p>
-          </div>
-          {profile && (
-            <div className="consent-readout">
-              <span className="eyebrow">CALL CONSENT</span>
-              <strong>{profile.consent}</strong>
-              {profile.consent_words && <p>“{profile.consent_words}”</p>}
-            </div>
-          )}
-        </aside>
       </div>
-    </>
+    </div>
   );
 }
