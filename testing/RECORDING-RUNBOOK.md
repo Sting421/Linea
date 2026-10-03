@@ -3,10 +3,12 @@
 Prepared 4 October 2026. Rehearsals are NOT RUN. A recording is partial evidence;
 the full requirements in `README.md` and `01-test-day-checklist.md` still apply.
 
-App: https://linea.aldrinvitorillo.dev. Frontend and API source commit:
-`098e52a8a6e2ef44169f8446c200c82fbcc0c020`. Deployment/HTTP checks passed;
-actual phone/browser features and both rehearsals remain NOT RUN.
-English speech properties are staged but not tested on a phone. Agora Console
+App: https://linea.aldrinvitorillo.dev, or the local frontend at http://127.0.0.1:3000.
+Deploy the latest `keith-branch` changes using `MVP-STATUS-20261004.md`; record the
+actual frontend and API release hashes independently. The user has completed a
+two-way English phone conversation, but it skipped the medicine beat. The fix
+has passed synthetic model checks and needs a fresh deployed phone test. Family
+audio and the complete recording rehearsals remain unverified. Agora Console
 notification configuration/signing Secret still needs verification. Manual
 Call now requests are allowed at any hour after deploying the manual-hours
 update and its database migration. Automatic calls/retries/reconnections retain
@@ -14,6 +16,8 @@ update and its database migration. Automatic calls/retries/reconnections retain
 
 ## Prerequisites
 
+- Use one family account for this MVP. Browser push is deferred and is not a
+  prerequisite for recording the calling flow; verify the in-app alert instead.
 - Use the actual frontend URL, normal email/password signup, and the profile
   saved through the four-step app setup. Do not create admin/demo accounts, seed
   records, reset consent, or assign account/profile IDs in source code.

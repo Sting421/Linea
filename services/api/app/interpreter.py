@@ -83,6 +83,12 @@ negation, actual/hypothetical/remote timing, and correction evidence. Missing or
 unmentioned findings stay null; 'fine' does not prove no injury or no red flags.
 Quotes must be exact substrings of the latest utterance. Reuse an existing incident
 id when clarifying/correcting that incident; use a new id for a distinct event.
+One episode has one fact object per concern and subject. Associated features
+belong in that object's fields/red_flags; they are not separate incidents.
+For example, dizziness with a speech change during the same episode is one
+DIZZINESS object with the speech-change red flag, not two dizziness objects.
+Quote the relevant episode including its important associated features together
+when they occur in one contiguous passage. Preserve separate actual episodes.
 Medicine concerns concern today's prescribed dose. Do not treat examples or family
 presence as facts heard from the elder. Answers contain only explicitly supplied
 routine answers. For each routine answer or medicine_result, supply evidence with

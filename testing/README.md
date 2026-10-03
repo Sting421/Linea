@@ -11,17 +11,19 @@ that phone calls, semantic interpretation, account isolation, or push work.
 
 ## Start a test run
 
-1. Pull `pre-deployment` and record the exact commit being deployed. If the server
+1. Pull `keith-branch` and record the exact commit being deployed. If the server
    and web app use different commits, record both.
 2. Use normal email/password signup and profile creation through the app, with
    a consenting teammate's phone as the elder and the signed-in profile owner
    as family. Do not seed profiles, reset consent/history, or fabricate results.
    Roleplay the symptom scripts; do not place a real emergency-service call
    during a test. Obtain explicit recipient/session authorization before calling.
-3. Prepare one phone for the elder, two browser sessions for authorized family
-   members, and an unrelated account B. Do not confuse a saved telephone contact
-   with an authorized signed-in family member; the engineer must establish
-   actual account membership. Use a second browser/device for account B.
+3. Current MVP scope is one family account: prepare one phone for the elder and
+   one browser session for the signed-in profile owner. Use an unrelated account B
+   separately for isolation checks. Contacts are not invited app users. Multiple
+   simultaneous family accounts and notification delivery are deferred by the user;
+   mark those subchecks deferred, not passed. See `MVP-STATUS-20261004.md` for the
+   latest observed evidence and remaining device checks.
 4. Install the pinned Python requirements in the local virtual environment.
    From the repository root, create a results file:
 

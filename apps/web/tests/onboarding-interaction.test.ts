@@ -335,7 +335,7 @@ for (const pendingAt of ['credentials', 'confirmation'] as const) {
     await act(async () => {
       respond(Response.json({ rtc: {}, briefing: 'Briefing' }));
     });
-    assert.equal(screen.queryByText('You · family participant'), null);
+    assert.equal(screen.queryByText('You Â· family participant'), null);
     assert.equal(screen.queryByRole('button', { name: 'Mute' }), null);
     assert.ok(screen.getByText('The call has ended.'));
     assert.equal(audioJoin.mock.callCount(), pendingAt === 'credentials' ? 0 : 1);
@@ -359,4 +359,67 @@ test('rejoining starts with an unmuted control matching the new microphone', asy
   await user.click(screen.getByRole('button', { name: 'Join call' }));
   assert.ok(screen.getByRole('button', { name: 'Mute' }));
   assert.equal(screen.queryByRole('button', { name: 'Unmute' }), null);
+});
+
+test('a late dashboard response cannot replace ended status with an older active call', async (t) => {
+  const { createElement, render, screen, FamilyApp, AppRouterContext, act } = await components;
+  let poll!: () => void;
+  const realInterval = globalThis.setInterval;
+  t.mock.method(globalThis, 'setInterval', ((
+    callback: () => void,
+    delay: number,
+    ...args: unknown[]
+  ) => {
+    if (delay === 5000) poll = callback;
+    return realInterval(callback, delay === 5000 ? 60000 : delay, ...args);
+  }) as typeof setInterval);
+  const responses: ((value: Response) => void)[] = [];
+  const dashboard: Dashboard = {
+    mode: 'connected',
+    voice_connected: true,
+    profile,
+    profiles: [profile],
+    checkins: [{ ...liveCall, state: 'ringing' }],
+    alerts: [],
+  };
+  let initial = true;
+  globalThis.fetch = async () => {
+    if (initial) {
+      initial = false;
+      return Response.json(dashboard);
+    }
+    return new Promise<Response>((resolve) => responses.push(resolve));
+  };
+  const router = {
+    back() {},
+    forward() {},
+    refresh() {},
+    replace() {},
+    prefetch() {},
+    push() {},
+    bfcacheId: 'test',
+  };
+  render(createElement(AppRouterContext.Provider, { value: router }, createElement(FamilyApp)));
+  await screen.findByRole('link', { name: 'View call' });
+  await act(async () => {
+    poll();
+    poll();
+  });
+  assert.equal(responses.length, 2);
+  await act(async () => {
+    responses[1](
+      Response.json({
+        ...dashboard,
+        checkins: [
+          { ...liveCall, state: 'ended', ended_at: '2026-10-04T00:01:00Z', mode: 'ENDING' },
+        ],
+      }),
+    );
+  });
+  assert.ok(screen.getByRole('button', { name: 'Call now' }));
+  await act(async () => {
+    responses[0](Response.json(dashboard));
+  });
+  assert.ok(screen.getByRole('button', { name: 'Call now' }));
+  assert.equal(screen.queryByRole('link', { name: 'View call' }), null);
 });

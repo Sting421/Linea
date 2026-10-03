@@ -57,6 +57,9 @@ The original historical record is preserved, not rewritten to manufacture a pass
   cannot restore joined controls after hangup. Old SDK callbacks cannot expire
   or disconnect a newer session. A newly joined microphone resets the mute UI;
   failed network teardown still closes the local microphone and clears presence.
+- Dashboard refreshes discard responses older than the latest applied result.
+  Overlapping polls cannot restore an old active-call button after a newer ended
+  state. Slow requests can still update the page while later polls are pending.
 
 ## Verification and limits
 
@@ -66,9 +69,10 @@ Those tests applied all migrations and verified lease serialization, atomic
 writes, manual versus automatic calling hours, cross-account row-level security,
 notification leases, unenrollment, immutable expiry anchors, and access/cleanup
 across detailed-text and structured-history expiry. No production data was used.
-No SQL migrations changed in this patch. The web suite passed 39 cases, including
+No SQL migrations changed in this patch. The web suite passed 40 cases, including
 SDK cancellation and synthetic DOM tests for late join responses after call end
-and mute state after rejoining. Type checking and the production web build passed.
+mute state after rejoining, and out-of-order dashboard refreshes. Type checking
+and the production web build passed.
 These tests do not establish actual browser microphone permissions or phone audio.
 
 An actual API-backed, in-memory synthetic conversation exercised consent, sleep,
@@ -77,6 +81,17 @@ only after an explicit dose answer. Separate chest-pain, negation, and fall case
 produced the expected deterministic outcomes. No test accounts, calls or medical
 records were inserted. Measured backend turns took about 1.4–3.4 seconds; this
 does not establish the two-second audible emergency target or broad model accuracy.
+
+Ten additional held-out synthetic utterances were run through the real model and
+retriever in memory. Observed severity, subject, medicine results, and scripted
+responses matched the intended outcomes, but one dizziness episode initially
+produced two alerts. The extraction instructions now keep associated red flags
+inside their episode; the original utterance and two further phrasings subsequently
+produced one emergency alert each. This is sample evidence, not proof of universal
+deduplication or a pass for all 41 multi-turn fixtures. These runs created no real
+accounts, calls, or Supabase records. Several emergency backend turns exceeded two
+seconds (about 2.2–2.9 seconds); the two-second audible target is not achieved by
+this evidence and still needs performance work and deployed measurement.
 
 Still requiring deployed/device evidence: the corrected complete four-beat call;
 family browser microphone/playback and briefing/LISTEN; provider callback delivery;

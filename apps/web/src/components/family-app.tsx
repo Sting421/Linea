@@ -23,6 +23,8 @@ export function FamilyApp({
 }) {
   const router = useRouter();
   const placementKey = useRef<string | null>(null);
+  const refreshSequence = useRef(0);
+  const appliedRefresh = useRef(0);
   const [data, setData] = useState<Dashboard | null>(null),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
@@ -31,8 +33,11 @@ export function FamilyApp({
     [filter, setFilter] = useState('open');
   const [setupNeeded, setSetupNeeded] = useState<boolean | null>(null);
   const refresh = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
     try {
       const d = await api<Dashboard>('dashboard');
+      if (sequence < appliedRefresh.current) return;
+      appliedRefresh.current = sequence;
       setData(d);
       setSetupNeeded((current) => {
         if (current !== null) return current;
@@ -47,13 +52,18 @@ export function FamilyApp({
       setMonth((m) => m || localDate(d.profile?.timezone ?? 'Asia/Manila').slice(0, 7));
       setError('');
     } catch (e) {
+      if (sequence < appliedRefresh.current) return;
+      appliedRefresh.current = sequence;
       setError((e as Error).message);
     }
   }, []);
   useEffect(() => {
     void refresh();
     const id = setInterval(() => void refresh(), 5000);
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+      appliedRefresh.current = ++refreshSequence.current;
+    };
   }, [refresh]);
   async function handle(a: Alert) {
     setBusy(true);
