@@ -645,3 +645,65 @@ def test_agora_request_tokens_scope_full_config_and_teardown(monkeypatch, runtim
     voice.end_everyone(call)
     assert requests[-2].url.path.endswith("/calls/provider-agent/hangup")
     assert requests[-1].url.path.endswith("/agents/provider-agent/leave")
+
+
+@pytest.mark.parametrize("failure", ["status", "timeout"])
+def test_teardown_still_leaves_agent_when_phone_hangup_fails(runtime, failure):
+    requests = []
+
+    def dispatch(request):
+        requests.append(request.url.path)
+        if request.url.path.endswith("/hangup"):
+            if failure == "timeout":
+                raise httpx.ReadTimeout("timeout", request=request)
+            return httpx.Response(503)
+        return httpx.Response(200)
+
+    voice = AgoraRuntime.__new__(AgoraRuntime)
+    voice.base = "/provider"
+    voice.client = httpx.Client(
+        base_url="https://api.test", transport=httpx.MockTransport(dispatch)
+    )
+    with pytest.raises(httpx.HTTPError):
+        voice.end_everyone(connected_call(runtime))
+    assert requests == ["/provider/calls/agent/hangup", "/provider/agents/agent/leave"]
+
+
+def test_speech_chunks_unbroken_multibyte_text_without_losing_characters(runtime):
+    requests = []
+
+    def dispatch(request):
+        requests.append(json.loads(request.content))
+        return httpx.Response(200)
+
+    voice = AgoraRuntime.__new__(AgoraRuntime)
+    voice.base = "/provider"
+    voice.client = httpx.Client(
+        base_url="https://api.test", transport=httpx.MockTransport(dispatch)
+    )
+    speech = "Briefing " + "\U0001f642" * 400 + " done"
+    voice.speak(connected_call(runtime), speech)
+    assert all(0 < len(r["text"].encode()) <= 512 for r in requests)
+    assert "".join(r["text"].replace(" ", "") for r in requests) == speech.replace(" ", "")
+    assert [r["priority"] for r in requests] == ["INTERRUPT"] + ["APPEND"] * (len(requests) - 1)
+
+
+@pytest.mark.parametrize("kind", ["place", "speak"])
+def test_cancelled_pending_command_has_no_uncertain_provider_work(runtime, kind):
+    from app.runtime_service import command
+
+    call = connected_call(runtime)
+    call.state = "ended"
+    call.intentional_end = True
+    call.ended_at = at()
+    runtime.repo.saved[call.id] = call
+    job = {**command(call, kind), "checkin_id": call.id, "state": "pending"}
+    runtime.repo.jobs[job["id"]] = job.copy()
+    runtime.repo.request = lambda *args, **kwargs: [runtime.repo.jobs[job["id"]].copy()]
+
+    def unexpected(*args):
+        pytest.fail("Cancelled work must never reach the provider")
+
+    runtime.voice.place = runtime.voice.speak = unexpected
+    runtime.process_command(job)
+    assert runtime.repo.jobs[job["id"]]["state"] == "failed"

@@ -184,10 +184,20 @@ class AgoraRuntime:
         # Respect the documented 512-byte limit without splitting UTF-8 codepoints.
         pieces, current = [], ""
         for word in text.split():
+            # Unbroken quoted text can also exceed the limit. Split it only at
+            # Unicode character boundaries so it cannot block an entire briefing.
+            if len(word.encode()) > 512:
+                if current:
+                    pieces.append(current)
+                    current = ""
+                for char in word:
+                    if len((current + char).encode()) > 512:
+                        pieces.append(current)
+                        current = ""
+                    current += char
+                continue
             candidate = f"{current} {word}".strip()
             if len(candidate.encode()) > 512:
-                if not current:
-                    raise ValueError("A speech word exceeds the provider limit")
                 pieces.append(current)
                 current = word
             else:
@@ -206,10 +216,17 @@ class AgoraRuntime:
 
     def end_everyone(self, call):
         agent = quote(call.legs[-1].provider_agent_id, safe="")
+        failures = []
         for path in (f"calls/{agent}/hangup", f"agents/{agent}/leave"):
-            response = self.client.post(f"{self.base}/{path}")
-            if response.status_code != 404:
-                response.raise_for_status()
+            try:
+                response = self.client.post(f"{self.base}/{path}")
+                if response.status_code != 404:
+                    response.raise_for_status()
+            except httpx.HTTPError as exc:
+                failures.append(exc)
+        if failures:
+            # Both resources need cleanup; preserve uncertainty so the worker retries.
+            raise failures[0]
 
     def call_status(self, call):
         agent = quote(call.legs[-1].provider_agent_id, safe="")

@@ -151,7 +151,7 @@ class OpenAIClassifier:
             raise ValueError("Interpretation was not completed")
         data = Interpretation.model_validate_json(choice["message"]["content"])
         for fact in data.concerns:
-            if fact.quote not in text:
+            if not fact.quote.strip() or fact.quote not in text:
                 raise ValueError("Interpretation quotation is not elder evidence")
         answers = {}
         for key in ("sleep", "medicine", "feeling", "anything"):

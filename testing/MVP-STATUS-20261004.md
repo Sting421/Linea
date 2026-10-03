@@ -5,6 +5,9 @@ shared-account provisioning, and independent family identities are excluded from
 this pass. Browser family audio is implemented for the signed-in profile owner;
 simultaneous sessions under the same account share a UID and are not supported.
 Do not mark the older multi-member acceptance scenarios as passed.
+The user subsequently deprioritized notifications. Existing push infrastructure
+is retained, but further notification work and device-delivery acceptance are
+deferred and do not block the next calling test.
 
 ## Observed phone result
 
@@ -44,13 +47,22 @@ The original historical record is preserved, not rewritten to manufacture a pass
   validation, and rollback. It preserves voice startup state, private configuration,
   and the separately configured speech file. It does not apply migrations or
   directly place calls. A running voice worker still performs normal scheduling.
+- Teardown now attempts both phone hangup and agent leave even when the first
+  provider request fails; unresolved cleanup remains retryable. Cancelled commands
+  that never reached the provider become failed rather than indefinitely uncertain.
+- Speech chunks also handle unbroken multibyte text without exceeding the provider
+  byte limit. Whitespace-only concern quotations cannot supply model evidence.
 
 ## Verification and limits
 
-The backend regression suite passed (145 cases), and
-the web suite passed 33 cases. Type checking and the production web build passed.
-The PostgreSQL integration suite requires `psycopg` and a disposable database and
-was not run in this environment. No SQL migrations changed in this patch.
+The retained backend suite passed (165 cases, none skipped), including 13 real
+PostgreSQL integration cases against an isolated local PostgreSQL 17 cluster.
+Those tests applied all migrations and verified lease serialization, atomic
+writes, manual versus automatic calling hours, cross-account row-level security,
+notification leases, unenrollment, immutable expiry anchors, and access/cleanup
+across detailed-text and structured-history expiry. No production data was used.
+No SQL migrations changed in this patch. The web suite previously passed 33 cases;
+type checking and the production web build passed, with no subsequent web edits.
 
 An actual API-backed, in-memory synthetic conversation exercised consent, sleep,
 medicine, feeling, and closing. It asked the missing medicine beat and completed
@@ -73,7 +85,7 @@ Run from the server's existing Git checkout after ending test calls:
 ```bash
 git fetch origin keith-branch
 git show origin/keith-branch:deploy/update-backend.sh > /tmp/linea-update-backend.sh
-sudo bash /tmp/linea-update-backend.sh origin/keith-branch --enable-push
+sudo bash /tmp/linea-update-backend.sh origin/keith-branch
 ```
 
 The optional `--enable-push` validates the installed public/private key pair and

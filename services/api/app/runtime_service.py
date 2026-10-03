@@ -401,16 +401,19 @@ class RuntimeService:
             if call.legs[-1].id != job["leg_id"] and job["kind"] != "end":
                 self.repo.update_job("linea_commands", job["id"], state="failed")
                 return
+            if (
+                job["kind"] == "place"
+                and (call.intentional_end or call.ended_at or profile.consent == "declined")
+            ) or (job["kind"] == "speak" and call.state != "connected"):
+                # No provider request was made, so there is nothing to reconcile.
+                self.repo.update_job("linea_commands", job["id"], state="failed")
+                return
             self.repo.update_job("linea_commands", job["id"], state="inflight")
             try:
                 if job["kind"] == "place":
-                    if call.intentional_end or call.ended_at or profile.consent == "declined":
-                        raise ValueError("Placement cancelled")
                     call.legs[-1].provider_agent_id = self.voice.place(call, profile)
                     self.persist(call, profile, lease)
                 elif job["kind"] == "speak":
-                    if call.state != "connected":
-                        raise ValueError("Speech cancelled for disconnected call")
                     self.voice.speak(call, job["text"])
                 elif job["kind"] == "end":
                     target = call.model_copy(deep=True)

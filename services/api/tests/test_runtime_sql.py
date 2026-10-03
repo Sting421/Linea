@@ -251,3 +251,97 @@ def test_retention_removes_private_runtime_and_text_but_keeps_structured_history
         )
     assert conn.execute("select count(*) from public.checkins").fetchone()[0] == 1
     assert conn.execute("select count(*) from public.alerts").fetchone()[0] == 1
+
+
+@pytest.mark.parametrize("kind", ["manual", "initial", "retry", "reconnect"])
+def test_database_allows_only_manual_placement_outside_calling_hours(database, kind):
+    conn = database
+    profile, call, lease = setup(conn)
+    # Move the elder's actual local clock to 03:xx without changing server time.
+    offset = (3 - now().hour + 12) % 24 - 12
+    timezone = f"Etc/GMT{'-' if offset >= 0 else '+'}{abs(offset)}" if offset else "Etc/GMT"
+    conn.execute("update public.elders set timezone=%s where id=%s", (timezone, profile.id))
+    call.legs[-1].kind = kind
+    if kind == "manual":
+        commit(conn, profile, call, lease, [command(call, "place")])
+        assert conn.execute("select count(*) from public.linea_commands").fetchone()[0] == 1
+    else:
+        with pytest.raises(Exception, match="Placement unavailable"), conn.transaction():
+            commit(conn, profile, call, lease, [command(call, "place")])
+        assert conn.execute("select count(*) from public.checkins").fetchone()[0] == 0
+
+
+@pytest.mark.parametrize("age,visible_history,visible_text", [(89, 1, 1), (91, 1, 0), (366, 0, 0)])
+def test_owner_rls_enforces_text_and_history_expiry_before_cleanup(
+    database, age, visible_history, visible_text
+):
+    from app.lifecycle import finalize
+    from app.models import Alert
+
+    conn = database
+    profile, call, lease = setup(conn)
+    call.alerts.append(
+        Alert(
+            incident_id="fall", concern="FALL", tier="routine", reason="Recovered", quote="I fell."
+        )
+    )
+    call.created_at = now() - timedelta(days=age + 1)
+    call.legs[-1].started_at = call.created_at
+    finalize(call, now() - timedelta(days=age))
+    commit(conn, profile, call, lease)
+    anchored = conn.execute("select ended_at,structured_expires_at from public.checkins").fetchone()
+    commit(conn, profile, call, lease)
+    assert (
+        conn.execute("select ended_at,structured_expires_at from public.checkins").fetchone()
+        == anchored
+    )
+    with pytest.raises(Exception, match="Original logical check-in end"), conn.transaction():
+        conn.execute("update public.checkins set ended_at=now()")
+    conn.execute("select set_config('request.jwt.claim.sub',%s,true)", (profile.owner_id,))
+    conn.execute("set local role authenticated")
+    for table, expected in (
+        ("checkins", visible_history),
+        ("alerts", visible_history),
+        ("checkin_details", visible_text),
+        ("alert_details", visible_text),
+    ):
+        from psycopg import sql
+
+        assert (
+            conn.execute(
+                sql.SQL("select count(*) from public.{}").format(sql.Identifier(table))
+            ).fetchone()[0]
+            == expected
+        )
+    conn.execute("reset role")
+    conn.execute("select public.expire_linea_history()")
+    assert conn.execute("select count(*) from public.checkins").fetchone()[0] == visible_history
+    assert conn.execute("select count(*) from public.checkin_details").fetchone()[0] == visible_text
+
+
+def test_unrelated_account_cannot_read_or_modify_owner_records(database):
+    conn = database
+    profile, call, lease = setup(conn)
+    commit(conn, profile, call, lease)
+    stranger = uuid4()
+    conn.execute("insert into auth.users values(%s)", (stranger,))
+    conn.execute("select set_config('request.jwt.claim.sub',%s,true)", (str(stranger),))
+    conn.execute("set local role authenticated")
+    from psycopg import sql
+
+    for table in ("elders", "checkins", "phone_legs", "checkin_details", "consents"):
+        assert (
+            conn.execute(
+                sql.SQL("select count(*) from public.{}").format(sql.Identifier(table))
+            ).fetchone()[0]
+            == 0
+        )
+    assert (
+        conn.execute("update public.elders set name='Other' where id=%s", (profile.id,)).rowcount
+        == 0
+    )
+    with pytest.raises(Exception, match="row-level security"), conn.transaction():
+        conn.execute(
+            "insert into public.push_subscriptions(user_id,endpoint,p256dh,auth) values(%s,'https://push.test','key','auth')",
+            (profile.owner_id,),
+        )

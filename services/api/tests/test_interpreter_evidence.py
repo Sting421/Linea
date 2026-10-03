@@ -110,3 +110,17 @@ def test_retrieval_outage_does_not_skip_safety_interpretation(caplog):
     result = model.classify("My chest hurts", c, p)
     assert result.concerns[0].current is True
     assert "private-utterance" not in caplog.text
+
+
+@pytest.mark.parametrize("quote", ["", " "])
+def test_empty_concern_evidence_is_rejected(quote):
+    p, c = setup()
+    model = classifier(
+        {
+            "concerns": [
+                {"incident_id": "new", "concern": "CHEST_PAIN", "current": True, "quote": quote}
+            ]
+        }
+    )
+    with pytest.raises(ValueError):
+        model.classify("I am fine", c, p)
