@@ -181,6 +181,16 @@ def test_subscription_saved_under_verified_identity(connected):
     assert json.loads(requests[-1].content)["user_id"] == USER
 
 
+def test_configuration_returns_only_public_push_key(connected, monkeypatch):
+    client, _, _, _ = connected
+    monkeypatch.setenv("WEB_PUSH_PUBLIC_KEY", "public-key")
+    monkeypatch.setenv("WEB_PUSH_PRIVATE_KEY", "private-key-never-expose")
+    response = client.get("/configuration", headers=AUTH)
+    assert response.status_code == 200
+    assert response.json()["web_push_public_key"] == "public-key"
+    assert "private-key-never-expose" not in response.text
+
+
 def test_relational_checkins_map_to_ui_and_expired_text_is_suppressed(connected):
     client, _, rows, _ = connected
     ended = now() - timedelta(days=91)

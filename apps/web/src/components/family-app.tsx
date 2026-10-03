@@ -245,6 +245,7 @@ function SettingsView({
 }) {
   const [config, setConfig] = useState<{
       mode: string;
+      web_push_public_key?: string;
       checks: { name: string; state: string }[];
     } | null>(null),
     [configError, setConfigError] = useState(''),
@@ -254,7 +255,11 @@ function SettingsView({
     setConfigError('');
     try {
       setConfig(
-        await api<{ mode: string; checks: { name: string; state: string }[] }>('configuration'),
+        await api<{
+          mode: string;
+          web_push_public_key?: string;
+          checks: { name: string; state: string }[];
+        }>('configuration'),
       );
     } catch (e) {
       setConfigError((e as Error).message);
@@ -267,7 +272,8 @@ function SettingsView({
     setBusy(true);
     setError('');
     try {
-      const key = process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY;
+      const currentConfig = await api<{ web_push_public_key?: string }>('configuration');
+      const key = currentConfig.web_push_public_key || process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY;
       if (!key) throw new Error('Web push is not connected yet. Use the in-app alert list.');
       if (!('serviceWorker' in navigator) || !('PushManager' in window))
         throw new Error('This browser does not support web push. Use the in-app alert list.');
@@ -281,7 +287,18 @@ function SettingsView({
         .replaceAll('-', '+')
         .replaceAll('_', '/');
       const bytes = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
-      const subscription = await reg.pushManager.subscribe({
+      let subscription = await reg.pushManager.getSubscription();
+      const installedKey = subscription?.options.applicationServerKey;
+      if (
+        subscription &&
+        (!installedKey ||
+          new Uint8Array(installedKey).length !== bytes.length ||
+          new Uint8Array(installedKey).some((value, i) => value !== bytes[i]))
+      ) {
+        await subscription.unsubscribe();
+        subscription = null;
+      }
+      subscription ??= await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: bytes,
       });

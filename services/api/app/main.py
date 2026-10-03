@@ -424,6 +424,7 @@ def create_app(path=None, clock=None, runtime=None):
             repo.profiles()  # Readiness must include an authenticated database read.
         return {
             "mode": mode,
+            "web_push_public_key": os.getenv("WEB_PUSH_PUBLIC_KEY", ""),
             "checks": [
                 {"name": "Family web app", "state": "ready"},
                 {"name": "Profile and contact storage", "state": "ready"},
@@ -433,11 +434,17 @@ def create_app(path=None, clock=None, runtime=None):
                 },
                 {
                     "name": "Semantic fact extraction",
-                    "state": "ready" if voice_ready else "not_connected",
+                    "state": "ready" if runtime else "not_connected",
+                },
+                {
+                    "name": "Curated example retrieval",
+                    "state": "ready"
+                    if runtime and getattr(runtime.bridge.classifier, "retriever", None)
+                    else "not_connected",
                 },
                 {
                     "name": "Agora voice / Twilio SIP",
-                    "state": "ready" if voice_ready else "not_connected",
+                    "state": "ready" if can_call(user) else "not_connected",
                 },
                 {
                     "name": "Web push delivery",

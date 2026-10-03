@@ -1,0 +1,18 @@
+[Unit]
+Description=Linea expired history cleanup
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=linea
+Group=linea
+WorkingDirectory=/opt/linea/current/services/api
+EnvironmentFile=/etc/linea/backend.env
+ExecStart=/opt/linea/venv/bin/python -m app.worker --execute --role retention --once
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/linea

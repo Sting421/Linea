@@ -8,6 +8,7 @@ from uuid import UUID
 from .agora_runtime import AgoraRuntime
 from .interpreter import OpenAIClassifier
 from .ports import SemanticHTTPClassifier
+from .retrieval import CuratedRetriever
 from .runtime_repository import RuntimeRepository, service_client
 from .runtime_service import EmergencyJournal, RuntimeService
 
@@ -50,6 +51,7 @@ def build_runtime(clock):
         classifier = OpenAIClassifier(
             os.environ["OPENAI_API_KEY"],
             os.getenv("LINEA_SEMANTIC_MODEL", "gpt-4.1-mini-2025-04-14"),
+            retriever=CuratedRetriever(os.environ["OPENAI_API_KEY"]),
         )
     if not os.getenv("LINEA_PROVIDER_WEBHOOK_SECRET"):
         raise RuntimeError("Install Agora's actual project notification secret")

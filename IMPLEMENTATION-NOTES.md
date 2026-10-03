@@ -1,5 +1,15 @@
 # Implementation Notes
 
+## Remaining MVP integration work — 4 October 2026
+
+The user confirmed a real two-way phone conversation. Record inspection exposed
+a skipped medicine beat despite a completed flag. This patch connects curated
+semantic retrieval, requires exact latest-utterance evidence for routine answers,
+and adds push/retention service deployment. One family account remains the agreed
+MVP scope. See [the current status and deployment instructions](testing/MVP-STATUS-20261004.md)
+for evidence, limits, and the release updater. Real phone/browser/push acceptance
+is still partial; historical deployment notes below describe earlier releases.
+
 ## API and scoped worker deployment — 4 October 2026
 
 At 05:36 Asia/Singapore, API/worker commit

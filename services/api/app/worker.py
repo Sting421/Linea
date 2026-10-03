@@ -144,14 +144,22 @@ def main():
                 )
             )
         return
-    if args.role == "retention":
+    if args.role in ("retention", "notifications"):
+        if args.role == "notifications" and (
+            os.getenv("LINEA_PUSH_ENABLED") != "1"
+            or any(
+                not os.getenv(key)
+                for key in ("WEB_PUSH_PUBLIC_KEY", "WEB_PUSH_PRIVATE_KEY", "WEB_PUSH_SUBJECT")
+            )
+        ):
+            parser.error("Push worker requires enabled push and all three WEB_PUSH settings")
         bearer = os.getenv("LINEA_CUSTOM_LLM_BEARER")
         runtime = SimpleNamespace(
             repo=RuntimeRepository(service_client()),
             journal=EmergencyJournal(
                 os.getenv("LINEA_RUNTIME_JOURNAL_PATH", ".local/runtime-journal"), bearer
             )
-            if bearer
+            if bearer and args.role == "retention"
             else None,
         )
     else:

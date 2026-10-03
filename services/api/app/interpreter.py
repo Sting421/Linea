@@ -1,6 +1,7 @@
 """One bounded model request per elder turn. Output is facts, never speech or tiers."""
 
 import json
+import logging
 
 import httpx
 from pydantic import Field
@@ -12,6 +13,13 @@ class ExtractedFacts(Facts):
     """Server-owned schedule and clarification fields are absent from the wire schema."""
 
 
+class AnswerEvidence(StrictModel):
+    sleep: str | None = None
+    medicine: str | None = None
+    feeling: str | None = None
+    anything: str | None = None
+
+
 class Interpretation(StrictModel):
     consent: str | None = None
     stop: bool = False
@@ -21,6 +29,7 @@ class Interpretation(StrictModel):
     feeling: str | None = None
     anything: str | None = None
     medicine_result: str | None = None
+    evidence: AnswerEvidence = Field(default_factory=AnswerEvidence)
     concerns: list[ExtractedFacts] = Field(default_factory=list, max_length=5)
 
 
@@ -76,13 +85,21 @@ Quotes must be exact substrings of the latest utterance. Reuse an existing incid
 id when clarifying/correcting that incident; use a new id for a distinct event.
 Medicine concerns concern today's prescribed dose. Do not treat examples or family
 presence as facts heard from the elder. Answers contain only explicitly supplied
-routine answers. No invented symptoms, negatives, names, or recovery."""
+routine answers. For each routine answer or medicine_result, supply evidence with
+an exact, nonempty quote from the LATEST utterance; otherwise return null for both.
+Profile medicine is the drug to ASK about, never evidence it was taken or an answer.
+A medicine name alone does not answer whether today's dose was taken. Set medicine
+and medicine_result only when the elder reports taken, not_taken, or uncertainty
+about today's dose. Consent yes/no is not a medicine answer. Prior dialogue and
+retrieved synthetic examples are context, not new answers. Never copy their facts.
+No invented symptoms, negatives, names, or recovery."""
 
 
 class OpenAIClassifier:
-    def __init__(self, key: str, model: str, client=None):
+    def __init__(self, key: str, model: str, client=None, retriever=None):
         self.key, self.model = key, model
         self.client = client or httpx.Client(base_url="https://api.openai.com", timeout=8)
+        self.retriever = retriever
 
     def classify(self, text, call, profile):
         context = {
@@ -95,6 +112,17 @@ class OpenAIClassifier:
             "known_facts": {k: v.model_dump(exclude=SERVER_FACTS) for k, v in call.facts.items()},
             "recent_dialogue": call.transcript[-8:],
         }
+        if self.retriever is not None:
+            # Retrieval assists interpretation; an outage must not suppress safety
+            # assessment. Do not log the utterance or provider exception contents.
+            try:
+                query = f"Question: {call.active_prompt or ''}\nElder: {text}"
+                context["synthetic_examples"] = self.retriever.retrieve(query, 5)
+            except (httpx.HTTPError, ValueError, KeyError, TypeError):
+                logging.getLogger("uvicorn.error").warning(
+                    "Curated retrieval unavailable; using structured interpretation without examples"
+                )
+                context["synthetic_examples"] = []
         response = self.client.post(
             "/v1/chat/completions",
             headers={"Authorization": f"Bearer {self.key}"},
@@ -125,17 +153,26 @@ class OpenAIClassifier:
         for fact in data.concerns:
             if fact.quote not in text:
                 raise ValueError("Interpretation quotation is not elder evidence")
+        answers = {}
+        for key in ("sleep", "medicine", "feeling", "anything"):
+            value, quote = getattr(data, key), getattr(data.evidence, key)
+            if value is not None and quote and quote.strip() and quote in text:
+                answers[key] = value
+        medicine_quote = data.evidence.medicine
+        medicine_result = (
+            data.medicine_result
+            if medicine_quote and medicine_quote.strip() and medicine_quote in text
+            else None
+        )
+        if medicine_result is None:
+            answers.pop("medicine", None)
         return Turn(
             turn_id="interpreted",
             text=text,
             consent=data.consent,
             stop=data.stop,
             advice=data.advice,
-            medicine_result=data.medicine_result,
-            answers={
-                key: getattr(data, key)
-                for key in ("sleep", "medicine", "feeling", "anything")
-                if getattr(data, key) is not None
-            },
+            medicine_result=medicine_result,
+            answers=answers,
             concerns=[Facts.model_validate(f.model_dump()) for f in data.concerns],
         )

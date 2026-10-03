@@ -22,6 +22,10 @@ Supabase workspace. Agora voice, semantic interpretation, workers, and browser
 audio are implemented; provider setup and real phone/push acceptance remain.
 Live mode requires acceptance evidence for the deployed build.
 
+Latest implementation and observed phone results are in
+[the MVP status record](testing/MVP-STATUS-20261004.md). It distinguishes working
+phone evidence, corrected defects, and remaining device/deployment checks.
+
 When integrations are ready, follow [the MVP verification guide](testing/README.md).
 It includes ordered test steps, observable pass conditions, all 41 conversation
 fixtures plus 10 held-out phrases, and a results template. Create a private run
