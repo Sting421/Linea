@@ -457,6 +457,24 @@ def test_signed_callbacks_authenticate_raw_body_expiry_and_ignore_agent_join(run
         assert post(client, body).status_code == 200 and len(received) == 1
 
 
+def test_provider_request_logs_status_without_private_content(runtime, monkeypatch, caplog):
+    monkeypatch.setenv("LINEA_CUSTOM_LLM_BEARER", "private-secret")
+    app = FastAPI()
+    install_provider_routes(app, runtime)
+    cid, lid = str(uuid4()), str(uuid4())
+    path = f"/provider/checkins/{cid}/legs/{lid}/chat/completions"
+    with caplog.at_level("INFO", logger="uvicorn.error"), TestClient(app) as client:
+        assert client.post(path, json={"private": "private-transcript"}).status_code == 401
+        assert client.post("/provider/agora/events", json={}).status_code == 401
+        assert client.get("/unrelated-private-path").status_code == 404
+    messages = [r.getMessage() for r in caplog.records if r.name == "uvicorn.error"]
+    assert messages == [
+        "Provider request: route=chat_completions HTTP status=401",
+        "Provider request: route=agora_events HTTP status=401",
+    ]
+    assert all(cid not in m and lid not in m and "private" not in m for m in messages)
+
+
 def test_custom_endpoint_sse_auth_stale_legs_and_message_turn_identity(runtime, monkeypatch):
     monkeypatch.setenv("LINEA_CUSTOM_LLM_BEARER", "completion-private")
     call = connected_call(runtime)

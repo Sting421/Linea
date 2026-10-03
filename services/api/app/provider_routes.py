@@ -2,7 +2,9 @@
 
 import hashlib
 import json
+import logging
 import os
+import re
 import secrets
 import time
 
@@ -28,6 +30,30 @@ async def bounded_json(request):
 
 
 def install_provider_routes(app, runtime):
+    @app.middleware("http")
+    async def provider_request_status(request: Request, call_next):
+        # The service disables general access logs. Keep provider diagnostics
+        # useful without logging IDs, URLs, headers, transcripts or bodies.
+        path = request.url.path
+        route = (
+            "agora_events"
+            if path == "/provider/agora/events"
+            else "chat_completions"
+            if re.fullmatch(r"/provider/checkins/[^/]+/legs/[^/]+/chat/completions", path)
+            else None
+        )
+        if route is None:
+            return await call_next(request)
+        status = 500
+        try:
+            response = await call_next(request)
+            status = response.status_code
+            return response
+        finally:
+            logging.getLogger("uvicorn.error").info(
+                "Provider request: route=%s HTTP status=%s", route, status
+            )
+
     @app.post("/provider/agora/events")
     async def callback(request: Request):
         raw, body = await bounded_json(request)
