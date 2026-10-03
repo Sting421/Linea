@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Evolved · Accordion" description="Brand-evolved expand/collapse list, Space Grotesk headers, sky chevron, controlled open index. Reskin target for the reap Accordion." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding:28px; display:flex; flex-direction:column; gap:18px; background:#fff;">
+  <div style="max-width:440px; display:flex; flex-direction:column; gap:8px;">
+    <sc-for list="{{ items }}" as="it" hint-placeholder-count="3">
+      <div style="border:1px solid #E2E7EB; border-radius:10px; overflow:hidden;">
+        <button type="button" onClick="{{ it.onClick }}" style="width:100%; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 16px; background:#fff; border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; color:#20262B; text-align:left;">
+          <span>{{ it.title }}</span><span style="color:#009DE4; font-size:13px;">{{ it.chevron }}</span>
+        </button>
+        <sc-if value="{{ it.open }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:0 16px 14px; font-size:13px; color:#8A9199; line-height:1.55;">{{ it.content }}</div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div style="font-size:12.5px; color:#8A9199; max-width:48ch; border-top:1px solid #EEF2F5; padding-top:14px; line-height:1.6;"><b style="color:#03587F; font-family:'Space Grotesk',sans-serif;">Evolved:</b> Space Grotesk header, sky chevron, soft rounded rows, replacing the legacy unstyled list. Parent still owns the open index.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 480, &quot;height&quot;: 300}}">
+class Component extends DCLogic {
+  state = { open: 0 };
+  renderVals() {
+    const data = [
+      { t: "Inverter health", c: "All 12 inverters reporting nominal. Last sync 2 min ago." },
+      { t: "Battery state", c: "State of charge 78%. Discharging at 4.2 kW." },
+      { t: "Grid connection", c: "Connected. Exporting 1.1 kW to the grid." },
+    ];
+    return {
+      items: data.map((it, i) => ({
+        title: it.t, content: it.c,
+        open: i === this.state.open,
+        chevron: i === this.state.open ? "▾" : "▸",
+        onClick: () => this.setState({ open: this.state.open === i ? -1 : i }),
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

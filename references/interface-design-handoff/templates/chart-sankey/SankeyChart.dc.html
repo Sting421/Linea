@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Sankey chart" description="Energy-flow Sankey primitive: proportional bands from generation (solar / grid import) through the inverter to sinks (home load, battery charge, grid export). Band width = kW; colors from the categorical palette (--cat-*). Net-new chart primitive for Area 2 plant energy balance." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background:#F4F7F9; padding:24px; color:#20262B;">
+  <div style="max-width:800px; margin:0 auto; background:#fff; border:1px solid #E2E7EB; border-radius:16px; padding:20px 22px; box-shadow:0 12px 30px rgba(31,65,115,0.07);">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#1F4173;">Energy balance <span style="font-weight:500; font-size:13px; color:#8A9199;">· last 5 min avg</span></div>
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:12.5px; color:#8A9199;">6.4 kW throughput</div>
+    </div>
+    <svg viewBox="0 0 760 344" style="width:100%; height:auto; display:block; overflow:visible;">
+      <defs>
+        <linearGradient id="skSolar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F5DE8A"></stop><stop offset="1" stop-color="#EAB308"></stop></linearGradient>
+      </defs>
+
+      <!-- flow bands (width proportional to kW) -->
+      <!-- Solar -> Inverter : 6.4 kW, full height -->
+      <path d="M96 40 C 234 40 234 40 372 40 L372 264 C 234 264 234 264 96 264 Z" fill="url(#skSolar)" opacity="0.55"></path>
+      <!-- Inverter -> Home : 3.5 kW -->
+      <path d="M390 40 C 532 40 532 40 674 40 L674 162 C 532 162 532 162 390 162 Z" fill="#E0521E" opacity="0.38"></path>
+      <!-- Inverter -> Battery : 1.8 kW -->
+      <path d="M390 162 C 532 162 532 170 674 170 L674 233 C 532 233 532 225 390 225 Z" fill="#1FA845" opacity="0.5"></path>
+      <!-- Inverter -> Grid export : 1.1 kW -->
+      <path d="M390 225 C 532 225 532 245 674 245 L674 284 C 532 284 532 264 390 264 Z" fill="#1F4173" opacity="0.5"></path>
+
+      <!-- source node: Solar -->
+      <rect x="86" y="40" width="12" height="224" rx="3" fill="#EAB308"></rect>
+      <!-- hub node: Inverter -->
+      <rect x="372" y="40" width="16" height="224" rx="3" fill="#3A434B"></rect>
+      <!-- sink nodes -->
+      <rect x="674" y="40" width="12" height="122" rx="3" fill="#E0521E"></rect>
+      <rect x="674" y="170" width="12" height="63" rx="3" fill="#1FA845"></rect>
+      <rect x="674" y="245" width="12" height="39" rx="3" fill="#1F4173"></rect>
+
+      <!-- labels -->
+      <g font-family="'Space Grotesk', sans-serif">
+        <text text-anchor="end"><tspan x="78" y="146" font-size="13" font-weight="600" fill="#17222E">Solar</tspan></text>
+        <text text-anchor="end"><tspan x="78" y="164" font-size="12" font-weight="600" fill="#8A6A00">6.4 kW</tspan></text>
+
+        <text text-anchor="middle"><tspan x="380" y="30" font-size="12.5" font-weight="700" fill="#1F4173">Inverter</tspan></text>
+
+        <text><tspan x="694" y="97" font-size="13" font-weight="600" fill="#17222E">Home</tspan></text>
+        <text><tspan x="694" y="115" font-size="12" font-weight="600" fill="#9E3A12">3.5 kW</tspan></text>
+        <text><tspan x="694" y="197" font-size="13" font-weight="600" fill="#17222E">Battery</tspan></text>
+        <text><tspan x="694" y="215" font-size="12" font-weight="600" fill="#15702F">1.8 kW</tspan></text>
+        <text><tspan x="694" y="262" font-size="13" font-weight="600" fill="#17222E">Grid export</tspan></text>
+        <text><tspan x="694" y="280" font-size="12" font-weight="600" fill="#1F4173">1.1 kW</tspan></text>
+      </g>
+    </svg>
+    <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:12px; padding-top:14px; border-top:1px solid #EEF2F5; font-size:12px; color:#46505A;">
+      <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:3px; background:#EAB308;"></span>Solar in</span>
+      <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:3px; background:#E0521E;"></span>Home load</span>
+      <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:3px; background:#1FA845;"></span>Battery charge</span>
+      <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:3px; background:#1F4173;"></span>Grid export</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 820, &quot;height&quot;: 460}}"></script>
+</body>
+</html>

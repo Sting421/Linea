@@ -1,0 +1,219 @@
+/* Generated from Figma Variables. First mode = :root default.
+   FLOAT tokens are unitless — multiply by 1px in calc() where a length is needed. */
+
+:root {
+  --background-brand-default: var(--brand-800); /* @kind color */
+  --background-default-default: var(--white-1000); /* @kind color */
+  --black-100: rgba(12,12,13,0.05); /* @kind color */
+  --black-200: rgba(12,12,13,0.1); /* @kind color */
+  --body-font-family: var(--family-sans);
+  --body-font-weight-regular: var(--weight-regular);
+  --body-font-weight-strong: var(--weight-semibold);
+  --body-size-medium: var(--scale-03);
+  --border-default-default: var(--gray-300); /* @kind color */
+  --brand-100-2: rgb(245,245,245); /* @kind color */
+  --brand-100: rgb(245,245,245); /* @kind color */
+  --brand-800: rgb(44,44,44); /* @kind color */
+  --brand-900: rgb(30,30,30); /* @kind color */
+  --brand-b-800: rgb(119,0,0); /* @kind color */
+  --depth-025: 1;
+  --depth-0: 0;
+  --depth-100: 4;
+  --family-sans: "Inter";
+  --fault: rgb(30,30,30); /* @kind color */
+  --gray-300: rgb(217,217,217); /* @kind color */
+  --gray-500: rgb(117,117,117); /* @kind color */
+  --gray-600: rgb(68,68,68); /* @kind color */
+  --gray-900-2: rgb(30,30,30); /* @kind color */
+  --gray-900: rgb(30,30,30); /* @kind color */
+  --icon-brand-on-brand: var(--brand-100); /* @kind color */
+  --icon-default-default-2: var(--gray-900); /* @kind color */
+  --icon-default-default: var(--gray-900); /* @kind color */
+  --icon-default-secondary: var(--gray-500); /* @kind color */
+  --icon-neutral-on-neutral-secondary: var(--slate-900); /* @kind color */
+  --icon-neutral-on-neutral: var(--slate-100); /* @kind color */
+  --icon-neutral-tertiary: var(--slate-600); /* @kind color */
+  --main-black: rgba(0,0,0,0.2); /* @kind color */
+  --mid-gray: rgb(126,126,126); /* @kind color */
+  --normal: rgb(179,178,178); /* @kind color */
+  --offline: rgb(228,228,228); /* @kind color */
+  --radius-200: 8;
+  --scale-03: 16;
+  --schemes-background: rgb(254,247,255); /* @kind color */
+  --schemes-on-surface: rgb(29,27,32); /* @kind color */
+  --second-black: rgba(0,0,0,0.2); /* @kind color */
+  --slate-1000: rgb(36,36,36); /* @kind color */
+  --slate-100: rgb(243,243,243); /* @kind color */
+  --slate-400: rgb(178,178,178); /* @kind color */
+  --slate-600: rgb(118,118,118); /* @kind color */
+  --slate-900: rgb(48,48,48); /* @kind color */
+  --space-150: 6;
+  --space-200: 8;
+  --stroke-border: 1;
+  --text-default-default: var(--gray-900); /* @kind color */
+  --warning: rgb(66,66,66); /* @kind color */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --white-1000-2: rgb(255,255,255); /* @kind color */
+  --white-1000: rgb(255,255,255); /* @kind color */
+  --white-500: rgba(255,255,255,0.7); /* @kind color */
+}
+
+:root[data-theme="dark"], .dark {
+  --background-brand-default: var(--brand-100); /* @kind color */
+  --background-default-default: var(--gray-900); /* @kind color */
+  --border-default-default: var(--gray-600); /* @kind color */
+  --icon-brand-on-brand: var(--brand-900); /* @kind color */
+  --icon-default-default-2: var(--white-1000); /* @kind color */
+  --icon-default-default: var(--white-1000); /* @kind color */
+  --icon-default-secondary: var(--white-500); /* @kind color */
+  --icon-neutral-on-neutral-secondary: var(--slate-100); /* @kind color */
+  --icon-neutral-on-neutral: var(--slate-1000); /* @kind color */
+  --icon-neutral-tertiary: var(--slate-400); /* @kind color */
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(230,224,233); /* @kind color */
+  --schemes-on-surface: rgb(255,249,255); /* @kind color */
+  --schemes-on-surface: rgb(255,255,255); /* @kind color */
+  --text-default-default: var(--white-1000); /* @kind color */
+}
+
+:root[data-theme="light"], .light {
+  --background-brand-default: var(--brand-b-800); /* @kind color */
+  --icon-default-default-2: var(--gray-900); /* @kind color */
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(0,0,0); /* @kind color */
+  --schemes-on-surface: rgb(29,27,32); /* @kind color */
+}
+
+:root[data-mode="monochrome-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(27,27,27); /* @kind color */
+}
+
+:root[data-mode="monochrome-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(226,226,226); /* @kind color */
+}
+
+:root[data-mode="pink-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(33,25,28); /* @kind color */
+}
+
+:root[data-mode="pink-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(238,223,227); /* @kind color */
+}
+
+:root[data-mode="rose-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(34,25,26); /* @kind color */
+}
+
+:root[data-mode="rose-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(240,222,223); /* @kind color */
+}
+
+:root[data-mode="red-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(35,25,24); /* @kind color */
+}
+
+:root[data-mode="red-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(241,222,220); /* @kind color */
+}
+
+:root[data-mode="orange-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(34,26,21); /* @kind color */
+}
+
+:root[data-mode="orange-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(240,223,215); /* @kind color */
+}
+
+:root[data-mode="yellow-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(31,27,19); /* @kind color */
+}
+
+:root[data-mode="yellow-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(235,225,212); /* @kind color */
+}
+
+:root[data-mode="chartreuse-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(27,28,20); /* @kind color */
+}
+
+:root[data-mode="chartreuse-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(229,227,214); /* @kind color */
+}
+
+:root[data-mode="green-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(24,29,24); /* @kind color */
+}
+
+:root[data-mode="green-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(224,228,219); /* @kind color */
+}
+
+:root[data-mode="teal-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(23,29,27); /* @kind color */
+}
+
+:root[data-mode="teal-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(221,228,225); /* @kind color */
+}
+
+:root[data-mode="cyan-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(23,28,30); /* @kind color */
+}
+
+:root[data-mode="cyan-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(222,227,230); /* @kind color */
+}
+
+:root[data-mode="blue-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(26,27,33); /* @kind color */
+}
+
+:root[data-mode="blue-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(226,226,233); /* @kind color */
+}
+
+:root[data-mode="indigo-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(28,27,33); /* @kind color */
+}
+
+:root[data-mode="indigo-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(229,225,233); /* @kind color */
+}
+
+:root[data-mode="purple-lt"] {
+  --schemes-background: rgb(253,247,255); /* @kind color */
+  --schemes-on-surface: rgb(29,26,32); /* @kind color */
+}
+
+:root[data-mode="purple-dt"] {
+  --schemes-background: rgb(20,18,24); /* @kind color */
+  --schemes-on-surface: rgb(231,224,232); /* @kind color */
+}

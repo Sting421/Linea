@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;box-sizing:border-box;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:14px 18px 12px;">
+    <div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#1F4173;">Site photos</div>
+      <div style="font-size:12px;color:#8A9199;margin-top:2px;">{{ plantName }}</div>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:#8A9199;background:#F2F5F7;border-radius:999px;padding:4px 10px;">{{ count }}</div>
+  </div>
+  <div style="padding:0 18px;">{{ heroEl }}</div>
+  <div style="padding:12px 18px 16px;">{{ thumbsEl }}</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:400,&quot;height&quot;:462},&quot;plantName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Dome · Rooftop + ground array&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { sel: 0 };
+  photos() {
+    return [
+      { label: "Array — south field", ic: "panel", a: "#1F4173", b: "#3E7CB8" },
+      { label: "Inverter cabinet", ic: "inverter", a: "#134E43", b: "#1FA86E" },
+      { label: "Site entrance", ic: "site", a: "#5A4620", b: "#C79A3A" },
+      { label: "Meter board", ic: "meter", a: "#3A2A52", b: "#8A6ABF" },
+    ];
+  }
+  glyph(type, size, col) {
+    const h = (...a) => React.createElement(...a);
+    const s = size || 54;
+    const w = (...k) => h("svg", { width: s, height: s, viewBox: "0 0 48 48", fill: "none", stroke: col, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, ...k);
+    if (type === "panel") return w(
+      h("rect", { key: 1, x: 8, y: 10, width: 32, height: 22, rx: 1.5 }),
+      h("line", { key: 2, x1: 8, y1: 17.3, x2: 40, y2: 17.3 }), h("line", { key: 3, x1: 8, y1: 24.6, x2: 40, y2: 24.6 }),
+      h("line", { key: 4, x1: 18.6, y1: 10, x2: 18.6, y2: 32 }), h("line", { key: 5, x1: 29.3, y1: 10, x2: 29.3, y2: 32 }),
+      h("line", { key: 6, x1: 24, y1: 32, x2: 24, y2: 39 }), h("line", { key: 7, x1: 17, y1: 39, x2: 31, y2: 39 })
+    );
+    if (type === "inverter") return w(
+      h("rect", { key: 1, x: 13, y: 8, width: 22, height: 32, rx: 2 }),
+      h("path", { key: 2, d: "M18 22 q3 -6 6 0 t6 0" }),
+      h("circle", { key: 3, cx: 24, cy: 33, r: 2 })
+    );
+    if (type === "site") return w(
+      h("path", { key: 1, d: "M6 34 L18 20 L27 30 L34 22 L42 34" }),
+      h("path", { key: 2, d: "M6 34 L42 34" }), h("circle", { key: 3, cx: 33, cy: 14, r: 3.5 })
+    );
+    if (type === "meter") return w(
+      h("circle", { key: 1, cx: 24, cy: 24, r: 15 }),
+      h("path", { key: 2, d: "M24 24 L31 17" }), h("circle", { key: 3, cx: 24, cy: 24, r: 2 }),
+      h("line", { key: 4, x1: 24, y1: 9, x2: 24, y2: 12 }), h("line", { key: 5, x1: 39, y1: 24, x2: 36, y2: 24 })
+    );
+    return w();
+  }
+  tile(ph, big) {
+    const h = (...a) => React.createElement(...a);
+    const size = big ? 64 : 22;
+    return h("div", { style: { position: "relative", width: "100%", height: "100%", background: "linear-gradient(135deg, " + ph.a + ", " + ph.b + ")", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
+      this.glyph(ph.ic, size, "rgba(255,255,255,0.9)")
+    );
+  }
+  heroEl() {
+    const h = (...a) => React.createElement(...a);
+    const ph = this.photos()[this.state.sel];
+    return h("div", { style: { position: "relative", width: "100%", height: "300px", borderRadius: "10px", overflow: "hidden" } },
+      this.tile(ph, true),
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "22px 14px 10px", background: "linear-gradient(to top, rgba(12,20,30,0.62), rgba(12,20,30,0))", color: "#fff", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "13.5px" } }, ph.label)
+    );
+  }
+  thumbsEl() {
+    const h = (...a) => React.createElement(...a);
+    const ps = this.photos();
+    return h("div", { style: { display: "flex", gap: "8px" } },
+      ps.map((ph, i) => h("button", {
+        key: i, onClick: () => this.setState({ sel: i }),
+        style: { flex: 1, height: "44px", padding: 0, border: "none", borderRadius: "7px", overflow: "hidden", cursor: "pointer", outline: i === this.state.sel ? "2px solid #009DE4" : "2px solid transparent", outlineOffset: "1px", opacity: i === this.state.sel ? 1 : 0.72, transition: "opacity .15s" }
+      }, this.tile(ph, false)))
+    );
+  }
+  renderVals() {
+    const ps = this.photos();
+    return {
+      plantName: this.props.plantName ?? "Dome · Rooftop + ground array",
+      count: (this.state.sel + 1) + " / " + ps.length,
+      heroEl: this.heroEl(),
+      thumbsEl: this.thumbsEl(),
+    };
+  }
+}
+</script>
+</body>
+</html>

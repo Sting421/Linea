@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:flex-start;padding:24px 20px;font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;">
+  <dc-import name="BatterySafety" device="ESS · Pack 1" sub="16 cells · LFP" status="normal" temp-min="28" temp-max="34" volt-min="3.28" volt-max="3.34" hint-size="330px,296px"></dc-import>
+  <dc-import name="BatterySafety" device="ESS · Pack 2" sub="16 cells · LFP" status="warning" temp-min="33" temp-max="49" volt-min="3.19" volt-max="3.42" hint-size="330px,296px"></dc-import>
+</div>
+</x-dc>
+</body>
+</html>

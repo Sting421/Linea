@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Tag" description="Compact chip/label for filters, event-type tags and category markers. Soft / solid / outline variants across the status palette, plus leading-dot, removable and size options. Net-new, used by Area 1 fleet filters and Area 3 event-type chips." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #20262B; background: #fff; padding: 20px 26px; display: flex; flex-direction: column; align-items: center; gap: 16px; box-sizing: border-box;">
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">Soft</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #E6F7FF; color: #03587F;">Normal</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #FFF4E2; color: #8F5500;">Warning</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #FDECEA; color: #9E1B12;">Fault</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #EEF0F1; color: #474C51;">Offline</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #F1EAFE; color: #5B21B6;">Anomaly</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #EEF2F5; color: #46505A;">Neutral</span>
+    </span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">Solid</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #009DE4; color: #fff;">Normal</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #E08600; color: #fff;">Warning</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #D92D20; color: #fff;">Fault</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #6B7177; color: #fff;">Offline</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #8B5CF6; color: #fff;">Anomaly</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #1F4173; color: #fff;">Brand</span>
+    </span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">Outline</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: #fff; border: 1px solid #9FD9F5; color: #03587F;">Normal</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: #fff; border: 1px solid #F2C77A; color: #8F5500;">Warning</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: #fff; border: 1px solid #F0A9A1; color: #9E1B12;">Fault</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: #fff; border: 1px solid #C9B2FA; color: #5B21B6;">Anomaly</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: #fff; border: 1px solid #D4D8DB; color: #46505A;">Neutral</span>
+    </span>
+  </div>
+
+  <div style="height: 1px; background: #EEF2F5; margin: 2px 0;"></div>
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">Dot</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px 3px 9px; border-radius: 999px; background: #E6F7FF; color: #03587F;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #009DE4;"></span>Inverter</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px 3px 9px; border-radius: 999px; background: #FFF4E2; color: #8F5500;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #E08600;"></span>Grid</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px 3px 9px; border-radius: 999px; background: #FDECEA; color: #9E1B12;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #D92D20;"></span>Battery</span>
+    </span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">Removable</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 7px 3px 11px; border-radius: 999px; white-space: nowrap; background: #E6F7FF; color: #03587F;">Texas<span style="display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 50%; background: rgba(3,88,127,0.14); font-size: 12px; line-height: 1; cursor: pointer;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 7px 3px 11px; border-radius: 999px; white-space: nowrap; background: #EEF2F5; color: #46505A;">Faults only<span style="display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 50%; background: rgba(70,80,90,0.14); font-size: 12px; line-height: 1; cursor: pointer;">×</span></span>
+    </span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">Sizes</span>
+    <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: #E6F7FF; color: #03587F;">Small</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: #E6F7FF; color: #03587F;">Medium</span>
+      <span style="display: inline-flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; padding: 5px 14px; border-radius: 999px; background: #E6F7FF; color: #03587F;">Large</span>
+    </span>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 720, &quot;height&quot;: 360}}"></script>
+</body>
+</html>

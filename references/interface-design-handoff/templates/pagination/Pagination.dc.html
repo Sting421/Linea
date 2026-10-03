@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Pagination" description="Table / list pager, rows-per-page selector, result range summary, numbered pages with truncation, and prev/next controls (with a disabled-edge state). Net-new, footer for Area 1 fleet lists and Area 3 event tables." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #20262B; background: #fff; padding: 26px; display: flex; flex-direction: column; gap: 22px;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border: 1px solid #E2E7EB; border-radius: 10px; padding: 12px 16px; background: #FBFCFD;">
+    <span style="display: inline-flex; align-items: center; gap: 9px; font-size: 12.5px; color: #8A9199;">Rows per page
+      <span style="display: inline-flex; align-items: center; gap: 7px; font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; color: #20262B; background: #fff; border: 1px solid #D4D8DB; border-radius: 7px; padding: 5px 9px; cursor: pointer;">25<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#7B848C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+    </span>
+    <span style="font-size: 12.5px; color: #8A9199;">Showing <span style="color: #46505A; font-weight: 600;">26–50</span> of 312</span>
+    <span style="display: inline-flex; align-items: center; gap: 4px;">
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 7px; border: 1px solid #E2E7EB; background: #fff; color: #46505A; cursor: pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #fff; border: 1px solid #E2E7EB; color: #46505A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;">1</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #009DE4; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;">2</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #fff; border: 1px solid #E2E7EB; color: #46505A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;">3</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #fff; border: 1px solid #E2E7EB; color: #46505A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;">4</span>
+      <span style="color: #9AA3AB; padding: 0 3px;">…</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #fff; border: 1px solid #E2E7EB; color: #46505A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;">13</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 7px; border: 1px solid #E2E7EB; background: #fff; color: #46505A; cursor: pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+    </span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="width: 78px; flex: 0 0 auto; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #9AA3AB; font-weight: 600;">First page</span>
+    <span style="display: inline-flex; align-items: center; gap: 4px;">
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 7px; border: 1px solid #E2E7EB; background: #fff; color: #C2CAD1; cursor: not-allowed;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #009DE4; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;">1</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #fff; border: 1px solid #E2E7EB; color: #46505A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;">2</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 7px; border-radius: 7px; background: #fff; border: 1px solid #E2E7EB; color: #46505A; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;">3</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 7px; border: 1px solid #E2E7EB; background: #fff; color: #46505A; cursor: pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+    </span>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 720, &quot;height&quot;: 240}}"></script>
+</body>
+</html>

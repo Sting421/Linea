@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="StatusDonut" description="Proportional status donut with count legend; segments and legend rows toggle a fleet/plant status filter" -->
+<helmet>
+<script src="./ds-base.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family:'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px 20px 18px; box-sizing:border-box; max-width:480px;">
+  <div style="display:flex; align-items:center; justify-content:space-between; min-height:24px; margin-bottom:10px;">
+    <span style="font-size:13px; font-weight:600; color:#46505A;">{{ title }}</span>
+    <sc-if value="{{ filterActive }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ onClear }}" aria-label="Clear status filter" style="display:inline-flex; align-items:center; gap:5px; border:none; background:transparent; padding:3px 8px; border-radius:999px; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#009DE4;" style-hover="background:#E6F7FF;" style-focus="outline:2px solid #009DE4; outline-offset:1px;">Clear filter<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button>
+    </sc-if>
+  </div>
+  <div style="display:flex; align-items:center; gap:24px;">
+    <div style="position:relative; width:172px; height:172px; flex:0 0 auto;">
+      <sc-if value="{{ hasData }}" hint-placeholder-val="{{ true }}">
+        <svg width="172" height="172" viewBox="0 0 180 180" role="group" aria-label="Status breakdown donut">
+          <sc-for list="{{ segs }}" as="s" hint-placeholder-count="4">
+            <path d="{{ s.d }}" fill="none" stroke="{{ s.color }}" stroke-width="{{ s.w }}" opacity="{{ s.op }}" onClick="{{ s.onClick }}" onMouseEnter="{{ s.onEnter }}" onMouseLeave="{{ s.onLeave }}" style="cursor:pointer; transition:opacity .15s ease, stroke .15s ease;"></path>
+          </sc-for>
+        </svg>
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
+          <span style="font-size:30px; font-weight:700; color:#17222E; line-height:1; font-variant-numeric:tabular-nums;">{{ centerBig }}</span>
+          <span style="font-size:11px; font-weight:500; color:#8A9199; margin-top:4px; letter-spacing:0.02em;">{{ centerCaption }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+        <svg width="172" height="172" viewBox="0 0 180 180" aria-hidden="true"><circle cx="90" cy="90" r="64" fill="none" stroke="#EDF1F4" stroke-width="26"></circle></svg>
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="font-size:22px; font-weight:700; color:#B6BEC5; line-height:1;">&mdash;</span>
+          <span style="font-size:11px; font-weight:500; color:#9AA3AB; margin-top:4px;">No data</span>
+        </div>
+      </sc-if>
+    </div>
+    <div role="group" aria-label="Filter by status" style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px;">
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+        <button type="button" onClick="{{ r.onClick }}" onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" disabled="{{ r.disabled }}" aria-pressed="{{ r.pressed }}" style="display:flex; align-items:center; gap:9px; width:100%; box-sizing:border-box; border:none; text-align:left; padding:7px 10px; border-radius:8px; font-family:'Space Grotesk',sans-serif; line-height:1; user-select:none; transition:background .12s ease, opacity .12s ease; cursor:{{ r.cursor }}; background:{{ r.bg }}; opacity:{{ r.op }};" style-hover="background:{{ r.hoverBg }};" style-focus="outline:2px solid #009DE4; outline-offset:1px;">
+          <span aria-hidden="true" style="width:9px; height:9px; border-radius:50%; flex:0 0 auto; background:{{ r.dotBg }}; box-shadow:{{ r.dotShadow }};"></span>
+          <span style="font-size:13px; font-weight:600; color:{{ r.labelColor }};">{{ r.label }}</span>
+          <span style="font-size:13px; font-weight:500; font-variant-numeric:tabular-nums; color:{{ r.countColor }};">{{ r.countText }}</span>
+          <span style="flex:1 1 auto;"></span>
+          <sc-if value="{{ r.selected }}" hint-placeholder-val="{{ false }}">
+            <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true" style="flex:0 0 auto;"><path d="M2.5 7.5l3 3 6-7" fill="none" stroke="{{ r.deep }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </sc-if>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 480, &quot;height&quot;: 250}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Fleet status&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Content&quot;}, &quot;entityLabel&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;plants&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Content&quot;}, &quot;normalCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 96, &quot;min&quot;: 0, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Counts&quot;}, &quot;warningCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 7, &quot;min&quot;: 0, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Counts&quot;}, &quot;offlineCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 4, &quot;min&quot;: 0, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Counts&quot;}, &quot;faultCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 3, &quot;min&quot;: 0, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Counts&quot;}, &quot;anomalyCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 2, &quot;min&quot;: 0, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Counts&quot;}}">
+class Component extends DCLogic {
+  state = { selected: [], hovered: null };
+  renderVals() {
+    const P = this.props;
+    const n = (v, d) => { const x = Number(v); return Number.isFinite(x) && x >= 0 ? Math.round(x) : d; };
+    const DEF = [
+      { key: "normal",  label: "Normal",  color: "#009DE4", soft: "#E6F7FF", deep: "#03587F", count: n(P.normalCount, 96) },
+      { key: "warning", label: "Warning", color: "#E08600", soft: "#FFF4E2", deep: "#8F5500", count: n(P.warningCount, 7) },
+      { key: "offline", label: "Offline", color: "#6B7177", soft: "#EEF0F1", deep: "#474C51", count: n(P.offlineCount, 4) },
+      { key: "fault",   label: "Fault",   color: "#D92D20", soft: "#FDECEA", deep: "#9E1B12", count: n(P.faultCount, 3) },
+      { key: "anomaly", label: "Anomaly", color: "#8B5CF6", soft: "#F1EAFE", deep: "#5B21B6", count: n(P.anomalyCount, 2), derived: true },
+    ];
+    const sel = new Set(this.state.selected);
+    const hov = this.state.hovered;
+    const total = DEF.reduce((a, s) => a + s.count, 0);
+    const entity = (P.entityLabel || "plants");
+    const toggle = (key) => this.setState((st) => {
+      const cur = new Set(st.selected);
+      cur.has(key) ? cur.delete(key) : cur.add(key);
+      return { selected: [...cur] };
+    });
+    const enter = (key) => () => this.setState({ hovered: key });
+    const leave = () => this.setState({ hovered: null });
+
+    // arcs
+    const visible = DEF.filter((s) => s.count > 0);
+    const cx = 90, cy = 90, r = 64;
+    const pt = (deg) => { const a = (deg - 90) * Math.PI / 180; return (cx + r * Math.cos(a)).toFixed(2) + " " + (cy + r * Math.sin(a)).toFixed(2); };
+    let acc = 0;
+    const gap = visible.length > 1 ? 2.4 : 0;
+    const segs = visible.map((s) => {
+      const sweep = (s.count / total) * 360;
+      let a0 = acc + gap / 2, a1 = acc + sweep - gap / 2;
+      acc += sweep;
+      if (a1 - a0 < 2.5) { const m = (a0 + a1) / 2; a0 = m - 1.25; a1 = m + 1.25; }
+      const span = a1 - a0;
+      const d = span >= 359
+        ? `M ${pt(0)} A ${r} ${r} 0 1 1 ${pt(180)} A ${r} ${r} 0 1 1 ${pt(359.99)}`
+        : `M ${pt(a0)} A ${r} ${r} 0 ${span > 180 ? 1 : 0} 1 ${pt(a1)}`;
+      const grayed = sel.size > 0 && !sel.has(s.key);
+      return {
+        d,
+        color: grayed ? "#E4E9ED" : s.color,
+        w: hov === s.key ? 30 : 26,
+        op: hov && hov !== s.key ? 0.45 : 1,
+        onClick: () => toggle(s.key),
+        onEnter: enter(s.key),
+        onLeave: leave,
+      };
+    });
+
+    // legend rows (derived statuses hide at 0; canonical show disabled)
+    const rows = DEF.filter((s) => !(s.derived && s.count === 0)).map((s) => {
+      const isSel = sel.has(s.key);
+      const disabled = s.count === 0;
+      const muted = sel.size > 0 && !isSel;
+      return {
+        label: s.label,
+        countText: "\u00b7 " + s.count,
+        deep: s.deep,
+        selected: isSel,
+        pressed: isSel ? "true" : "false",
+        disabled,
+        cursor: disabled ? "default" : "pointer",
+        bg: isSel ? s.soft : "transparent",
+        hoverBg: disabled ? "transparent" : (isSel ? s.soft : "#F4F7F9"),
+        op: disabled ? 0.38 : (muted ? 0.55 : 1),
+        dotBg: s.color,
+        dotShadow: "0 0 0 2px #fff",
+        labelColor: isSel ? s.deep : "#20262B",
+        countColor: isSel ? s.deep : "#6B7177",
+        onClick: () => { if (!disabled) toggle(s.key); },
+        onEnter: disabled ? undefined : enter(s.key),
+        onLeave: leave,
+      };
+    });
+
+    const selSum = DEF.filter((s) => sel.has(s.key)).reduce((a, s) => a + s.count, 0);
+    return {
+      title: P.title || "Fleet status",
+      segs, rows,
+      hasData: total > 0,
+      showEmpty: total === 0,
+      filterActive: sel.size > 0,
+      onClear: () => this.setState({ selected: [] }),
+      centerBig: String(sel.size > 0 ? selSum : total),
+      centerCaption: sel.size > 0 ? "of " + total + " " + entity : entity,
+    };
+  }
+}
+</script>
+</body>
+</html>

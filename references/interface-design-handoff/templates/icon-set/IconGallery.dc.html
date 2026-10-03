@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Icons" description="The kit's icon set as a single icon-data map + <Icon name size> wrapper, recolors via currentColor. 70 glyphs (standalone + the Icon/Linear set)." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="./icons/icon-data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #F4F6F8; }
+  * { box-sizing: border-box; }
+</style>
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #20262B; background: #F4F6F8; padding: 0 0 80px;">
+
+
+  <div style="max-width: 1180px; margin: 0 auto; padding: 36px 56px 0;">
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px; margin-bottom:16px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#15803D; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">Domain · energy · microgrid equipment</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px;">
+        <sc-for list="{{ domainIcons }}" as="n" hint-placeholder-count="11">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:9px; padding:16px 8px 12px; border-radius:10px; text-align:center;" style-hover="background:#F1FAF4;">
+            <span style="color:#1FA845; display:inline-flex;">
+              <x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="{{ n }}" size="24" hint-size="24px,24px"></x-import>
+            </span>
+            <span style="font-size:10.5px; color:#8A9199; font-family:'Space Grotesk',sans-serif; word-break:break-word; line-height:1.3;">{{ n }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px; margin-bottom:16px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#1F4173; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">Domain · operations &amp; audit</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px;">
+        <sc-for list="{{ opsIcons }}" as="n" hint-placeholder-count="6">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:9px; padding:16px 8px 12px; border-radius:10px; text-align:center;" style-hover="background:#F2F5FA;">
+            <span style="color:#1F4173; display:inline-flex;">
+              <x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="{{ n }}" size="24" hint-size="24px,24px"></x-import>
+            </span>
+            <span style="font-size:10.5px; color:#8A9199; font-family:'Space Grotesk',sans-serif; word-break:break-word; line-height:1.3;">{{ n }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px; margin-bottom:16px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#8A9199; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">Component icons · one per reference card</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px;">
+        <sc-for list="{{ cardIcons }}" as="n" hint-placeholder-count="24">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:9px; padding:16px 8px 12px; border-radius:10px; text-align:center;" style-hover="background:#F2F7FA;">
+            <span style="color:#009DE4; display:inline-flex;">
+              <x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="{{ n }}" size="24" hint-size="24px,24px"></x-import>
+            </span>
+            <span style="font-size:10.5px; color:#8A9199; font-family:'Space Grotesk',sans-serif; word-break:break-word; line-height:1.3;">{{ n }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px;">
+        <sc-for list="{{ names }}" as="n" hint-placeholder-count="24">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:9px; padding:16px 8px 12px; border-radius:10px; text-align:center;" style-hover="background:#F2F7FA;">
+            <span style="color:#1F4173; display:inline-flex;">
+              <x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="{{ n }}" size="24" hint-size="24px,24px"></x-import>
+            </span>
+            <span style="font-size:10.5px; color:#8A9199; font-family:'Space Grotesk',sans-serif; word-break:break-word; line-height:1.3;">{{ n }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- usage row -->
+    <div style="margin-top:16px; background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:22px 24px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#8A9199; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">Color &amp; size via CSS</div>
+      <div style="display:flex; align-items:center; gap:28px;">
+        <span style="color:#009DE4; display:inline-flex;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Bell" size="28" hint-size="28px,28px"></x-import></span>
+        <span style="color:#1FA845; display:inline-flex;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="CheckCircle" size="28" hint-size="28px,28px"></x-import></span>
+        <span style="color:#E08600; display:inline-flex;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="HelpCircle" size="28" hint-size="28px,28px"></x-import></span>
+        <span style="color:#D92D20; display:inline-flex;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Trash" size="28" hint-size="28px,28px"></x-import></span>
+        <span style="color:#6B7177; display:inline-flex;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Settings01" size="20" hint-size="20px,20px"></x-import></span>
+        <span style="color:#1F4173; display:inline-flex;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Home" size="34" hint-size="34px,34px"></x-import></span>
+        <span style="font-size:12px; color:#9AA3AB;">currentColor · size prop</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const names = [
+      "ArrowLeft","ArrowRight","Bell","Calendar","CalendarCheck","Cancel","Check","CheckCircle","ChevronDown","ChevronDown2","Collapse","Copy","DotsGrid","DotsVertical","Edit","Edit2","File","FileText","HelpCircle","Home","HomeLine","Info","IntersectSquare","Laptop02","Layers2","Mail","Minus2","Modem02","Monitor01","MoreVertical","Octagon","Plus3","Printer","Rocket","SearchMd","SearchSm","Send03","Settings","Settings01","Signal02","Trash","User2","Users01","XClose",
+      "IconLinearIdAddLine","IconLinearIdArrowDownLine","IconLinearIdArrowDownSFill","IconLinearIdArrowDownSLine","IconLinearIdArrowDropDownLine","IconLinearIdArrowLeftLine","IconLinearIdArrowLeftSLine","IconLinearIdArrowRightLine","IconLinearIdArrowRightSLine","IconLinearIdArrowRightUpLine","IconLinearIdArrowUpLine","IconLinearIdArrowUpSFill","IconLinearIdArrowUpSLine","IconLinearIdCalendarLine","IconLinearIdChat1Line","IconLinearIdCheckLine","IconLinearIdCloseLine","IconLinearIdFilter3Line","IconLinearIdFlashlightLine","IconLinearIdLayoutColumnLine","IconLinearIdMoreLine","IconLinearIdPaletteLine","IconLinearIdQuestionMark","IconLinearIdReactjsLine","IconLinearIdSearchLine","IconLinearIdSettings3Line",
+    ];
+    const cardIcons = [
+      "Swatches","Gauge","Shapes","ButtonShape","InputField","SelectField","CheckSquare","RadioDot","PanelToggle","ToggleLeft","Filter","Search","Type","ToggleRight","CalendarDays","AppWindow","ChevronsLeftRight","Table","TableRows","Clock","List","SquareActivity","BarChart","LineChart","CircleUser","CircleDot","TableProperties","Tag","Loader","AlertTriangle","ProgressBar","MessageSquare","MessageCircle","InfoCircle","LifeBuoy","Megaphone","SquareMenu","Rows","GalleryHorizontal","LayoutDashboard","MapPin","Zap","Sliders","ShieldAlert","Inbox",
+    ];
+    const domainIcons = ["Sun","SolarPanel","Inverter","Battery","BatteryCharging","GridTower","Transformer","EvCharger","Meter","Gateway","PlantFactory"];
+    const opsIcons = ["ControlWrite","Firmware","Wrench","DevicePlus","ShieldCheck","Clipboard"];
+    return { names, count: names.length, cardIcons, domainIcons, opsIcons };
+  }
+}
+</script>
+</body>
+</html>

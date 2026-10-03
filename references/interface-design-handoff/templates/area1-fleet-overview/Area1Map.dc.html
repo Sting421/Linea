@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .maplibregl-popup-content { border-radius: 12px; padding: 13px 15px; box-shadow: 0 10px 30px rgba(31,65,115,0.20); border: 1px solid #E2E7EB; }
+    .maplibregl-popup-close-button { font-size: 17px; color: #9AA3AB; padding: 1px 8px; right: 2px; top: 2px; }
+    .maplibregl-popup-close-button:hover { background: #F2F5F7; color: #46505A; }
+    .maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: #fff; }
+    .maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: #fff; }
+    .maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: #fff; }
+    .maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: #fff; }
+    .maplibregl-ctrl-group { border-radius: 9px !important; overflow: hidden; box-shadow: 0 2px 8px rgba(31,65,115,0.14) !important; border: 1px solid #E2E7EB; }
+    .maplibregl-ctrl-attrib.maplibregl-compact { font-size: 10px; }
+    .maplibregl-ctrl-bottom-right { z-index: 3; }
+    @keyframes pmspin { to { transform: rotate(360deg); } }
+  </style>
+</helmet>
+<div style="display: flex; border: 1px solid #E2E7EB; border-radius: 14px; overflow: hidden; background: #fff; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; height: 100%; min-height: 360px;">
+
+  <div style="position: relative; flex: 1 1 60%; min-width: 0;">
+    <div ref="{{ mapRef }}" style="position: absolute; inset: 0; background: #E8EEF1;"></div>
+
+    <sc-if value="{{ showFallback }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute; inset:0; background: linear-gradient(180deg,#EAF2F6 0%, #E4EEF2 100%); overflow:hidden;">
+        <div style="position:absolute; inset:0; background-image: linear-gradient(#1f41730f 1px, transparent 1px), linear-gradient(90deg, #1f41730f 1px, transparent 1px); background-size: 58px 58px;"></div>
+        <svg viewBox="0 0 1000 600" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; display:block;">
+          <path d="{{ landPath }}" fill="#E7EEEC" stroke="#C4D3D2" stroke-width="1.4" stroke-linejoin="round"></path>
+        </svg>
+        <sc-for list="{{ pins }}" as="p" hint-placeholder-count="6">
+          <button type="button" onClick="{{ p.onClick }}" style="position:absolute; left:{{ p.left }}%; top:{{ p.top }}%; transform:translate(-50%,-100%); border:none; background:transparent; padding:0; cursor:pointer; z-index:10; display:flex; flex-direction:column; align-items:center;">
+            <span style="width:{{ p.size }}px; height:{{ p.size }}px; border-radius:50%; background:{{ p.color }}; border:2.5px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.22);"></span>
+            <span style="width:2px; height:7px; background:{{ p.color }}; margin-top:-1px; border-radius:0 0 2px 2px;"></span>
+          </button>
+        </sc-for>
+        <div style="position:absolute; left:50%; bottom:14px; transform:translateX(-50%); background:rgba(255,255,255,0.94); border:1px solid #E2E7EB; border-radius:8px; padding:6px 12px; font-size:12px; color:#46505A; box-shadow:0 2px 8px rgba(31,65,115,0.1);">{{ chipText }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#EEF2F4; z-index:1;">
+        <div style="display:flex; align-items:center; gap:9px; background:rgba(255,255,255,0.92); border:1px solid #E2E7EB; border-radius:999px; padding:8px 16px; box-shadow:0 2px 8px rgba(31,65,115,0.1);">
+          <span style="width:13px; height:13px; border:2px solid #CFE0EA; border-top-color:#009DE4; border-radius:50%; display:inline-block; animation: pmspin 0.7s linear infinite;"></span>
+          <span style="font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#46505A;">Loading live map…</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="position:absolute; left:16px; bottom:16px; z-index:5; pointer-events:none;">
+      <div style="background:rgba(255,255,255,0.94); backdrop-filter: blur(4px); border:1px solid #E2E7EB; border-radius:10px; padding:8px 12px; display:flex; gap:16px; align-items:center; box-shadow:0 2px 8px rgba(31,65,115,0.1);">
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px; color:#1F4173;">{{ title }}</span>
+        <span style="width:1px; height:16px; background:#E2E7EB;"></span>
+        <span style="display:flex; gap:12px; align-items:center; font-size:12.5px; color:#46505A;">
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#D92D20;"></span>{{ nFault }}</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#E08600;"></span>{{ nWarning }}</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#8B5CF6;"></span>{{ nAnomaly }}</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#6B7177;"></span>{{ nOffline }}</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#009DE4;"></span>{{ nNormal }}</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button" onClick="{{ onSearchArea }}" style="position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:5; background:#fff; border:1px solid #CFE8F6; color:#03587F; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; border-radius:999px; padding:7px 16px; cursor:pointer; box-shadow:0 2px 10px rgba(31,65,115,0.14);">Search this area</button>
+    <sc-if value="{{ showBounds }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute; top:54px; left:50%; transform:translateX(-50%); z-index:5; background:#1F2A30; color:#EAF0F3; font-size:11.5px; font-family:'Space Grotesk',monospace; border-radius:8px; padding:6px 11px; box-shadow:0 4px 14px rgba(0,0,0,0.22); white-space:nowrap;">{{ boundsText }}</div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ showList }}" hint-placeholder-val="{{ false }}">
+  <div style="flex: 0 0 40%; max-width: 320px; border-left: 1px solid #E2E7EB; display:flex; flex-direction:column; background:#fff;">
+    <div style="padding: 13px 16px; border-bottom: 1px solid #EEF2F5; font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:#46505A; display:flex; align-items:center; justify-content:space-between;">
+      <span>{{ listTitle }}</span>
+      <span style="font-size:12px; color:#9AA3AB; font-weight:500;">{{ count }}</span>
+    </div>
+    <div style="overflow-y:auto; flex:1 1 auto;">
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+        <button type="button" onClick="{{ r.onClick }}" style="display:flex; align-items:center; gap:11px; width:100%; padding:11px 16px; border:none; border-bottom:1px solid #F2F5F7; background:{{ r.rowBg }}; cursor:pointer;">
+          <span style="width:9px;height:9px;border-radius:50%;background:{{ r.color }};flex:0 0 auto;"></span>
+          <span style="flex:1 1 auto; min-width:0; text-align:left;">
+            <span style="display:block; font-size:13.5px; font-weight:500; color:#20262B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span>
+            <span style="display:block; font-size:12px; color:#8A9199; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.meta }}</span>
+          </span>
+          <span style="font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:{{ r.badgeText }}; background:{{ r.badgeBg }}; border-radius:999px; padding:2px 8px; flex:0 0 auto;">{{ r.statusLabel }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 880, &quot;height&quot;: 460}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Fleet map&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;listTitle&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Plants&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;mode&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;fleet&quot;, &quot;incidents&quot;], &quot;default&quot;: &quot;fleet&quot;, &quot;tsType&quot;: &quot;'fleet'|'incidents'&quot;}, &quot;schematic&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;hideList&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;sizeByCapacity&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;basemap&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;positron&quot;, &quot;voyager&quot;, &quot;dark-matter&quot;], &quot;default&quot;: &quot;positron&quot;, &quot;tsType&quot;: &quot;'positron'|'voyager'|'dark-matter'&quot;}, &quot;selectedName&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;string|null&quot;}, &quot;onSelect&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;(p: any, i: number) =&gt; void&quot;}, &quot;onViewport&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;(v: any) =&gt; void&quot;}, &quot;plants&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;Array&lt;any&gt;&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.mapRef = { current: null };
+    this.map = null;
+    this.markers = [];
+    this.popup = null;
+    this._tries = 0;
+    this._sig = null;
+    this._prevSel = undefined;
+    this.state = { sel: null, ready: false, failed: false, bounds: null };
+  }
+
+  palette() {
+    return {
+      normal:  { label: "Normal",  color: "#009DE4", soft: "#E6F7FF", text: "#03587F" },
+      warning: { label: "Warning", color: "#E08600", soft: "#FFF4E2", text: "#8F5500" },
+      offline: { label: "Offline", color: "#6B7177", soft: "#EEF0F1", text: "#474C51" },
+      fault:   { label: "Fault",   color: "#D92D20", soft: "#FDECEA", text: "#9E1B12" },
+      anomaly: { label: "Anomaly", color: "#8B5CF6", soft: "#F1EAFE", text: "#5B21B6" },
+    };
+  }
+  plants() {
+    if (Array.isArray(this.props.plants) && this.props.plants.length) return this.props.plants;
+    return [
+      { name: "Maple Grove", meta: "Vermont · 4 inverters", status: "normal", lat: 44.26, lng: -72.58, capacity: 240, power: "8.2 kW", soc: "78%", devices: 12 },
+      { name: "FLAME PET 01", meta: "Texas · gateway", status: "warning", lat: 30.27, lng: -97.74, capacity: 120, power: "3.1 kW", soc: "54%", devices: 8 },
+      { name: "Love Shack", meta: "Arizona · charger", status: "fault", lat: 33.45, lng: -112.07, capacity: 90, power: "0.0 kW", soc: "-", devices: 6 },
+      { name: "Riverside Array", meta: "Oregon · 6 inverters", status: "normal", lat: 45.52, lng: -122.68, capacity: 410, power: "11.4 kW", soc: "91%", devices: 18 },
+      { name: "Sierra Vista", meta: "California · 5 inverters", status: "anomaly", lat: 36.73, lng: -119.79, capacity: 200, power: "6.8 kW", soc: "70%", devices: 11 },
+    ];
+  }
+  rank(s) { const o = { fault: 0, warning: 1, anomaly: 2, offline: 3, normal: 4 }; return o[s] != null ? o[s] : 5; }
+
+  pinSize(cap) {
+    if (!this.props.sizeByCapacity) return 30;
+    const c = Number(cap) || 100;
+    return Math.round(Math.max(26, Math.min(46, 24 + Math.sqrt(c) * 1.1)));
+  }
+
+  mapStyle() {
+    const paths = { positron: "light_all", "dark-matter": "dark_all", voyager: "rastertiles/voyager" };
+    const path = paths[this.props.basemap] || "light_all";
+    const tiles = ["a", "b", "c"].map((s) => "https://" + s + ".basemaps.cartocdn.com/" + path + "/{z}/{x}/{y}{r}.png");
+    return {
+      version: 8,
+      sources: { carto: { type: "raster", tiles: tiles, tileSize: 256, attribution: '\u00A9 <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> \u00B7 \u00A9 <a href="https://carto.com/attributions" target="_blank">CARTO</a>' } },
+      layers: [{ id: "carto-base", type: "raster", source: "carto" }],
+    };
+  }
+
+  componentDidMount() { this._sig = this.sig(); if (this.props.schematic) return; this.loadMap(); }
+  componentWillUnmount() { this.clearMarkers(); try { this._ro && this._ro.disconnect(); } catch (e) {} try { this.map && this.map.remove(); } catch (e) {} }
+
+  sig() { return this.plants().map((p) => p.name + ":" + p.status).join("|") + "|" + (this.props.sizeByCapacity ? "cap" : "uni"); }
+
+  componentDidUpdate() {
+    const sig = this.sig();
+    if (sig !== this._sig) {
+      this._sig = sig;
+      if (this.map && this.state.ready) {
+        this._interacted = false;
+        this.addMarkers();
+        try { this.map.setMaxBounds(null); this.map.setMaxBounds(this.maxBoundsFromPlants()); } catch (e) {}
+        this.fit();
+      }
+    }
+    const sn = this.props.selectedName;
+    if (sn !== this._prevSel) {
+      this._prevSel = sn;
+      if (sn) { const i = this.plants().findIndex((p) => p.name === sn); if (i >= 0) this.selectPlant(i, true); }
+      else if (this.map) { try { this.popup && this.popup.remove(); } catch (e) {} this.refreshMarkers(-1); if (this.state.sel != null) this.setState({ sel: null }); }
+    }
+  }
+
+  loadMap() {
+    if (this.props.schematic) return;
+    if (window.maplibregl) { this.initMap(); return; }
+    if (!this._injected) {
+      this._injected = true;
+      var css = document.createElement("link");
+      css.rel = "stylesheet"; css.href = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css";
+      document.head.appendChild(css);
+      var s = document.createElement("script");
+      s.src = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js";
+      s.onload = () => this.initMap();
+      s.onerror = () => this.setState({ failed: true });
+      document.head.appendChild(s);
+    }
+    if (this._tries++ > 120) { this.setState({ failed: true }); return; }
+    setTimeout(() => this.loadMap(), 100);
+  }
+
+  initMap() {
+    if (this.map) return;
+    if (!this.mapRef.current) {
+      if (this._initTries == null) this._initTries = 0;
+      if (this._initTries++ < 100) setTimeout(() => this.initMap(), 80);
+      return;
+    }
+    try {
+      const ml = window.maplibregl;
+      var host = document.createElement("div");
+      host.style.cssText = "position:absolute; inset:0;";
+      this.mapRef.current.appendChild(host);
+      this.mapHost = host;
+
+      this.map = new ml.Map({
+        container: host,
+        style: this.mapStyle(),
+        center: [-98.35, 39.5],
+        zoom: 3.4,
+        renderWorldCopies: false,
+        minZoom: 2,
+        attributionControl: { compact: true },
+        preserveDrawingBuffer: true,
+      });
+      this.map.addControl(new ml.NavigationControl({ showCompass: false }), "bottom-right");
+      this.map.on("movestart", (e) => { if (e && e.originalEvent) this._interacted = true; });
+      if (window.ResizeObserver) {
+        this._ro = new ResizeObserver(() => {
+          try { this.map.resize(); } catch (e) {}
+          if (this._interacted) return;
+          clearTimeout(this._refitT);
+          this._refitT = setTimeout(() => { if (!this._interacted) { try { this.fit(); } catch (e) {} } }, 140);
+        });
+        this._ro.observe(host);
+      }
+
+      this.popup = new ml.Popup({ closeButton: true, closeOnClick: true, offset: 16, maxWidth: "280px" });
+      this.popup.on("close", () => { this.setState({ sel: null }); this.refreshMarkers(-1); if (this.props.onSelect) this.props.onSelect(null, -1); });
+
+      this.map.on("load", () => {
+        if (this.mapHost) this.mapHost.style.display = "";
+        this.setState({ ready: true, failed: false });
+        this.addMarkers();
+        try { this.map.setMaxBounds(this.maxBoundsFromPlants()); } catch (e) {}
+        try { this.map.resize(); } catch (e) {}
+        this.fit();
+        this.map.once("idle", () => { try { this.map.resize(); if (!this._interacted) this.fit(); } catch (e) {} });
+        setTimeout(() => { try { this.map.resize(); if (!this._interacted) this.fit(); } catch (e) {} }, 500);
+      });
+
+      setTimeout(() => {
+        if (!this.state.ready) { try { this.mapHost.style.display = "none"; } catch (e) {} this.setState({ failed: true }); }
+      }, 12000);
+    } catch (e) { this.setState({ failed: true }); }
+  }
+
+  addMarkers() {
+    const ml = window.maplibregl;
+    const plants = this.plants();
+    const P = this.palette();
+    this.clearMarkers();
+    plants.forEach((p, i) => {
+      const pal = P[p.status] || P.normal;
+      const size = this.pinSize(p.capacity);
+      const el = this.makePin(pal.color, size, i);
+      const marker = new ml.Marker({ element: el, anchor: "bottom" }).setLngLat([p.lng, p.lat]).addTo(this.map);
+      this.markers.push({ marker, el, size });
+    });
+  }
+
+  makePin(color, size, i) {
+    const el = document.createElement("div");
+    el.style.cssText = "cursor:pointer; display:flex; flex-direction:column; align-items:center; transition:transform .12s;";
+    const head = document.createElement("div");
+    head.style.cssText = "width:" + size + "px; height:" + size + "px; border-radius:50%; box-sizing:border-box; background:" + color + "; border:2.5px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.26);";
+    const stem = document.createElement("div");
+    stem.style.cssText = "width:2px; height:7px; background:" + color + "; margin-top:-1px; border-radius:0 0 2px 2px;";
+    el.appendChild(head); el.appendChild(stem);
+    el.addEventListener("click", (ev) => { ev.stopPropagation(); this.selectPlant(i); });
+    return el;
+  }
+
+  refreshMarkers(sel) {
+    (this.markers || []).forEach((m, idx) => {
+      const selected = idx === sel;
+      const head = m.el.firstChild;
+      const s = selected ? m.size + 6 : m.size;
+      head.style.width = s + "px"; head.style.height = s + "px";
+      head.style.boxShadow = selected ? "0 5px 14px rgba(0,0,0,0.3)" : "0 2px 5px rgba(0,0,0,0.26)";
+      m.el.style.zIndex = selected ? "20" : "0";
+    });
+  }
+
+  maxBoundsFromPlants() {
+    const ml = window.maplibregl;
+    const plants = this.plants();
+    const lats = plants.map((p) => p.lat), lngs = plants.map((p) => p.lng);
+    const minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+    const minLng = Math.min.apply(null, lngs), maxLng = Math.max.apply(null, lngs);
+    const padLat = Math.max((maxLat - minLat) * 0.4, 4);
+    const padLng = Math.max((maxLng - minLng) * 0.4, 4);
+    return new ml.LngLatBounds([minLng - padLng, minLat - padLat], [maxLng + padLng, maxLat + padLat]);
+  }
+
+  fit() {
+    const ml = window.maplibregl;
+    const plants = this.plants();
+    if (!plants.length || !this.map) return;
+    try {
+      if (plants.length === 1) { this.map.jumpTo({ center: [plants[0].lng, plants[0].lat], zoom: 9 }); return; }
+      const b = new ml.LngLatBounds();
+      plants.forEach((p) => b.extend([p.lng, p.lat]));
+      this.map.fitBounds(b, { padding: { top: 92, bottom: 44, left: 60, right: 60 }, maxZoom: 6.5, duration: 0 });
+    } catch (e) { try { this.map.jumpTo({ center: [-96, 38], zoom: 3.4 }); } catch (e2) {} }
+  }
+
+  clearMarkers() { (this.markers || []).forEach((m) => { try { m.marker.remove(); } catch (e) {} }); this.markers = []; }
+
+  infoContent(p) {
+    const P = this.palette();
+    const pal = P[p.status] || P.normal;
+    return '<div style="font-family: ui-sans-serif, system-ui, sans-serif; min-width:210px; padding:2px 2px 4px;">' +
+      '<div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">' +
+        '<div><div style="font-family:\'Space Grotesk\',sans-serif; font-weight:600; font-size:15px; color:#20262B;">' + p.name + '</div>' +
+        '<div style="font-size:12px; color:#8A9199; margin-top:1px;">' + (p.meta || "") + '</div></div>' +
+        '<span style="font-family:\'Space Grotesk\',sans-serif; font-size:11.5px; font-weight:600; color:' + pal.text + '; background:' + pal.soft + '; border-radius:999px; padding:3px 9px; white-space:nowrap;">' + pal.label + '</span>' +
+      '</div>' +
+      '<div style="display:flex; gap:16px; margin-top:11px; padding-top:11px; border-top:1px solid #EEF2F5;">' +
+        '<div><div style="font-size:10.5px; color:#9AA3AB; text-transform:uppercase; letter-spacing:0.04em;">Output</div><div style="font-family:\'Space Grotesk\',sans-serif; font-weight:600; font-size:15px; color:#20262B; margin-top:2px;">' + (p.power || "-") + '</div></div>' +
+        '<div><div style="font-size:10.5px; color:#9AA3AB; text-transform:uppercase; letter-spacing:0.04em;">SOC</div><div style="font-family:\'Space Grotesk\',sans-serif; font-weight:600; font-size:15px; color:#20262B; margin-top:2px;">' + (p.soc || "-") + '</div></div>' +
+        '<div><div style="font-size:10.5px; color:#9AA3AB; text-transform:uppercase; letter-spacing:0.04em;">Devices</div><div style="font-family:\'Space Grotesk\',sans-serif; font-weight:600; font-size:15px; color:#20262B; margin-top:2px;">' + (p.devices != null ? p.devices : "-") + '</div></div>' +
+      '</div>' +
+      '<div style="margin-top:12px;"><span style="display:inline-block; font-family:\'Space Grotesk\',sans-serif; font-size:12.5px; font-weight:600; color:#fff; background:#009DE4; border-radius:8px; padding:6px 14px;">View plant →</span></div>' +
+    '</div>';
+  }
+
+  selectPlant(i, silent) {
+    const plants = this.plants();
+    const p = plants[i];
+    this._interacted = true;
+    this.setState({ sel: i });
+    this.refreshMarkers(i);
+    if (this.map && this.popup && p) {
+      this.popup.setLngLat([p.lng, p.lat]).setHTML(this.infoContent(p)).addTo(this.map);
+      this.map.flyTo({ center: [p.lng, p.lat], zoom: Math.max(this.map.getZoom() || 4, 5), duration: 500 });
+    }
+    if (!silent && this.props.onSelect) this.props.onSelect(p, i);
+  }
+
+  searchArea() {
+    if (this.map && this.state.ready && this.map.getBounds) {
+      const b = this.map.getBounds();
+      const sw = b.getSouthWest(), ne = b.getNorthEast();
+      const inb = this.plants().filter((p) => { try { return b.contains([p.lng, p.lat]); } catch (e) { return true; } });
+      if (this.props.onViewport) this.props.onViewport({ count: inb.length, total: this.plants().length, plants: inb });
+      this.setState({ bounds: sw.lat.toFixed(2) + "," + sw.lng.toFixed(2) + " → " + ne.lat.toFixed(2) + "," + ne.lng.toFixed(2) });
+      return;
+    }
+    if (this.props.onViewport) { const pl = this.plants(); this.props.onViewport({ count: pl.length, total: pl.length, plants: pl }); }
+    this.setState({ bounds: "bbox → URL (live map only)" });
+  }
+
+  renderVals() {
+    const P = this.palette();
+    const plants = this.plants();
+    const selIdx = this.state.sel;
+    const counts = { normal: 0, warning: 0, offline: 0, fault: 0, anomaly: 0 };
+    plants.forEach((p) => { const k = p.status === "online" ? "normal" : p.status; if (counts[k] != null) counts[k] += 1; });
+    const isIncidents = this.props.mode === "incidents";
+
+    const LNG0 = -125, LNG1 = -66, LAT0 = 24, LAT1 = 50, VW = 1000, VH = 600;
+    const projX = (lng) => ((lng - LNG0) / (LNG1 - LNG0)) * VW;
+    const projY = (lat) => ((LAT1 - lat) / (LAT1 - LAT0)) * VH;
+    const usBorder = [
+      [-124.7,48.4],[-124.1,46.3],[-124.4,43.3],[-124.2,40.4],[-122.4,37.8],[-120.6,34.6],[-117.3,32.5],
+      [-114.6,32.7],[-111.1,31.3],[-108.2,31.5],[-106.5,31.8],[-103.0,29.0],[-101.5,29.8],[-99.2,26.4],[-97.2,25.9],
+      [-96.5,28.4],[-94.0,29.7],[-91.5,29.6],[-89.2,29.1],[-88.4,30.4],[-86.5,30.4],[-84.0,30.1],[-83.0,29.0],[-82.7,27.6],[-81.8,25.9],[-80.4,25.2],
+      [-80.6,28.3],[-81.4,30.7],[-80.9,32.0],[-79.2,33.2],[-77.9,34.0],[-75.7,35.2],[-75.9,37.0],[-75.1,38.3],[-74.2,39.7],[-74.0,40.5],[-71.9,41.3],[-70.7,41.6],[-70.2,43.2],[-69.0,44.0],[-67.1,44.8],
+      [-68.0,47.3],[-70.9,45.2],[-73.3,45.0],[-76.5,44.0],[-79.2,43.3],[-82.7,41.7],[-83.1,42.3],[-82.5,45.0],[-84.6,45.9],[-87.6,48.0],[-90.5,46.7],[-95.0,49.0],[-104.0,49.0],[-114.0,49.0],[-123.0,49.0]
+    ];
+    const landPath = usBorder.map((c, i) => (i ? "L" : "M") + projX(c[0]).toFixed(1) + " " + projY(c[1]).toFixed(1)).join(" ") + " Z";
+    const pins = plants.map((p, i) => {
+      const st0 = String(p.status || "normal").toLowerCase();
+      const st = st0 === "online" ? "normal" : st0;
+      const pal = P[st] || P.normal;
+      const sz = this.props.sizeByCapacity ? Math.round(Math.max(16, Math.min(30, 13 + Math.sqrt(Number(p.capacity) || 100) * 0.72))) : 20;
+      return {
+        onClick: () => { const ns = i === selIdx ? null : i; this.setState({ sel: ns }); if (this.props.onSelect) this.props.onSelect(ns == null ? null : plants[i], ns); },
+        left: (projX(p.lng) / VW) * 100, top: (projY(p.lat) / VH) * 100,
+        color: pal.color, size: sz,
+      };
+    });
+
+    const rows = plants.map((p, i) => ({ p, i })).sort((a, b) => this.rank(a.p.status) - this.rank(b.p.status)).map(({ p, i }) => {
+      const st0 = String(p.status || "normal").toLowerCase();
+      const st = st0 === "online" ? "normal" : st0;
+      const pal = P[st] || P.normal;
+      const isSel = this.props.selectedName && this.props.selectedName === p.name;
+      return {
+        onClick: () => this.selectPlant(i),
+        color: pal.color, badgeText: pal.text, badgeBg: pal.soft,
+        name: p.name, meta: p.meta, statusLabel: pal.label,
+        rowBg: isSel ? "#F0F8FD" : "#fff",
+      };
+    });
+
+    return {
+      mapRef: this.mapRef,
+      title: this.props.title ?? (isIncidents ? "Incident map" : "Fleet map"),
+      listTitle: this.props.listTitle ?? (isIncidents ? "Incidents" : "Plants"),
+      nNormal: counts.normal, nWarning: counts.warning, nOffline: counts.offline, nFault: counts.fault, nAnomaly: counts.anomaly,
+      count: plants.length,
+      pins, rows,
+      showList: this.props.hideList !== true,
+      showFallback: this.state.failed || !!this.props.schematic,
+      showLoading: !this.state.ready && !this.state.failed && !this.props.schematic,
+      landPath,
+      chipText: this.props.schematic ? "Schematic map · vector" : "Schematic view · basemap offline",
+      onSearchArea: () => this.searchArea(),
+      showBounds: !!this.state.bounds,
+      boundsText: this.state.bounds ? ("bbox  " + this.state.bounds) : "",
+    };
+  }
+}
+</script>
+</body>
+</html>

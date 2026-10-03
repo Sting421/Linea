@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Fleet · Coverage qualifier" description="Data-honesty annotation for any aggregate: 'X of Y reporting'. Neutral by default; warn tint when coverage falls below threshold so a data outage reads as a data outage, not a production drop. Shared across Area 1 & 2." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<sc-if value="{{ warn }}" hint-placeholder-val="{{ false }}">
+  <span style="display:inline-flex;align-items:center;gap:7px;font-family:'Space Grotesk',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:12.5px;font-weight:600;line-height:1;color:#8F5500;background:#FFF4E2;border:1px solid #F8D399;border-radius:999px;padding:5px 11px;white-space:nowrap;vertical-align:middle;">
+    <span style="width:7px;height:7px;border-radius:50%;background:#E08600;flex:0 0 auto;"></span>
+    <span style="font-variant-numeric:tabular-nums;"><span style="color:#5C3800;font-weight:700;">{{ reportingText }}</span> of <span style="color:#5C3800;font-weight:700;">{{ totalText }}</span></span>
+    <span style="opacity:0.8;">{{ noun }}</span>
+  </span>
+</sc-if>
+<sc-if value="{{ neutral }}" hint-placeholder-val="{{ true }}">
+  <span style="display:inline-flex;align-items:center;gap:7px;font-family:'Space Grotesk',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:12.5px;font-weight:600;line-height:1;color:#8A9199;white-space:nowrap;vertical-align:middle;">
+    <span style="width:7px;height:7px;border-radius:50%;background:#009DE4;flex:0 0 auto;"></span>
+    <span style="font-variant-numeric:tabular-nums;"><span style="color:#17222E;font-weight:700;">{{ reportingText }}</span> of <span style="color:#17222E;font-weight:700;">{{ totalText }}</span></span>
+    <span>{{ noun }}</span>
+  </span>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 260, &quot;height&quot;: 56}, &quot;reporting&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 1042, &quot;tsType&quot;: &quot;number&quot;}, &quot;total&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 1240, &quot;tsType&quot;: &quot;number&quot;}, &quot;noun&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;reporting&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;warnBelow&quot;: {&quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 0.95, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;}, &quot;forceWarn&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const reporting = Number(this.props.reporting ?? 1042);
+    const total = Number(this.props.total ?? 1240);
+    const noun = this.props.noun ?? "reporting";
+    // warn when >5% of the fleet is not reporting (default), or when explicitly forced
+    const ratio = total > 0 ? reporting / total : 1;
+    const threshold = Number(this.props.warnBelow ?? 0.95);
+    const warn = this.props.forceWarn === true || ratio < threshold;
+    const fmt = n => (isFinite(n) ? n.toLocaleString("en-US") : String(n));
+    return {
+      reportingText: fmt(reporting),
+      totalText: fmt(total),
+      noun,
+      warn,
+      neutral: !warn,
+    };
+  }
+}
+</script>
+</body>
+</html>

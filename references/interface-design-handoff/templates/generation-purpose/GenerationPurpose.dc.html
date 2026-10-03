@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Generation purpose" description="Area 2 radial split of where today's generated energy went: self-consumption, battery charge, grid export and curtailed. Center shows total generation; legend lists kWh and share per purpose. Rebuilds GenerationPurpose (PlantStatus)." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;max-width:520px;box-sizing:border-box;margin:0 auto;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 18px 4px;">
+    <div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#1F4173;">Generation purpose</div>
+      <div style="font-size:15px;font-weight:500;color:#3A4553;margin-top:3px;">{{ plant }}</div>
+    </div>
+    <span style="display:inline-flex;align-items:center;gap:6px;border:1px solid #CFE0EA;border-radius:999px;padding:4px 11px;background:#fff;white-space:nowrap;flex:none;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#03587F" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="3" x2="8" y2="6"></line><line x1="16" y1="3" x2="16" y2="6"></line></svg>
+      <span style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;color:#20262B;">{{ today }}</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:22px;padding:10px 18px 18px;flex-wrap:wrap;">
+    <div style="position:relative;width:150px;height:150px;flex:none;">
+      {{ donutEl }}
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#20262B;line-height:1;">{{ total }}</div>
+        <div style="font-size:10px;color:#8A9199;margin-top:3px;">today</div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:190px;max-width:290px;display:flex;flex-direction:column;gap:9px;">
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:9px;">
+          {{ r.dotEl }}
+          <span style="flex:1;font-size:12.5px;color:#20262B;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.label }}</span>
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:#1F4173;white-space:nowrap;text-align:right;min-width:52px;">{{ r.kwh }}</span>
+          <span style="font-size:11px;color:#8A9199;width:34px;text-align:right;">{{ r.pct }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:500,&quot;height&quot;:230},&quot;plant&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Riverside Solar&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  segs() {
+    return [
+      { key: "self",    label: "Self-consumption", kwh: 128, color: "#C2418F" },
+      { key: "charge",  label: "Battery charge",   kwh: 86,  color: "#1FA845" },
+      { key: "export",  label: "Grid export",      kwh: 54,  color: "#1F4173" },
+      { key: "curtail", label: "Curtailed",        kwh: 12,  color: "#A8B0B7" },
+    ];
+  }
+  donut() {
+    const h = (...a) => React.createElement(...a);
+    const segs = this.segs();
+    const total = segs.reduce((a, s) => a + s.kwh, 0);
+    const R = 52, C = 64, circ = 2 * Math.PI * R;
+    const kids = [h("circle", { key: "bg", cx: C, cy: C, r: R, fill: "none", stroke: "#EEF2F5", strokeWidth: 16 })];
+    let acc = 0;
+    segs.forEach(s => {
+      const len = (s.kwh / total) * circ;
+      kids.push(h("circle", { key: s.key, cx: C, cy: C, r: R, fill: "none", stroke: s.color, strokeWidth: 16, strokeDasharray: len + " " + (circ - len), strokeDashoffset: -acc }));
+      acc += len;
+    });
+    return h("svg", { viewBox: "0 0 128 128", width: 150, height: 150, style: { transform: "rotate(-90deg)", display: "block" } }, ...kids);
+  }
+  renderVals() {
+    const p = this.props;
+    const h = (...a) => React.createElement(...a);
+    const segs = this.segs();
+    const total = segs.reduce((a, s) => a + s.kwh, 0);
+    const rows = segs.map(s => ({
+      label: s.label, kwh: s.kwh + " kWh", pct: Math.round(s.kwh / total * 100) + "%",
+      dotEl: h("span", { style: { width: "11px", height: "11px", borderRadius: "3px", background: s.color, flex: "none", display: "inline-block" } }),
+    }));
+    const today = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return { plant: p.plant ?? "Riverside Solar", today, donutEl: this.donut(), total: total + " kWh", rows };
+  }
+}
+</script>
+</body>
+</html>

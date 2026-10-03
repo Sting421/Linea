@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>@keyframes sd-pulse { 0% { transform: translateY(-50%) scale(1); opacity: 0.55; } 100% { transform: translateY(-50%) scale(2.6); opacity: 0; } }</style>
+</helmet>
+<span style="display:inline-flex; align-items:center; gap:7px; position:relative; vertical-align:middle;">
+  <sc-if value="{{ isNormal }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ pulse }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; left:0; top:50%; width:9px; height:9px; border-radius:50%; background:#009DE4; opacity:0.55; transform:translateY(-50%); animation:sd-pulse 1.6s ease-out infinite;"></span></sc-if>
+    <span style="width:9px; height:9px; border-radius:50%; background:#009DE4; flex:0 0 auto; position:relative; box-shadow:0 0 0 2px #fff;"></span>
+  </sc-if>
+  
+  <sc-if value="{{ isWarning }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ pulse }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; left:0; top:50%; width:9px; height:9px; border-radius:50%; background:#E08600; opacity:0.55; transform:translateY(-50%); animation:sd-pulse 1.6s ease-out infinite;"></span></sc-if>
+    <span style="width:9px; height:9px; border-radius:50%; background:#E08600; flex:0 0 auto; position:relative; box-shadow:0 0 0 2px #fff;"></span>
+  </sc-if>
+  <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ pulse }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; left:0; top:50%; width:9px; height:9px; border-radius:50%; background:#6B7177; opacity:0.55; transform:translateY(-50%); animation:sd-pulse 1.6s ease-out infinite;"></span></sc-if>
+    <span style="width:9px; height:9px; border-radius:50%; background:#6B7177; flex:0 0 auto; position:relative; box-shadow:0 0 0 2px #fff;"></span>
+  </sc-if>
+  <sc-if value="{{ isFault }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ pulse }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; left:0; top:50%; width:9px; height:9px; border-radius:50%; background:#D92D20; opacity:0.55; transform:translateY(-50%); animation:sd-pulse 1.6s ease-out infinite;"></span></sc-if>
+    <span style="width:9px; height:9px; border-radius:50%; background:#D92D20; flex:0 0 auto; position:relative; box-shadow:0 0 0 2px #fff;"></span>
+  </sc-if>
+  <sc-if value="{{ isAnomaly }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ pulse }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; left:0; top:50%; width:9px; height:9px; border-radius:50%; background:#8B5CF6; opacity:0.55; transform:translateY(-50%); animation:sd-pulse 1.6s ease-out infinite;"></span></sc-if>
+    <span style="width:9px; height:9px; border-radius:50%; background:#8B5CF6; flex:0 0 auto; position:relative; box-shadow:0 0 0 2px #fff;"></span>
+  </sc-if>
+  <sc-if value="{{ showLabel }}" hint-placeholder-val="{{ false }}">
+    <span style="font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; color: #3A434B;">{{ label }}</span>
+  </sc-if>
+</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 140, &quot;height&quot;: 48}, &quot;status&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;normal&quot;, &quot;warning&quot;, &quot;offline&quot;, &quot;fault&quot;, &quot;anomaly&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;'normal'|'warning'|'offline'|'fault'|'anomaly'&quot;}, &quot;size&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;sm&quot;, &quot;md&quot;, &quot;lg&quot;], &quot;default&quot;: &quot;md&quot;, &quot;tsType&quot;: &quot;'sm'|'md'|'lg'&quot;}, &quot;label&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;pulse&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const raw = String(this.props.status || "normal").toLowerCase();
+    const status = raw === "online" ? "normal" : raw;
+    const label = this.props.label;
+    const showLabel = label != null && label !== "";
+    const pulse = !!this.props.pulse;
+    return {
+      isNormal: status === "normal",
+      isWarning: status === "warning",
+      isOffline: status === "offline",
+      isFault: status === "fault",
+      isAnomaly: status === "anomaly",
+      pulse,
+      showLabel, label,
+    };
+  }
+}
+</script>
+</body>
+</html>

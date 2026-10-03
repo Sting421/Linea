@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="display:flex;flex-direction:column;gap:16px;align-items:center;padding:26px 20px;font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9AA6B0;font-weight:700;width:64px;text-align:right;">Full</span>
+    <dc-import name="CoverageLabel" reporting="1238" total="1240" noun="reporting" hint-size="240px,40px"></dc-import>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9AA6B0;font-weight:700;width:64px;text-align:right;">Degraded</span>
+    <dc-import name="CoverageLabel" reporting="1042" total="1240" noun="reporting" hint-size="240px,40px"></dc-import>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9AA6B0;font-weight:700;width:64px;text-align:right;">Devices</span>
+    <dc-import name="CoverageLabel" reporting="40" total="42" noun="devices online" hint-size="240px,40px"></dc-import>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

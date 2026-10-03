@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<sc-if value="{{ isNormal }}" hint-placeholder-val="{{ false }}">
+  <span style="display:inline-flex; align-items:center; gap:6px; font-family:'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:{{ fs }}; line-height:1; letter-spacing:0.012em; border-radius:999px; white-space:nowrap; box-sizing:border-box; border:1px solid transparent; vertical-align:middle; user-select:none; padding:{{ pad }}; background:#E6F7FF; color:#03587F;">
+    <span style="display:inline-block;">{{ label }}</span>
+    <sc-if value="{{ showCount }}" hint-placeholder-val="{{ false }}"><span style="font-weight:500; opacity:0.72; font-variant-numeric:tabular-nums;">{{ countText }}</span></sc-if>
+  </span>
+</sc-if>
+
+<sc-if value="{{ isWarning }}" hint-placeholder-val="{{ false }}">
+  <span style="display:inline-flex; align-items:center; gap:6px; font-family:'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:{{ fs }}; line-height:1; letter-spacing:0.012em; border-radius:999px; white-space:nowrap; box-sizing:border-box; border:1px solid transparent; vertical-align:middle; user-select:none; padding:{{ pad }}; background:#FFF4E2; color:#8F5500;">
+    <span style="display:inline-block;">{{ label }}</span>
+    <sc-if value="{{ showCount }}" hint-placeholder-val="{{ false }}"><span style="font-weight:500; opacity:0.72; font-variant-numeric:tabular-nums;">{{ countText }}</span></sc-if>
+  </span>
+</sc-if>
+<sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+  <span style="display:inline-flex; align-items:center; gap:6px; font-family:'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:{{ fs }}; line-height:1; letter-spacing:0.012em; border-radius:999px; white-space:nowrap; box-sizing:border-box; border:1px solid transparent; vertical-align:middle; user-select:none; padding:{{ pad }}; background:#EEF0F1; color:#474C51;">
+    <span style="display:inline-block;">{{ label }}</span>
+    <sc-if value="{{ showCount }}" hint-placeholder-val="{{ false }}"><span style="font-weight:500; opacity:0.72; font-variant-numeric:tabular-nums;">{{ countText }}</span></sc-if>
+  </span>
+</sc-if>
+<sc-if value="{{ isFault }}" hint-placeholder-val="{{ true }}">
+  <span style="display:inline-flex; align-items:center; gap:6px; font-family:'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:{{ fs }}; line-height:1; letter-spacing:0.012em; border-radius:999px; white-space:nowrap; box-sizing:border-box; border:1px solid transparent; vertical-align:middle; user-select:none; padding:{{ pad }}; background:#FDECEA; color:#9E1B12;">
+    <span style="display:inline-block;">{{ label }}</span>
+    <sc-if value="{{ showCount }}" hint-placeholder-val="{{ false }}"><span style="font-weight:500; opacity:0.72; font-variant-numeric:tabular-nums;">{{ countText }}</span></sc-if>
+  </span>
+</sc-if>
+<sc-if value="{{ isAnomaly }}" hint-placeholder-val="{{ false }}">
+  <span style="display:inline-flex; align-items:center; gap:6px; font-family:'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:{{ fs }}; line-height:1; letter-spacing:0.012em; border-radius:999px; white-space:nowrap; box-sizing:border-box; border:1px solid transparent; vertical-align:middle; user-select:none; padding:{{ pad }}; background:#F1EAFE; color:#5B21B6;">
+    <span style="display:inline-block;">{{ label }}</span>
+    <sc-if value="{{ showCount }}" hint-placeholder-val="{{ false }}"><span style="font-weight:500; opacity:0.72; font-variant-numeric:tabular-nums;">{{ countText }}</span></sc-if>
+  </span>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 180, &quot;height&quot;: 64}, &quot;status&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;normal&quot;, &quot;warning&quot;, &quot;anomaly&quot;, &quot;offline&quot;, &quot;fault&quot;], &quot;default&quot;: &quot;fault&quot;, &quot;tsType&quot;: &quot;'normal' | 'warning' | 'anomaly' | 'offline' | 'fault'&quot;}, &quot;variant&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;solid&quot;, &quot;soft&quot;, &quot;outline&quot;, &quot;dot&quot;, &quot;dot-only&quot;], &quot;default&quot;: &quot;soft&quot;, &quot;tsType&quot;: &quot;'solid' | 'soft' | 'outline' | 'dot' | 'dot-only'&quot;}, &quot;size&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;sm&quot;, &quot;md&quot;, &quot;lg&quot;], &quot;default&quot;: &quot;md&quot;, &quot;tsType&quot;: &quot;'sm' | 'md' | 'lg'&quot;}, &quot;label&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;count&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 0, &quot;tsType&quot;: &quot;number&quot;}, &quot;uppercase&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const NAME = { normal: "Normal", warning: "Warning", anomaly: "Anomaly", offline: "Offline", fault: "Fault" };
+    const raw = String(this.props.status || "fault").toLowerCase();
+    const status = raw === "online" ? "normal" : raw;
+    const label = (this.props.label != null && this.props.label !== "") ? this.props.label : (NAME[status] || "Fault");
+    const count = this.props.count;
+    const showCount = count != null && count !== "" && Number(count) > 0;
+    const size = String(this.props.size || "md").toLowerCase();
+    const SZ = { sm: { pad: "2.5px 9px", fs: "11px" }, md: { pad: "3.5px 11px", fs: "12.5px" }, lg: { pad: "5px 14px", fs: "14px" } };
+    const sz = SZ[size] || SZ.md;
+    return {
+      pad: sz.pad, fs: sz.fs,
+      isNormal: status === "normal",
+      isWarning: status === "warning",
+      isOffline: status === "offline",
+      isFault: status === "fault",
+      isAnomaly: status === "anomaly",
+      label, showCount, countText: "\u00d7" + count,
+    };
+  }
+}
+</script>
+</body>
+</html>

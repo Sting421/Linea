@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Area 1 · Fleet Overview" description="Role-aware Fleet Overview (Area 1). One screen that restructures per role: Aggregator (exception donut + scope-fixed fleet output), Utility (grid-condition KPI promoted), End-user (donut dropped; battery, savings & per-plant cards promoted). Status map + fleet list stay synced; the donut click-filters both. Aggregator gets the opt-in Full Map View with viewport-bound KPIs. Toggle roles in the top bar." -->
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: #CBD3DA; border-radius: 6px; border: 2px solid transparent; background-clip: content-box; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    @keyframes a1fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  </style>
+</helmet>
+<div style="display:flex; height:100vh; width:100%; overflow:hidden; background:#F4F6F8; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#20262B;">
+
+  <!-- ============ NAV RAIL ============ -->
+  <nav style="width:66px; flex:0 0 66px; background:#131B21; display:flex; flex-direction:column; align-items:center; padding:14px 0 16px;">
+    <div style="width:38px; height:38px; border-radius:11px; background:linear-gradient(150deg,#009DE4,#0B7CC2); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,157,228,.4);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-2 8 9-12h-7z"></path></svg>
+    </div>
+    <div style="height:16px;"></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; width:100%;">
+      <div title="Fleet Overview" style="width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(0,157,228,.16); color:#4FC2F2; position:relative;">
+        <span style="position:absolute; left:0; top:9px; bottom:9px; width:3px; border-radius:0 3px 3px 0; background:#009DE4;"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+      </div>
+      <div title="Plant Detail" style="width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#7C8A94; cursor:pointer;" style-hover="background:rgba(255,255,255,.06); color:#C4D0D8;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-2 8 9-12h-7z"></path></svg>
+      </div>
+      <div title="Alerts & Events" style="width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#7C8A94; cursor:pointer; position:relative;" style-hover="background:rgba(255,255,255,.06); color:#C4D0D8;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+        <span style="position:absolute; top:8px; right:9px; width:7px; height:7px; border-radius:50%; background:#D92D20; border:1.5px solid #131B21;"></span>
+      </div>
+      <div title="Dispatch" style="width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#7C8A94; cursor:pointer;" style-hover="background:rgba(255,255,255,.06); color:#C4D0D8;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><circle cx="9" cy="6" r="2.4" fill="#131B21"></circle><line x1="4" y1="12" x2="20" y2="12"></line><circle cx="15" cy="12" r="2.4" fill="#131B21"></circle><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="8" cy="18" r="2.4" fill="#131B21"></circle></svg>
+      </div>
+      <div title="Grid Conditions" style="width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#7C8A94; cursor:pointer;" style-hover="background:rgba(255,255,255,.06); color:#C4D0D8;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
+      </div>
+    </div>
+    <div style="margin-top:auto; display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <div title="Settings" style="width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#7C8A94; cursor:pointer;" style-hover="background:rgba(255,255,255,.06); color:#C4D0D8;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </div>
+      <div style="width:34px; height:34px; border-radius:50%; background:#2A6FDB; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px;">AO</div>
+    </div>
+  </nav>
+
+  <!-- ============ MAIN COLUMN ============ -->
+  <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column;">
+
+    <!-- top bar -->
+    <header style="height:60px; flex:0 0 auto; background:#fff; border-bottom:1px solid #E6EBEF; display:flex; align-items:center; gap:13px; padding:0 18px; z-index:5; overflow:hidden;">
+      <div style="display:flex; align-items:center; gap:11px;">
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; letter-spacing:-.01em; color:#131B21;">Ovanova</span>
+        <span style="width:1px; height:22px; background:#E2E7EB;"></span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; color:#1F4173;">Fleet Overview</span>
+        <span style="font-size:11px; font-weight:600; color:#8A9199; background:#F1F4F6; border-radius:6px; padding:2px 7px; letter-spacing:.02em;">AREA 1</span>
+      </div>
+
+      <div style="flex:1 1 auto;"></div>
+
+      <!-- role switcher -->
+      <div style="display:flex; align-items:center; gap:9px;">
+        <span style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:#9AA3AB;">Role</span>
+        <div style="display:flex; background:#F1F4F6; border:1px solid #E4E9ED; border-radius:10px; padding:3px; gap:2px;">
+          <button type="button" onClick="{{ setAgg }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; border-radius:7px; padding:6px 12px; background:{{ aggBg }}; color:{{ aggColor }};">Aggregator</button>
+          <button type="button" onClick="{{ setUtil }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; border-radius:7px; padding:6px 12px; background:{{ utilBg }}; color:{{ utilColor }};">Utility</button>
+          <button type="button" onClick="{{ setEnd }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; border-radius:7px; padding:6px 12px; background:{{ endBg }}; color:{{ endColor }};">End-user</button>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px; background:#F4F6F8; border:1px solid #E4E9ED; border-radius:9px; padding:7px 11px; width:200px; min-width:150px; flex-shrink:1;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9AA3AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <span style="font-size:13px; color:#9AA3AB;">Search plants…</span>
+      </div>
+
+      <button type="button" onClick="{{ onBell }}" style="position:relative; width:38px; height:38px; border-radius:9px; border:1px solid #E4E9ED; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#5B6A78;" style-hover="background:#F4F6F8;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+        <span style="position:absolute; top:7px; right:8px; width:7px; height:7px; border-radius:50%; background:#D92D20; border:1.5px solid #fff;"></span>
+      </button>
+    </header>
+
+    <!-- context bar -->
+    <div style="flex:0 0 auto; background:#fff; border-bottom:1px solid #EEF2F5; padding:9px 22px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+      <span style="display:inline-flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; border-radius:999px; padding:5px 12px; background:{{ scopePillBg }}; color:{{ scopePillText }};">
+        <span style="width:8px; height:8px; border-radius:50%; background:{{ scopePillDot }};"></span>{{ scopeLabel }}
+      </span>
+      <span style="font-size:12.5px; color:#8A9199; font-weight:500;">{{ scopeSub }}</span>
+      <span style="font-size:11.5px; color:#AAB1B8; font-weight:600; background:#F4F6F8; border-radius:6px; padding:3px 8px;">KPIs scope-fixed · don't recompute on pan</span>
+      <div style="flex:1 1 auto;"></div>
+      <dc-import name="CoverageLabel" reporting="{{ covReportingNum }}" total="{{ covTotalNum }}" noun="{{ covNoun }}" hint-size="190px,26px"></dc-import>
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#9AA3AB; font-weight:500;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path></svg>
+        {{ updated }}
+      </span>
+    </div>
+
+    <!-- content -->
+    <main style="flex:1 1 auto; overflow-y:auto; overflow-x:hidden; padding:22px; min-width:0;">
+
+      <!-- ============ DASHBOARD ============ -->
+      <sc-if value="{{ showDashboard }}" hint-placeholder-val="{{ true }}">
+      <div style="max-width:1320px; margin:0 auto; display:flex; flex-direction:column; gap:24px;">
+
+        <!-- PRIMARY -->
+        <section>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:13px;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; color:#1F4173;">{{ primaryTitle }}</span>
+            <span style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#03587F; background:#E6F4FC; border-radius:5px; padding:2px 7px;">Primary</span>
+          </div>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:stretch;">
+
+            <sc-if value="{{ showDonut }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1 1 380px; min-width:330px; background:#fff; border:1px solid #E2E7EB; border-radius:14px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05); display:flex; flex-direction:column; overflow:hidden;">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; padding:15px 18px 0;">
+                <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; color:#1F4173;">Fleet status</span>
+                <span style="font-size:12px; color:#8A9199;">Click a segment to filter</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px; padding:6px 16px 14px;">
+                <div style="position:relative; width:180px; height:180px; flex:0 0 auto;">
+                  <sc-if value="{{ donutReady }}" hint-placeholder-val="{{ true }}">{{ donutEl }}</sc-if>
+                  <sc-if value="{{ donutLoading }}" hint-placeholder-val="{{ false }}"><div style="height:100%; display:flex; align-items:center; justify-content:center; color:#B4BBC1; font-size:13px;">Loading…</div></sc-if>
+                  <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
+                    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:32px; color:#20262B; line-height:1; font-variant-numeric:tabular-nums;">{{ donutTotal }}</div>
+                    <div style="font-size:10.5px; color:#8A9199; letter-spacing:.04em; text-transform:uppercase; margin-top:3px;">{{ donutNoun }}</div>
+                  </div>
+                </div>
+                <div style="flex:1 1 auto; display:flex; flex-direction:column; gap:1px; min-width:0;">
+                  <sc-for list="{{ donutLegend }}" as="l" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ l.onClick }}" style="display:flex; align-items:center; gap:8px; padding:5px 8px; border:none; border-radius:7px; cursor:pointer; width:100%; text-align:left; background:{{ l.rowBg }}; opacity:{{ l.opacity }};">
+                      <span style="width:10px; height:10px; border-radius:3px; background:{{ l.color }}; flex:0 0 auto;"></span>
+                      <span style="font-size:13px; color:#3A434B; flex:1 1 auto;">{{ l.label }}</span>
+                      <span style="font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:#20262B; font-variant-numeric:tabular-nums;">{{ l.count }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="margin-top:auto; padding:10px 18px; border-top:1px solid #F2F5F7; display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; color:#8A9199;">{{ donutFooter }}</span>
+                <sc-if value="{{ filterActive }}" hint-placeholder-val="{{ false }}">
+                  <button type="button" onClick="{{ onClearFilter }}" style="margin-left:auto; display:inline-flex; align-items:center; gap:6px; border:1px solid; border-color:{{ filterChipText }}; background:{{ filterChipBg }}; color:{{ filterChipText }}; border-radius:999px; padding:3px 9px 3px 11px; font-family:'Space Grotesk',sans-serif; font-size:11.5px; font-weight:600; cursor:pointer;">Filter: {{ filterChipLabel }} · {{ filterChipCount }} ✕</button>
+                </sc-if>
+              </div>
+            </div>
+            </sc-if>
+
+            <sc-for list="{{ primaryTiles }}" as="t" hint-placeholder-count="2">
+              <div style="background:#fff; border:1px solid #E2E7EB; border-radius:14px; padding:16px 18px 15px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05); display:flex; flex-direction:column; gap:11px; min-width:220px; flex:1 1 240px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; color:#6B7177; font-weight:600; letter-spacing:.01em;">{{ t.label }}</span>
+                  <sc-if value="{{ t.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto; font-family:'Space Grotesk',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:999px; padding:3px 9px; background:{{ t.badgeBg }}; color:{{ t.badgeText }};">{{ t.badgeLabel }}</span></sc-if>
+                </div>
+                <div style="display:flex; align-items:baseline; gap:6px; flex-wrap:wrap;">
+                  <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:33px; color:#20262B; line-height:1; letter-spacing:-.015em; font-variant-numeric:tabular-nums;">{{ t.value }}</span>
+                  <span style="font-size:14px; color:#8A9199; font-weight:500;">{{ t.unit }}</span>
+                  <sc-if value="{{ t.deltaGood }}" hint-placeholder-val="{{ false }}"><span style="margin-left:3px; display:inline-flex; align-items:center; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#15702F; background:#E7F8EC; border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ t.deltaText }}</span></sc-if>
+                  <sc-if value="{{ t.deltaBad }}" hint-placeholder-val="{{ false }}"><span style="margin-left:3px; display:inline-flex; align-items:center; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#9E1B12; background:#FDECEA; border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ t.deltaText }}</span></sc-if>
+                </div>
+                <sc-if value="{{ t.hasBar }}" hint-placeholder-val="{{ false }}">
+                  <div style="height:8px; border-radius:999px; background:#EEF1F5; overflow:hidden;"><div style="height:100%; border-radius:999px; width:{{ t.barPct }}%; background:{{ t.barColor }};"></div></div>
+                </sc-if>
+                <sc-if value="{{ t.hasSpark }}" hint-placeholder-val="{{ true }}"><div style="height:40px; margin:0 -2px;"><dc-import name="Sparkline" color="{{ t.sparkColor }}" values="{{ t.sparkValues }}" hint-size="100%,40px"></dc-import></div></sc-if>
+                <sc-if value="{{ t.hasFooter }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#8A9199; font-weight:500;">{{ t.footer }}</div></sc-if>
+                <sc-if value="{{ t.hasLink }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ t.onLink }}" style="align-self:flex-start; border:none; background:transparent; padding:0; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#03587F; cursor:pointer;">{{ t.linkLabel }}</button></sc-if>
+              </div>
+            </sc-for>
+
+          </div>
+        </section>
+
+        <!-- MAP -->
+        <section>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:13px; flex-wrap:wrap;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; color:#1F4173;">{{ mapSectionTitle }}</span>
+            <span style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5B6A78; background:#EEF2F5; border-radius:5px; padding:2px 7px;">Map</span>
+            <div style="flex:1 1 auto;"></div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <div style="display:flex; background:#fff; border:1px solid #E2E7EB; border-radius:9px; padding:3px; gap:2px;">
+                <button type="button" onClick="{{ setPinStatus }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12px; border-radius:6px; padding:6px 11px; background:{{ pinStatusBg }}; color:{{ pinStatusColor }};">Status pins</button>
+                <button type="button" onClick="{{ setPinCap }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12px; border-radius:6px; padding:6px 11px; background:{{ pinCapBg }}; color:{{ pinCapColor }};">Capacity</button>
+              </div>
+              <sc-if value="{{ filterActive }}" hint-placeholder-val="{{ false }}">
+                <button type="button" onClick="{{ onClearFilter }}" style="display:inline-flex; align-items:center; gap:6px; border:1px solid; border-color:{{ filterChipText }}; background:{{ filterChipBg }}; color:{{ filterChipText }}; border-radius:999px; padding:5px 10px 5px 12px; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; cursor:pointer;"><span style="width:8px; height:8px; border-radius:50%; background:{{ filterChipColor }};"></span>{{ filterChipLabel }} · {{ filterChipCount }} ✕</button>
+              </sc-if>
+              <sc-if value="{{ showViewMap }}" hint-placeholder-val="{{ true }}">
+                <button type="button" onClick="{{ openFullMap }}" style="display:inline-flex; align-items:center; gap:7px; border:1px solid #009DE4; background:#009DE4; color:#fff; border-radius:9px; padding:7px 14px; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; box-shadow:0 2px 8px rgba(0,157,228,.28);" style-hover="background:#0089c9;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 3 5.5v15.5l6-2.5 6 2.5 6-2.5V4.5L15 7 9 4.5z"></path><path d="M9 3v15.5M15 7v14"></path></svg>
+                  View Map
+                </button>
+              </sc-if>
+            </div>
+          </div>
+          <div style="height:440px;">
+            <dc-import name="Area1Map" title="{{ mapTitle }}" hide-list="{{ true }}" basemap="{{ basemap }}" plants="{{ filteredMapPlants }}" selected-name="{{ selectedPlant }}" size-by-capacity="{{ pinCapacity }}" on-select="{{ onMapSelect }}" on-viewport="{{ onViewport }}" hint-size="100%,440px" style="width:100%; height:100%;"></dc-import>
+          </div>
+        </section>
+
+        <!-- SECONDARY -->
+        <section>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:13px;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; color:#1F4173;">{{ secondaryTitle }}</span>
+            <span style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5B6A78; background:#EEF2F5; border-radius:5px; padding:2px 7px;">Secondary</span>
+          </div>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:stretch;">
+
+            <!-- alerts -->
+            <div style="flex:1 1 320px; min-width:290px; background:#fff; border:1px solid #E2E7EB; border-radius:14px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05); display:flex; flex-direction:column; overflow:hidden;">
+              <div style="display:flex; align-items:center; gap:8px; padding:14px 16px 12px; border-bottom:1px solid #F2F5F7;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D92D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg>
+                <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; color:#17222E;">{{ alertsTitle }}</span>
+                <span style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; color:#9E1B12; background:#FDECEA; border-radius:999px; padding:1px 8px;">{{ alertCount }}</span>
+                <button type="button" onClick="{{ onBell }}" style="margin-left:auto; border:none; background:transparent; padding:0; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#03587F; cursor:pointer;">Area 3 →</button>
+              </div>
+              <div style="flex:1 1 auto; overflow-y:auto; max-height:360px;">
+                <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="4">
+                  <div onClick="{{ a.onClick }}" style="border-bottom:1px solid #F4F7F9; cursor:pointer;">
+                    <dc-import name="AlertStripRow" status="{{ a.status }}" title="{{ a.title }}" subtitle="{{ a.subtitle }}" count="{{ a.count }}" time="{{ a.time }}" hint-size="100%,58px"></dc-import>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- fleet list (agg/util) -->
+            <sc-if value="{{ showFleetList }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1.3 1 380px; min-width:330px; background:#fff; border:1px solid #E2E7EB; border-radius:14px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05); display:flex; flex-direction:column; overflow:hidden;">
+              <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid #F2F5F7;">
+                <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; color:#17222E;">Fleet</span>
+                <span style="font-size:12px; color:#9AA3AB; font-weight:500;">{{ fleetCount }} shown · synced with map</span>
+                <div style="flex:1 1 auto;"></div>
+                <div style="display:flex; align-items:center; gap:5px; font-size:11px; color:#9AA3AB;">
+                  <span style="font-weight:600;">Sort</span>
+                  <button type="button" onClick="{{ setSortStatus }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; border-radius:6px; padding:4px 8px; background:{{ sortStatusBg }}; color:{{ sortStatusColor }};">Status</button>
+                  <button type="button" onClick="{{ setSortOutput }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; border-radius:6px; padding:4px 8px; background:{{ sortOutputBg }}; color:{{ sortOutputColor }};">Output</button>
+                  <button type="button" onClick="{{ setSortName }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; border-radius:6px; padding:4px 8px; background:{{ sortNameBg }}; color:{{ sortNameColor }};">Name</button>
+                </div>
+              </div>
+              <div style="flex:1 1 auto; overflow-y:auto; max-height:360px;">
+                <sc-for list="{{ fleetRows }}" as="r" hint-placeholder-count="6">
+                  <button type="button" onClick="{{ r.onClick }}" style="display:flex; align-items:center; gap:12px; width:100%; padding:11px 16px; border:none; border-bottom:1px solid #F2F5F7; background:{{ r.rowBg }}; cursor:pointer; text-align:left;" style-hover="background:#F7FAFC;">
+                    <span style="width:9px; height:9px; border-radius:50%; background:{{ r.color }}; flex:0 0 auto;"></span>
+                    <span style="flex:1 1 auto; min-width:0;">
+                      <span style="display:block; font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:600; color:#20262B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span>
+                      <span style="display:block; font-size:12px; color:#8A9199; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.meta }}</span>
+                    </span>
+                    <span style="font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:#46505A; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ r.output }}</span>
+                    <span style="font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; color:{{ r.badgeText }}; background:{{ r.badgeBg }}; border-radius:999px; padding:2px 8px; flex:0 0 auto;">{{ r.badgeLabel }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- per-plant cards (end-user) -->
+            <sc-if value="{{ showPlantCards }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:2 1 500px; min-width:320px; display:grid; grid-template-columns:repeat(auto-fill,minmax(232px,1fr)); gap:14px; align-content:start;">
+              <sc-for list="{{ plantCards }}" as="c" hint-placeholder-count="4">
+                <div onClick="{{ c.onClick }}" style="cursor:pointer; display:flex;">
+                  <dc-import name="PlantCard" plant-name="{{ c.name }}" status="{{ c.status }}" soc="{{ c.soc }}" today="{{ c.today }}" self-suff="{{ c.selfSuff }}" power="{{ c.power }}" saved="{{ c.saved }}" hint-size="100%,196px"></dc-import>
+                </div>
+              </sc-for>
+            </div>
+            </sc-if>
+
+          </div>
+
+          <!-- preview widgets (agg/util) -->
+          <sc-if value="{{ showPreviews }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:16px; align-items:stretch;">
+            <sc-for list="{{ previews }}" as="t" hint-placeholder-count="3">
+              <div style="background:#fff; border:1px solid #E2E7EB; border-radius:14px; padding:16px 18px 15px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05); display:flex; flex-direction:column; gap:11px; min-width:230px; flex:1 1 260px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12.5px; color:#6B7177; font-weight:600; letter-spacing:.01em;">{{ t.label }}</span>
+                  <sc-if value="{{ t.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto; font-family:'Space Grotesk',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:999px; padding:3px 9px; background:{{ t.badgeBg }}; color:{{ t.badgeText }};">{{ t.badgeLabel }}</span></sc-if>
+                </div>
+                <div style="display:flex; align-items:baseline; gap:6px; flex-wrap:wrap;">
+                  <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:30px; color:#20262B; line-height:1; letter-spacing:-.015em; font-variant-numeric:tabular-nums;">{{ t.value }}</span>
+                  <span style="font-size:14px; color:#8A9199; font-weight:500;">{{ t.unit }}</span>
+                  <sc-if value="{{ t.deltaGood }}" hint-placeholder-val="{{ false }}"><span style="margin-left:3px; display:inline-flex; align-items:center; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#15702F; background:#E7F8EC; border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ t.deltaText }}</span></sc-if>
+                  <sc-if value="{{ t.deltaBad }}" hint-placeholder-val="{{ false }}"><span style="margin-left:3px; display:inline-flex; align-items:center; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#9E1B12; background:#FDECEA; border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ t.deltaText }}</span></sc-if>
+                </div>
+                <sc-if value="{{ t.hasBar }}" hint-placeholder-val="{{ false }}">
+                  <div style="height:8px; border-radius:999px; background:#EEF1F5; overflow:hidden;"><div style="height:100%; border-radius:999px; width:{{ t.barPct }}%; background:{{ t.barColor }};"></div></div>
+                </sc-if>
+                <sc-if value="{{ t.hasFooter }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#8A9199; font-weight:500;">{{ t.footer }}</div></sc-if>
+                <sc-if value="{{ t.hasLink }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ t.onLink }}" style="align-self:flex-start; margin-top:auto; display:inline-flex; align-items:center; gap:6px; border:none; background:transparent; padding:0; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#03587F; cursor:pointer;">{{ t.linkLabel }}</button></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </section>
+
+        <!-- TERTIARY -->
+        <section style="margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:13px;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; color:#1F4173;">Capacity rollups</span>
+            <span style="font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5B6A78; background:#EEF2F5; border-radius:5px; padding:2px 7px;">Tertiary</span>
+          </div>
+          <div style="background:#fff; border:1px solid #E2E7EB; border-radius:14px; padding:16px 20px; display:flex; align-items:center; gap:22px; flex-wrap:wrap; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05);">
+            <div style="min-width:150px;">
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; color:#1F4173;">{{ capacityHeading }}</div>
+              <div style="font-size:11.5px; color:#9AA3AB; margin-top:2px;">{{ capacityNote }}</div>
+            </div>
+            <span style="width:1px; height:38px; background:#EEF2F5;"></span>
+            <sc-for list="{{ capacityFacts }}" as="f" hint-placeholder-count="4">
+              <div style="min-width:96px;">
+                <div style="font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:#9AA6B0; font-weight:700;">{{ f.label }}</div>
+                <div style="display:flex; align-items:baseline; gap:4px; margin-top:3px;">
+                  <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:22px; color:#20262B; font-variant-numeric:tabular-nums; letter-spacing:-.01em;">{{ f.value }}</span>
+                  <span style="font-size:12px; color:#8A9199; font-weight:500;">{{ f.unit }}</span>
+                </div>
+              </div>
+            </sc-for>
+            <div style="flex:1 1 auto;"></div>
+            <button type="button" onClick="{{ onExport }}" style="display:inline-flex; align-items:center; gap:7px; border:1px solid #E2E7EB; background:#fff; color:#46505A; border-radius:9px; padding:8px 14px; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer;" style-hover="background:#F4F6F8; border-color:#CFD8DE;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+              Export
+            </button>
+          </div>
+        </section>
+
+      </div>
+      </sc-if>
+
+      <!-- ============ FULL MAP VIEW (aggregator) ============ -->
+      <sc-if value="{{ fullMap }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:16px; height:100%; min-height:600px;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button type="button" onClick="{{ exitFullMap }}" style="display:inline-flex; align-items:center; gap:7px; border:1px solid #E2E7EB; background:#fff; color:#46505A; border-radius:9px; padding:8px 13px; font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer;" style-hover="background:#F4F6F8;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+            Exit Map
+          </button>
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; color:#1F4173;">Full Map View</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#8F5500; background:#FFF4E2; border:1px solid #F8D399; border-radius:6px; padding:3px 9px;">Viewport-bound KPIs · aggregator only</span>
+          <div style="flex:1 1 auto;"></div>
+          <sc-if value="{{ filterActive }}" hint-placeholder-val="{{ false }}">
+            <button type="button" onClick="{{ onClearFilter }}" style="display:inline-flex; align-items:center; gap:6px; border:1px solid; border-color:{{ filterChipText }}; background:{{ filterChipBg }}; color:{{ filterChipText }}; border-radius:999px; padding:5px 10px 5px 12px; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; cursor:pointer;"><span style="width:8px; height:8px; border-radius:50%; background:{{ filterChipColor }};"></span>{{ filterChipLabel }} · {{ filterChipCount }} ✕</button>
+          </sc-if>
+        </div>
+
+        <div style="display:flex; gap:16px; flex:1 1 auto; min-height:400px; flex-wrap:wrap;">
+          <div style="flex:2 1 540px; min-width:0; display:flex;">
+            <dc-import name="Area1Map" title="{{ mapTitle }}" hide-list="{{ true }}" basemap="{{ basemap }}" plants="{{ filteredMapPlants }}" selected-name="{{ selectedPlant }}" size-by-capacity="{{ pinCapacity }}" on-select="{{ onMapSelect }}" on-viewport="{{ onViewport }}" hint-size="100%,100%" style="width:100%; height:100%; min-height:400px;"></dc-import>
+          </div>
+
+          <div style="flex:1 1 300px; min-width:280px; display:flex; flex-direction:column; gap:16px;">
+            <!-- selected plant detail -->
+            <div style="background:#fff; border:1px solid #E2E7EB; border-radius:14px; padding:16px 18px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05);">
+              <div style="font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9AA6B0;">Selected plant → Area 2</div>
+              <sc-if value="{{ selHas }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-top:8px;">
+                  <div style="min-width:0;">
+                    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; color:#17222E;">{{ selName }}</div>
+                    <div style="font-size:12px; color:#8A9199; margin-top:1px;">{{ selMeta }}</div>
+                  </div>
+                  <span style="display:inline-flex; align-items:center; gap:6px; flex:0 0 auto; font-family:'Space Grotesk',sans-serif; font-size:11.5px; font-weight:600; border-radius:999px; padding:3px 10px; background:{{ selBadgeBg }}; color:{{ selBadgeText }};"><span style="width:7px; height:7px; border-radius:50%; background:{{ selDot }};"></span>{{ selLabel }}</span>
+                </div>
+                <div style="display:flex; gap:18px; margin-top:13px; padding-top:13px; border-top:1px solid #F2F5F7;">
+                  <div><div style="font-size:10px; color:#9AA3AB; text-transform:uppercase; letter-spacing:.04em;">Output</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#20262B; margin-top:2px;">{{ selPower }}</div></div>
+                  <div><div style="font-size:10px; color:#9AA3AB; text-transform:uppercase; letter-spacing:.04em;">SOC</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#20262B; margin-top:2px;">{{ selSoc }}</div></div>
+                  <div><div style="font-size:10px; color:#9AA3AB; text-transform:uppercase; letter-spacing:.04em;">Devices</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#20262B; margin-top:2px;">{{ selDevices }}</div></div>
+                </div>
+                <button type="button" onClick="{{ selOpen }}" style="margin-top:14px; width:100%; border:none; background:#009DE4; color:#fff; border-radius:9px; padding:9px 14px; font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#0089c9;">Open plant detail →</button>
+              </sc-if>
+              <sc-if value="{{ selEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:26px 8px; text-align:center;">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C4D0D8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span style="font-size:12.5px; color:#9AA3AB;">Click a pin or list row to inspect a plant</span>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- sortable synced list -->
+            <div style="flex:1 1 auto; min-height:180px; background:#fff; border:1px solid #E2E7EB; border-radius:14px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05); display:flex; flex-direction:column; overflow:hidden;">
+              <div style="display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid #F2F5F7;">
+                <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px; color:#17222E;">Plants</span>
+                <span style="font-size:11.5px; color:#9AA3AB;">{{ fleetCount }} · synced with pins</span>
+                <div style="flex:1 1 auto;"></div>
+                <button type="button" onClick="{{ setSortStatus }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; border-radius:6px; padding:4px 8px; background:{{ sortStatusBg }}; color:{{ sortStatusColor }};">Status</button>
+                <button type="button" onClick="{{ setSortOutput }}" style="border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; border-radius:6px; padding:4px 8px; background:{{ sortOutputBg }}; color:{{ sortOutputColor }};">Output</button>
+              </div>
+              <div style="flex:1 1 auto; overflow-y:auto;">
+                <sc-for list="{{ fleetRows }}" as="r" hint-placeholder-count="6">
+                  <button type="button" onClick="{{ r.onClick }}" style="display:flex; align-items:center; gap:11px; width:100%; padding:10px 16px; border:none; border-bottom:1px solid #F2F5F7; background:{{ r.rowBg }}; cursor:pointer; text-align:left;" style-hover="background:#F7FAFC;">
+                    <span style="width:9px; height:9px; border-radius:50%; background:{{ r.color }}; flex:0 0 auto;"></span>
+                    <span style="flex:1 1 auto; min-width:0;"><span style="display:block; font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:#20262B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span><span style="display:block; font-size:11.5px; color:#8A9199; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.meta }}</span></span>
+                    <span style="font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#46505A; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ r.output }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- viewport-bound KPIs -->
+        <div style="display:flex; gap:16px; flex-wrap:wrap;">
+          <div style="flex:1 1 240px; background:#fff; border:1px solid #E2E7EB; border-radius:14px; padding:15px 18px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05);">
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-size:12.5px; color:#6B7177; font-weight:600;">Sites in view</span><span style="margin-left:auto; font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#8F5500; background:#FFF4E2; border-radius:999px; padding:3px 8px;">In view</span></div>
+            <div style="display:flex; align-items:baseline; gap:6px; margin-top:9px;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:32px; color:#20262B; font-variant-numeric:tabular-nums;">{{ vpCount }}</span><span style="font-size:13px; color:#8A9199;">of {{ vpTotal }}</span></div>
+            <div style="font-size:11.5px; color:#8A9199; margin-top:7px;">Recomputes as you pan · use “Search this area”</div>
+          </div>
+          <div style="flex:1 1 240px; background:#fff; border:1px solid #E2E7EB; border-radius:14px; padding:15px 18px; box-shadow:0 1px 2px rgba(16,42,79,.04),0 8px 22px rgba(16,42,79,.05);">
+            <div style="display:flex; align-items:center; gap:8px;"><span style="font-size:12.5px; color:#6B7177; font-weight:600;">Capacity in view</span><span style="margin-left:auto; font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#8F5500; background:#FFF4E2; border-radius:999px; padding:3px 8px;">In view</span></div>
+            <div style="display:flex; align-items:baseline; gap:6px; margin-top:9px;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:32px; color:#20262B; font-variant-numeric:tabular-nums;">{{ vpCap }}</span><span style="font-size:13px; color:#8A9199;">{{ vpCapUnit }}</span></div>
+            <div style="font-size:11.5px; color:#8A9199; margin-top:7px;">Sum of pins currently on screen</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <!-- toast -->
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:50; background:#131B21; color:#EAF0F3; font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:500; border-radius:10px; padding:11px 18px; box-shadow:0 10px 30px rgba(0,0,0,.28); display:flex; align-items:center; gap:9px; animation:a1fade .2s ease both;">
+      <span style="width:7px; height:7px; border-radius:50%; background:#4FC2F2;"></span>{{ toastMsg }}
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;role&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;aggregator&quot;, &quot;utility&quot;, &quot;enduser&quot;], &quot;default&quot;: &quot;aggregator&quot;, &quot;tsType&quot;: &quot;'aggregator'|'utility'|'enduser'&quot;, &quot;section&quot;: &quot;Role&quot;}, &quot;basemap&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;positron&quot;, &quot;voyager&quot;, &quot;dark-matter&quot;], &quot;default&quot;: &quot;positron&quot;, &quot;tsType&quot;: &quot;'positron'|'voyager'|'dark-matter'&quot;, &quot;section&quot;: &quot;Map&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let role = props.role;
+    try { const u = new URLSearchParams(window.location.search).get("role"); if (u) role = u; } catch (e) {}
+    role = String(role || "aggregator").toLowerCase();
+    if (["aggregator", "utility", "enduser"].indexOf(role) < 0) role = "aggregator";
+    this.state = { role, statusFilter: null, selectedPlant: null, fullMap: false, pinMode: "status", sort: "status", viewport: null, toast: null, rc: false };
+    this._tries = 0;
+  }
+  componentDidMount() {}
+
+  P() {
+    return {
+      normal:  { label: "Normal",  color: "#009DE4", soft: "#E6F7FF", text: "#03587F", border: "#8AD9FD" },
+      warning: { label: "Warning", color: "#E08600", soft: "#FFF4E2", text: "#8F5500", border: "#F8D399" },
+      offline: { label: "Offline", color: "#6B7177", soft: "#EEF0F1", text: "#474C51", border: "#CDD1D4" },
+      fault:   { label: "Fault",   color: "#D92D20", soft: "#FDECEA", text: "#9E1B12", border: "#F4B5AE" },
+      anomaly: { label: "Anomaly", color: "#8B5CF6", soft: "#F1EAFE", text: "#5B21B6", border: "#C9B2FA" },
+    };
+  }
+  rank(s) { const o = { fault: 0, warning: 1, anomaly: 2, offline: 3, normal: 4 }; return o[s] != null ? o[s] : 5; }
+
+  toast(msg) { this.setState({ toast: msg }); clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  setRole(r) { this.setState({ role: r, statusFilter: null, selectedPlant: null, fullMap: false, viewport: null }); }
+  toggleFilter(k) { if (!k) return; this.setState((s) => ({ statusFilter: s.statusFilter === k ? null : k, selectedPlant: null })); }
+  selectFromList(name) { this.setState((s) => ({ selectedPlant: s.selectedPlant === name ? null : name })); }
+
+  tile(o) {
+    return Object.assign({
+      label: "", value: "", unit: "", deltaGood: false, deltaBad: false, deltaText: "",
+      hasBar: false, barPct: 0, barColor: "#009DE4", hasSpark: false, sparkEl: null,
+      hasBadge: false, badgeBg: "#E7F8EC", badgeText: "#15702F", badgeLabel: "",
+      hasFooter: false, footer: "", hasLink: false, linkLabel: "", onLink: () => {},
+    }, o);
+  }
+
+  spark(vals, color) {
+    const h = (...a) => React.createElement(...a);
+    const n = vals.length, W = 100, H = 32, padX = 3.6, padY = 3.6;
+    const min = Math.min.apply(null, vals), max = Math.max.apply(null, vals), range = (max - min) || 1;
+    const x = (i) => (n > 1 ? padX + (i / (n - 1)) * (W - padX * 2) : W / 2);
+    const y = (v) => padY + (1 - (v - min) / range) * (H - padY * 2);
+    const pts = vals.map((v, i) => [x(i), y(v)]);
+    const line = "M " + pts.map((p) => p[0].toFixed(2) + " " + p[1].toFixed(2)).join(" L ");
+    const last = pts[pts.length - 1], firstX = pts[0][0];
+    const area = line + " L " + last[0].toFixed(2) + " " + H + " L " + firstX.toFixed(2) + " " + H + " Z";
+    const gid = "spk-" + Math.random().toString(36).slice(2, 8);
+    const svg = h("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", width: "100%", height: "100%", style: { display: "block", position: "absolute", inset: 0 } },
+      h("defs", null, h("linearGradient", { id: gid, x1: 0, y1: 0, x2: 0, y2: 1 },
+        h("stop", { offset: "0%", stopColor: color, stopOpacity: 0.26 }),
+        h("stop", { offset: "100%", stopColor: color, stopOpacity: 0 }))),
+      h("path", { d: area, fill: "url(#" + gid + ")", stroke: "none" }),
+      h("path", { d: line, fill: "none", stroke: color, strokeWidth: 1.6, vectorEffect: "non-scaling-stroke", strokeLinejoin: "round", strokeLinecap: "round" }));
+    const dot = h("span", { style: { position: "absolute", left: (last[0] / W * 100).toFixed(2) + "%", top: (last[1] / H * 100).toFixed(2) + "%", width: "7px", height: "7px", borderRadius: "50%", background: color, boxShadow: "0 0 0 1.5px #fff", transform: "translate(-50%,-50%)" } });
+    return h("div", { style: { position: "relative", width: "100%", height: "100%", minHeight: "40px", overflow: "visible" } }, svg, dot);
+  }
+
+  donutSvg(counts) {
+    const h = (...a) => React.createElement(...a);
+    const COLOR = this.P();
+    const order = ["fault", "warning", "anomaly", "offline", "normal"];
+    const segs = order.map((k) => ({ key: k, color: COLOR[k].color, value: counts[k] || 0 })).filter((s) => s.value > 0);
+    const total = segs.reduce((a, s) => a + s.value, 0) || 1;
+    const cx = 90, cy = 90, rO = 82, rI = 54;
+    const active = this.state.statusFilter;
+    if (segs.length === 1) {
+      const s = segs[0];
+      return h("svg", { viewBox: "0 0 180 180", width: "100%", height: "100%", style: { display: "block" } },
+        h("circle", { cx, cy, r: (rO + rI) / 2, fill: "none", stroke: s.color, strokeWidth: rO - rI, style: { cursor: "pointer" }, onClick: () => this.toggleFilter(s.key) }));
+    }
+    const gap = 0.05, totalGap = gap * segs.length;
+    const arcPath = (a0, a1) => {
+      const pt = (r, ang) => [cx + r * Math.cos(ang), cy + r * Math.sin(ang)];
+      const large = (a1 - a0) > Math.PI ? 1 : 0;
+      const A = pt(rO, a0), B = pt(rO, a1), C = pt(rI, a1), D = pt(rI, a0);
+      return "M" + A[0].toFixed(2) + " " + A[1].toFixed(2) + " A" + rO + " " + rO + " 0 " + large + " 1 " + B[0].toFixed(2) + " " + B[1].toFixed(2) +
+        " L" + C[0].toFixed(2) + " " + C[1].toFixed(2) + " A" + rI + " " + rI + " 0 " + large + " 0 " + D[0].toFixed(2) + " " + D[1].toFixed(2) + " Z";
+    };
+    let a = -Math.PI / 2;
+    const paths = segs.map((s) => {
+      const sweep = (s.value / total) * (2 * Math.PI - totalGap);
+      const a0 = a + gap / 2, a1 = a0 + sweep;
+      a = a1 + gap / 2;
+      const op = active && active !== s.key ? 0.28 : 1;
+      return h("path", { key: s.key, d: arcPath(a0, a1), fill: s.color, opacity: op, stroke: "#fff", strokeWidth: 2, style: { cursor: "pointer", transition: "opacity .15s" }, onClick: () => this.toggleFilter(s.key) });
+    });
+    return h("svg", { viewBox: "0 0 180 180", width: "100%", height: "100%", style: { display: "block" } }, paths);
+  }
+
+  data() {
+    const roles = {
+      aggregator: {
+        scope: { label: "All managed plants", sub: "1,240 sites · 7 regions", covR: 1042, covT: 1240, covNoun: "reporting", updated: "Updated 12s ago", pill: { bg: "#EAF1FB", text: "#1F4173", dot: "#2A6FDB" } },
+        primaryTitle: "Fleet status & real-time output", mapSectionTitle: "Fleet map", secondaryTitle: "Operations", mapTitle: "Fleet map",
+        donutCounts: { fault: 12, warning: 34, anomaly: 6, offline: 14, normal: 1180 },
+        mapPlants: [
+          { name: "Maple Grove", meta: "Vermont · 240 kW", status: "normal", lat: 44.26, lng: -72.58, capacity: 240, power: "182 kW", soc: "78%", devices: 12 },
+          { name: "Liberty Hill Farms", meta: "Texas · 1.2 MW", status: "fault", lat: 30.66, lng: -97.92, capacity: 1200, power: "0 kW", soc: "—", devices: 34 },
+          { name: "Cactus Flats", meta: "Arizona · 640 kW", status: "warning", lat: 33.45, lng: -112.07, capacity: 640, power: "410 kW", soc: "54%", devices: 22 },
+          { name: "Sierra Vista", meta: "California · 980 kW", status: "anomaly", lat: 36.73, lng: -119.79, capacity: 980, power: "610 kW", soc: "66%", devices: 28 },
+          { name: "Riverside Array", meta: "Oregon · 2.1 MW", status: "normal", lat: 45.52, lng: -122.68, capacity: 2100, power: "1.44 MW", soc: "91%", devices: 48 },
+          { name: "Cedar Point", meta: "Maine · 180 kW", status: "offline", lat: 43.66, lng: -70.26, capacity: 180, power: "—", soc: "—", devices: 9 },
+          { name: "Dune Field", meta: "Nevada · 820 kW", status: "warning", lat: 36.17, lng: -115.14, capacity: 820, power: "520 kW", soc: "63%", devices: 26 },
+          { name: "Prairie Sun", meta: "Kansas · 3.4 MW", status: "normal", lat: 38.5, lng: -98.0, capacity: 3400, power: "2.6 MW", soc: "88%", devices: 72 },
+          { name: "Gulf Breeze", meta: "Florida · 560 kW", status: "fault", lat: 27.9, lng: -82.5, capacity: 560, power: "0 kW", soc: "12%", devices: 18 },
+          { name: "Summit Ridge", meta: "Colorado · 1.5 MW", status: "normal", lat: 39.7, lng: -104.99, capacity: 1500, power: "1.1 MW", soc: "82%", devices: 40 },
+          { name: "Harbor Point", meta: "New York · 900 kW", status: "offline", lat: 40.71, lng: -74.0, capacity: 900, power: "—", soc: "—", devices: 28 },
+          { name: "Sequoia West", meta: "California · 4.2 MW", status: "normal", lat: 36.7, lng: -119.7, capacity: 4200, power: "3.3 MW", soc: "94%", devices: 96 },
+          { name: "Great Lakes 1", meta: "Michigan · 700 kW", status: "warning", lat: 42.7, lng: -84.5, capacity: 700, power: "450 kW", soc: "59%", devices: 24 },
+        ],
+        primary: [{ label: "Fleet output now", value: "18.4", unit: "MW", delta: 4.2, footer: "142.6 MWh produced today", spark: [120, 124, 119, 128, 134, 131, 140, 138, 147, 152, 149, 158, 163, 160, 168, 172, 170, 178, 182, 180, 186, 190, 188, 196], accent: "#009DE4" }],
+        previews: [
+          { label: "Fleet battery", value: "68", unit: "%", bar: 68, barColor: "#1FA845", footer: "412 / 610 MWh stored" },
+          { label: "Grid conditions", value: "60.01", unit: "Hz", badge: { label: "Normal", bg: "#E6F7FF", text: "#03587F" }, footer: "Voltage 1.01 pu · 3 congestion events", link: "Open Grid Conditions →", area: "Grid Conditions (Area 6)" },
+          { label: "Financial impact", value: "$48.2k", unit: "", footer: "Saved today · $1.2M month-to-date", link: "Open Financial →", area: "Financial Impact (Area 7)" },
+        ],
+        alerts: [
+          { status: "fault", title: "No AC Connection", sub: "Liberty Hill Farms · inv 4392670247", count: 6, time: "8:01" },
+          { status: "fault", title: "Ground Fault Detected", sub: "Gulf Breeze · inv 220148", count: 1, time: "7:44" },
+          { status: "warning", title: "String Underperformance", sub: "Cactus Flats · combiner 3", count: 4, time: "7:20" },
+          { status: "offline", title: "Gateway Unreachable", sub: "Harbor Point · gw 88C1", count: 1, time: "6:58" },
+          { status: "warning", title: "Inverter Derating", sub: "Great Lakes 1 · inv 771", count: 2, time: "6:31" },
+        ],
+        capacity: { heading: "Fleet capacity", note: "Across 1,240 sites · DC / AC · Storage · Export", facts: [{ label: "DC capacity", value: "1.86", unit: "GW" }, { label: "AC capacity", value: "1.62", unit: "GW" }, { label: "Storage", value: "610", unit: "MWh" }, { label: "Export cap", value: "1.44", unit: "GW" }] },
+      },
+
+      utility: {
+        scope: { label: "Fleet in your territory", sub: "Northeast ISO · 318 sites", covR: 305, covT: 318, covNoun: "reporting", updated: "Updated 20s ago", pill: { bg: "#FBF3E0", text: "#8A6412", dot: "#C98A1E" } },
+        primaryTitle: "Territory status, output & grid", mapSectionTitle: "Territory map", secondaryTitle: "Operations", mapTitle: "Territory map",
+        donutCounts: { fault: 3, warning: 9, anomaly: 2, offline: 5, normal: 301 },
+        mapPlants: [
+          { name: "Maple Grove", meta: "Vermont · 240 kW", status: "normal", lat: 44.26, lng: -72.58, capacity: 240, power: "182 kW", soc: "78%", devices: 12 },
+          { name: "Cedar Point", meta: "Maine · 180 kW", status: "offline", lat: 43.66, lng: -70.26, capacity: 180, power: "—", soc: "—", devices: 9 },
+          { name: "Harbor Point", meta: "New York · 900 kW", status: "fault", lat: 40.71, lng: -74.0, capacity: 900, power: "0 kW", soc: "—", devices: 28 },
+          { name: "Granite Ridge", meta: "New Hampshire · 420 kW", status: "normal", lat: 43.2, lng: -71.5, capacity: 420, power: "300 kW", soc: "84%", devices: 16 },
+          { name: "Bay State 3", meta: "Massachusetts · 1.1 MW", status: "warning", lat: 42.36, lng: -71.06, capacity: 1100, power: "690 kW", soc: "61%", devices: 30 },
+          { name: "Keystone East", meta: "Pennsylvania · 780 kW", status: "normal", lat: 40.27, lng: -76.88, capacity: 780, power: "560 kW", soc: "88%", devices: 22 },
+          { name: "Liberty Bell", meta: "Pennsylvania · 540 kW", status: "warning", lat: 39.95, lng: -75.16, capacity: 540, power: "360 kW", soc: "57%", devices: 18 },
+          { name: "Hudson Valley", meta: "New York · 660 kW", status: "normal", lat: 41.7, lng: -73.9, capacity: 660, power: "470 kW", soc: "90%", devices: 20 },
+        ],
+        primary: [
+          { label: "Territory output now", value: "4.7", unit: "MW", delta: 2.1, footer: "38.2 MWh produced today", spark: [3.1, 3.0, 3.2, 3.4, 3.3, 3.6, 3.9, 3.8, 4.1, 4.3, 4.2, 4.5, 4.7, 4.6, 4.9, 5.1, 5.0, 5.2, 5.4, 5.3, 4.9, 4.7, 4.6, 4.7], accent: "#009DE4" },
+          { label: "Grid condition", value: "60.01", unit: "Hz", badge: { label: "Elevated", bg: "#FFF4E2", text: "#8F5500" }, footer: "Voltage 1.02 pu · 1 congestion zone", link: "Open Grid Conditions →", area: "Grid Conditions (Area 6)" },
+        ],
+        previews: [
+          { label: "Territory battery", value: "71", unit: "%", bar: 71, barColor: "#1FA845", footer: "112 / 158 MWh stored" },
+          { label: "Financial impact", value: "$9.4k", unit: "", footer: "Saved today · $214k month-to-date", link: "Open Financial →", area: "Financial Impact (Area 7)" },
+        ],
+        alerts: [
+          { status: "fault", title: "Grid Overvoltage Trip", sub: "Harbor Point · inv 771", count: 1, time: "8:12" },
+          { status: "warning", title: "Power Factor Excursion", sub: "Bay State 3 · meter M2", count: 2, time: "7:50" },
+          { status: "warning", title: "Frequency Ride-Through", sub: "Liberty Bell · inv 44", count: 1, time: "7:22" },
+          { status: "offline", title: "Meter Comms Lost", sub: "Cedar Point · meter M1", count: 1, time: "6:40" },
+        ],
+        capacity: { heading: "Territory capacity", note: "Across 318 territory sites · DC / AC · Storage · Export", facts: [{ label: "DC capacity", value: "486", unit: "MW" }, { label: "AC capacity", value: "421", unit: "MW" }, { label: "Storage", value: "158", unit: "MWh" }, { label: "Export cap", value: "372", unit: "MW" }] },
+      },
+
+      enduser: {
+        scope: { label: "Your portfolio", sub: "4 sites · residential + C&I", covR: 4, covT: 4, covNoun: "reporting", updated: "Updated 30s ago", pill: { bg: "#E7F6ED", text: "#17734B", dot: "#1F8A5B" } },
+        primaryTitle: "Your portfolio today", mapSectionTitle: "Your plants", secondaryTitle: "Alerts & plants", mapTitle: "Portfolio map",
+        donutCounts: null,
+        mapPlants: [
+          { name: "Dome", meta: "Home · 12 kW", status: "normal", lat: 37.77, lng: -122.42, capacity: 12, power: "3.4 kW", soc: "74%", devices: 4 },
+          { name: "Ranch House", meta: "Home · 9 kW", status: "normal", lat: 34.05, lng: -118.24, capacity: 9, power: "2.1 kW", soc: "88%", devices: 3 },
+          { name: "Vineyard Barn", meta: "C&I · 48 kW", status: "warning", lat: 38.5, lng: -122.47, capacity: 48, power: "12 kW", soc: "52%", devices: 6 },
+          { name: "Beach Cottage", meta: "Home · 7 kW", status: "normal", lat: 32.72, lng: -117.16, capacity: 7, power: "1.8 kW", soc: "91%", devices: 3 },
+        ],
+        primary: [
+          { label: "Production today", value: "86.4", unit: "kWh", delta: 6.0, footer: "12.3 kW right now", spark: [4, 4, 4, 5, 9, 16, 26, 38, 49, 58, 64, 70, 74, 78, 80, 82, 83, 84, 85, 85, 86, 86, 86, 86], accent: "#009DE4" },
+          { label: "Battery", value: "74", unit: "%", bar: 74, barColor: "#1FA845", footer: "28.4 kWh stored · 9h backup" },
+          { label: "Savings", value: "$41", unit: "", footer: "Today · $1,284 this year", link: "Open Financial →", area: "Financial Impact (Area 7)" },
+        ],
+        previews: [],
+        plantCards: [
+          { name: "Dome", status: "normal", soc: 74, today: "24 kWh", selfSuff: "86%", power: "3.4 kW", saved: "$52" },
+          { name: "Ranch House", status: "normal", soc: 88, today: "31 kWh", selfSuff: "92%", power: "2.1 kW", saved: "$44" },
+          { name: "Vineyard Barn", status: "warning", soc: 52, today: "96 kWh", selfSuff: "61%", power: "12 kW", saved: "$88" },
+          { name: "Beach Cottage", status: "normal", soc: 91, today: "19 kWh", selfSuff: "95%", power: "1.8 kW", saved: "$33" },
+        ],
+        alerts: [
+          { status: "warning", title: "Battery Low SOC", sub: "Vineyard Barn · ess 1", count: 1, time: "7:15" },
+          { status: "normal", title: "Firmware Updated", sub: "Dome · inv 2", count: 1, time: "Yesterday" },
+        ],
+        capacity: { heading: "Home-scale capacity", note: "Across 4 sites · DC / AC · Storage · Export", facts: [{ label: "DC capacity", value: "76", unit: "kW" }, { label: "AC capacity", value: "68", unit: "kW" }, { label: "Storage", value: "120", unit: "kWh" }, { label: "Export cap", value: "45", unit: "kW" }] },
+      },
+    };
+    return roles[this.state.role] || roles.aggregator;
+  }
+
+  fmtCap(kw) {
+    if (kw >= 1000000) return { v: (kw / 1000000).toFixed(2), u: "GW" };
+    if (kw >= 1000) return { v: (kw / 1000).toFixed(1), u: "MW" };
+    return { v: String(Math.round(kw)), u: "kW" };
+  }
+
+  renderVals() {
+    const P = this.P();
+    const d = this.data();
+    const st = this.state;
+    const isAgg = st.role === "aggregator", isUtil = st.role === "utility", isEnd = st.role === "enduser";
+
+    // role switcher styling
+    const off = { bg: "transparent", color: "#6B7177" };
+    const aggOn = { bg: "#EAF1FB", color: "#1F4173" }, utilOn = { bg: "#FBF3E0", color: "#8A6412" }, endOn = { bg: "#E7F6ED", color: "#17734B" };
+    const aggS = isAgg ? aggOn : off, utilS = isUtil ? utilOn : off, endS = isEnd ? endOn : off;
+
+    // map plants filtered by status
+    const filtered = st.statusFilter ? d.mapPlants.filter((p) => p.status === st.statusFilter) : d.mapPlants.slice();
+
+    // tiles
+    const mkTile = (t) => this.tile({
+      label: t.label, value: t.value, unit: t.unit,
+      deltaGood: t.delta != null && t.delta >= 0, deltaBad: t.delta != null && t.delta < 0,
+      deltaText: t.delta != null ? ((t.delta >= 0 ? "\u2191 " : "\u2193 ") + Math.abs(t.delta) + "%") : "",
+      hasSpark: !!t.spark, sparkColor: t.accent || "#009DE4", sparkValues: t.spark || null,
+      hasBar: t.bar != null, barPct: t.bar != null ? t.bar : 0, barColor: t.barColor || "#1FA845",
+      hasBadge: !!t.badge, badgeBg: t.badge ? t.badge.bg : "", badgeText: t.badge ? t.badge.text : "", badgeLabel: t.badge ? t.badge.label : "",
+      hasFooter: !!t.footer, footer: t.footer || "",
+      hasLink: !!t.link, linkLabel: t.link || "", onLink: t.area ? (() => this.toast("Deep-linking to " + t.area)) : (() => {}),
+    });
+    const primaryTiles = (d.primary || []).map(mkTile);
+    const previews = (d.previews || []).map(mkTile);
+
+    // donut
+    const dc = d.donutCounts;
+    const donutTotal = dc ? ["normal", "warning", "offline", "fault", "anomaly"].reduce((a, k) => a + (dc[k] || 0), 0) : 0;
+    const donutTotalStr = donutTotal.toLocaleString("en-US");
+    const legendOrder = ["fault", "warning", "anomaly", "offline", "normal"];
+    const donutLegend = dc ? legendOrder.filter((k) => (dc[k] || 0) > 0).map((k) => ({
+      key: k, label: P[k].label, color: P[k].color, count: (dc[k] || 0).toLocaleString("en-US"),
+      onClick: () => this.toggleFilter(k),
+      rowBg: st.statusFilter === k ? "#EFF6FA" : "transparent",
+      opacity: st.statusFilter && st.statusFilter !== k ? 0.5 : 1,
+    })) : [];
+    const att = dc ? (dc.fault || 0) + (dc.warning || 0) + (dc.offline || 0) : 0;
+    const donutFooter = dc ? (att.toLocaleString("en-US") + " need attention · " + (dc.normal || 0).toLocaleString("en-US") + " normal") : "";
+
+    // filter chip
+    const fk = st.statusFilter;
+    const filterActive = !!fk;
+    const fpal = fk ? P[fk] : P.normal;
+    const filterCount = fk ? (dc && dc[fk] != null ? dc[fk].toLocaleString("en-US") : String(filtered.length)) : "";
+
+    // fleet rows (sorted)
+    const rowsBase = filtered.map((p) => p);
+    const sorted = rowsBase.slice().sort((a, b) => {
+      if (st.sort === "name") return a.name.localeCompare(b.name);
+      if (st.sort === "output") { const pa = parseFloat(String(a.power).replace(/[^0-9.]/g, "")) || 0; const pb = parseFloat(String(b.power).replace(/[^0-9.]/g, "")) || 0; return pb - pa; }
+      return this.rank(a.status) - this.rank(b.status);
+    });
+    const fleetRows = sorted.map((p) => {
+      const pal = P[p.status] || P.normal;
+      return {
+        name: p.name, meta: p.meta, output: p.power || "—",
+        color: pal.color, badgeBg: pal.soft, badgeText: pal.text, badgeLabel: pal.label,
+        rowBg: st.selectedPlant === p.name ? "#F0F8FD" : "#fff",
+        onClick: () => this.selectFromList(p.name),
+      };
+    });
+
+    // alerts
+    const alerts = (d.alerts || []).map((a) => ({
+      status: a.status, title: a.title, subtitle: a.sub, count: a.count, time: a.time,
+      onClick: () => this.toast("Opening \u201c" + a.title + "\u201d in Alerts & Events (Area 3)"),
+    }));
+
+    // plant cards (end-user)
+    const plantCards = (d.plantCards || []).map((c) => ({
+      name: c.name, status: c.status, soc: c.soc,
+      today: c.today, selfSuff: c.selfSuff, power: c.power, saved: c.saved,
+      onClick: () => this.toast("Opening " + c.name + " in Plant Detail (Area 2)"),
+    }));
+
+    // selected plant detail (full map)
+    const sel = st.selectedPlant ? d.mapPlants.find((p) => p.name === st.selectedPlant) : null;
+    const selPal = sel ? (P[sel.status] || P.normal) : P.normal;
+
+    // viewport KPIs
+    const vp = st.viewport || { count: filtered.length, total: donutTotal || d.mapPlants.length, plants: filtered };
+    const vpPlants = vp.plants || filtered;
+    const vpCapKw = vpPlants.reduce((a, p) => a + (Number(p.capacity) || 0), 0);
+    const vpCapF = this.fmtCap(vpCapKw);
+    const vpTotal = (donutTotal || d.mapPlants.length).toLocaleString("en-US");
+
+    // capacity
+    const cap = d.capacity;
+
+    // sort button styling
+    const sortOn = { bg: "#E6F4FC", color: "#03587F" }, sortOff = { bg: "#F1F4F6", color: "#8A9199" };
+    const sS = st.sort === "status" ? sortOn : sortOff, sO = st.sort === "output" ? sortOn : sortOff, sN = st.sort === "name" ? sortOn : sortOff;
+
+    // pin mode styling
+    const pinOn = { bg: "#E6F4FC", color: "#03587F" }, pinOff = { bg: "#fff", color: "#6B7177" };
+    const pS = st.pinMode === "status" ? pinOn : pinOff, pC = st.pinMode === "capacity" ? pinOn : pinOff;
+
+    const cov = d.scope;
+    const covWarn = cov.covT > 0 && cov.covR / cov.covT < 0.95;
+
+    return {
+      // role + switcher
+      isAgg, isUtil, isEnd,
+      aggBg: aggS.bg, aggColor: aggS.color, utilBg: utilS.bg, utilColor: utilS.color, endBg: endS.bg, endColor: endS.color,
+      setAgg: () => this.setRole("aggregator"), setUtil: () => this.setRole("utility"), setEnd: () => this.setRole("enduser"),
+
+      // scope / context
+      scopeLabel: cov.label, scopeSub: cov.sub,
+      scopePillBg: cov.pill.bg, scopePillText: cov.pill.text, scopePillDot: cov.pill.dot,
+      covReportingNum: cov.covR, covTotalNum: cov.covT, covNoun: cov.covNoun,
+      updated: cov.updated,
+
+      // titles
+      primaryTitle: d.primaryTitle, mapSectionTitle: d.mapSectionTitle, secondaryTitle: d.secondaryTitle,
+      alertsTitle: isEnd ? "Alerts · your plants" : "Active alerts",
+      capacityHeading: cap.heading, capacityNote: cap.note, capacityFacts: cap.facts,
+      onExport: () => this.toast("Exporting capacity rollups (CSV)"),
+
+      // donut
+      showDonut: !!dc,
+      donutReady: !!dc, donutLoading: false,
+      donutEl: dc ? this.donutSvg(dc) : null,
+      donutTotal: donutTotalStr, donutNoun: "plants", donutLegend, donutFooter,
+
+      // primary + previews
+      primaryTiles, previews,
+      showPreviews: (d.previews || []).length > 0,
+      showFleetList: isAgg || isUtil, showPlantCards: isEnd,
+
+      // map
+      mapTitle: d.mapTitle, basemap: this.props.basemap || "positron",
+      filteredMapPlants: filtered, selectedPlant: st.selectedPlant, pinCapacity: st.pinMode === "capacity",
+      onMapSelect: (p) => this.setState({ selectedPlant: p ? p.name : null }),
+      onViewport: (v) => this.setState({ viewport: v }),
+      pinStatusBg: pS.bg, pinStatusColor: pS.color, pinCapBg: pC.bg, pinCapColor: pC.color,
+      setPinStatus: () => this.setState({ pinMode: "status" }), setPinCap: () => this.setState({ pinMode: "capacity" }),
+      showViewMap: isAgg, openFullMap: () => this.setState({ fullMap: true, selectedPlant: null, viewport: null }),
+
+      // filter chip
+      filterActive, filterChipLabel: fpal.label, filterChipCount: filterCount, filterChipColor: fpal.color, filterChipBg: fpal.soft, filterChipText: fpal.text,
+      onClearFilter: () => this.setState({ statusFilter: null }),
+
+      // secondary content
+      alerts, alertCount: (d.alerts || []).length, fleetRows, fleetCount: filtered.length + (st.statusFilter ? " of " + d.mapPlants.length : ""), plantCards,
+
+      // sort
+      setSortStatus: () => this.setState({ sort: "status" }), setSortOutput: () => this.setState({ sort: "output" }), setSortName: () => this.setState({ sort: "name" }),
+      sortStatusBg: sS.bg, sortStatusColor: sS.color, sortOutputBg: sO.bg, sortOutputColor: sO.color, sortNameBg: sN.bg, sortNameColor: sN.color,
+
+      // full map
+      showDashboard: !st.fullMap, fullMap: st.fullMap, exitFullMap: () => this.setState({ fullMap: false, viewport: null }),
+      selHas: !!sel, selEmpty: !sel,
+      selName: sel ? sel.name : "", selMeta: sel ? sel.meta : "", selLabel: selPal.label, selDot: selPal.color, selBadgeBg: selPal.soft, selBadgeText: selPal.text,
+      selPower: sel ? (sel.power || "—") : "—", selSoc: sel ? (sel.soc || "—") : "—", selDevices: sel ? (sel.devices != null ? sel.devices : "—") : "—",
+      selOpen: () => this.toast("Opening " + (sel ? sel.name : "plant") + " in Plant Detail (Area 2)"),
+      vpCount: vp.count, vpTotal, vpCap: vpCapF.v, vpCapUnit: vpCapF.u,
+
+      // toast
+      hasToast: !!st.toast, toastMsg: st.toast || "",
+    };
+  }
+}
+</script>
+</body>
+</html>

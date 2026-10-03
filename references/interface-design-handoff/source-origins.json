@@ -1,0 +1,2654 @@
+[
+  {
+    "path": "references/conventions/01-foundations.md",
+    "origin": "design-wiki/design-conventions/01-foundations.md",
+    "mode": "verbatim",
+    "sourceSha256": "1db9df1c33adf83217e844c7a1265f0521740edf7f7736eb60d77c77b8b81d86"
+  },
+  {
+    "path": "references/conventions/02-form.md",
+    "origin": "design-wiki/design-conventions/02-form.md",
+    "mode": "verbatim",
+    "sourceSha256": "9407a1ca10ef6a64d0b77020285aa5db883c4e58b2116765a25d281e5e353b60"
+  },
+  {
+    "path": "references/conventions/03-typography.md",
+    "origin": "design-wiki/design-conventions/03-typography.md",
+    "mode": "verbatim",
+    "sourceSha256": "60c0e11f3c3a4bd740a8fc1518879c6806ae3e04c1f91d753c6917f78ed17cbe"
+  },
+  {
+    "path": "references/conventions/04-interaction.md",
+    "origin": "design-wiki/design-conventions/04-interaction.md",
+    "mode": "verbatim",
+    "sourceSha256": "a3e90b357b7b355d6c0954725b29503e1330bfb3b416889fbe78f2e9d5686f5c"
+  },
+  {
+    "path": "references/conventions/05-buttons.md",
+    "origin": "design-wiki/design-conventions/05-buttons.md",
+    "mode": "verbatim",
+    "sourceSha256": "f76c8ec2ee4ec04b6b1c082d6a99a88e91c2bbb7c8dd8acf2aba279633896490"
+  },
+  {
+    "path": "references/conventions/06-cards.md",
+    "origin": "design-wiki/design-conventions/06-cards.md",
+    "mode": "verbatim",
+    "sourceSha256": "405ad799e48103b70611a0ee3c10b51ea64a2cbc10ef5fc3736ceb9a9d2dcb3d"
+  },
+  {
+    "path": "references/conventions/07-layout.md",
+    "origin": "design-wiki/design-conventions/07-layout.md",
+    "mode": "verbatim",
+    "sourceSha256": "9d8736dfb2d5fa546cba0b410aa5203893eb40e1954263dac7461687274bc4ff"
+  },
+  {
+    "path": "references/conventions/08-messaging-and-charts.md",
+    "origin": "design-wiki/design-conventions/08-messaging-and-charts.md",
+    "mode": "verbatim",
+    "sourceSha256": "aaf89bf702e45e43676e33724a31909d570b145c9c64e6d0740b0a8424511909"
+  },
+  {
+    "path": "references/conventions/09-traps.md",
+    "origin": "design-wiki/design-conventions/09-traps.md",
+    "mode": "verbatim",
+    "sourceSha256": "c00ff9efb9d9e9b2e4958b9891d8b7e44849b706490cc789a21d7aa511efdf16"
+  },
+  {
+    "path": "references/conventions/README.md",
+    "origin": "design-wiki/design-conventions/README.md",
+    "mode": "verbatim",
+    "sourceSha256": "43dcd0eac115e97c17e2a40d5b64f9dceafcec9d9f876527fafc0670fec1a3e4"
+  },
+  {
+    "path": "references/reasoning/design-system.md",
+    "origin": "design-wiki/memory/topics/design-system.md",
+    "mode": "verbatim",
+    "sourceSha256": "fdeaaf9fd92c3d051096938f7ed9d79f5f4d8c1e129f73ba275d6c4dfb777f33"
+  },
+  {
+    "path": "references/reasoning/status-semantics.md",
+    "origin": "design-wiki/memory/topics/status-semantics.md",
+    "mode": "verbatim",
+    "sourceSha256": "f30a57195970b39061fab2cd4210f90bfac54706ccae5c150ed0ea0281ef2368"
+  },
+  {
+    "path": "references/reasoning/shared-components.md",
+    "origin": "design-wiki/memory/topics/shared-components.md",
+    "mode": "verbatim",
+    "sourceSha256": "f8eb59a3fe3a77a4f7eaaa5bfefa4f534b82d901031f5f4e4bd27f1472dbf92d"
+  },
+  {
+    "path": "references/repo/AREA-BUILD-GUIDE.md",
+    "origin": "repo/docs/AREA-BUILD-GUIDE.md",
+    "mode": "verbatim",
+    "sourceSha256": "dd78d071239c12cd342a5df00a793c9c114993b76485ca664a7b3c140b9bd761"
+  },
+  {
+    "path": "references/repo/a1-component-ux-matrix-DRAFT.md",
+    "origin": "repo/docs/a1-component-ux-matrix-DRAFT.md",
+    "mode": "verbatim",
+    "sourceSha256": "4f2a7ce10a17fc40c707278614649640ac8b890483855dcef14c4b95053a3e00"
+  },
+  {
+    "path": "references/repo/event-code-status-map.md",
+    "origin": "repo/docs/event-code-status-map.md",
+    "mode": "verbatim",
+    "sourceSha256": "454b069d6ad939227ef7212e4bec8fa667122cb219a82e4b0f64505a7c494ce8"
+  },
+  {
+    "path": "references/repo/design-sync-conventions.md",
+    "origin": "repo/.design-sync/conventions.md",
+    "mode": "verbatim",
+    "sourceSha256": "0aa52654c0feac011b3ea534efa2659490f285e62991e1b37f710efc0e74ee33"
+  },
+  {
+    "path": "references/repo/design-sync-NOTES.md",
+    "origin": "repo/.design-sync/NOTES.md",
+    "mode": "verbatim",
+    "sourceSha256": "57e59c0214bf805b8d43d6d48c565ae9c2d4c010b4afe27f91420940cb93615c"
+  },
+  {
+    "path": "skills/emil-design-eng/SKILL.md",
+    "origin": "repo/.agents/skills/emil-design-eng/SKILL.md",
+    "mode": "verbatim",
+    "sourceSha256": "defffff8bea4583897b001b9173ccd6fb6f8341fffc63a1891a38372137a1848"
+  },
+  {
+    "path": "skills/apple-design/SKILL.md",
+    "origin": "repo/.agents/skills/apple-design/SKILL.md",
+    "mode": "verbatim",
+    "sourceSha256": "da9581408c2b37a49565a9c7e32f26763f78b581c7e802dfa2357738e43ba7d5"
+  },
+  {
+    "path": "skills/review-animations/SKILL.md",
+    "origin": "repo/.agents/skills/review-animations/SKILL.md",
+    "mode": "verbatim",
+    "sourceSha256": "9b9766965a0d9ca2afd0a1b44e74386810008a1afdd968c62b6aa84c150cc20f"
+  },
+  {
+    "path": "skills/review-animations/STANDARDS.md",
+    "origin": "repo/.agents/skills/review-animations/STANDARDS.md",
+    "mode": "verbatim",
+    "sourceSha256": "ca2b681e825638ea78cb8b6adc76234d849663cc3774eb2ad8d47181bad3098f"
+  },
+  {
+    "path": "skills/pick-ui-library/SKILL.md",
+    "origin": "repo/.agents/skills/pick-ui-library/SKILL.md",
+    "mode": "verbatim",
+    "sourceSha256": "26c7dc79e9f38550076bd2643f591bbbd2b839895e4861fdd3e8354af4f0775d"
+  },
+  {
+    "path": "skills/verification-battery/SKILL.md",
+    "origin": "repo/.agents/skills/verification-battery/SKILL.md",
+    "mode": "verbatim",
+    "sourceSha256": "166ec3626cf85f5219697bc2f9c481662331e07f9cf22590ede50dc5bf2d786a"
+  },
+  {
+    "path": "templates/area1-fleet-overview/AlertStripRow.dc.html",
+    "origin": "repo/design/templates/area1-fleet-overview/AlertStripRow.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "92b145c984da32e2a54fa03331e3691e9e7aa7af4f87882276f1507f99d3c012"
+  },
+  {
+    "path": "templates/area1-fleet-overview/Area1FleetOverview.dc.html",
+    "origin": "repo/design/templates/area1-fleet-overview/Area1FleetOverview.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "b37ed9f492572134cce640ba6f01029ec5a569e999e107e7621df213aa20bf2c"
+  },
+  {
+    "path": "templates/area1-fleet-overview/Area1Map.dc.html",
+    "origin": "repo/design/templates/area1-fleet-overview/Area1Map.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "bb98cc35027754a50fb48d121e5bee62d96d8a9ce4b276c787498a7ac6cb95e5"
+  },
+  {
+    "path": "templates/area1-fleet-overview/CoverageLabel.dc.html",
+    "origin": "repo/design/templates/area1-fleet-overview/CoverageLabel.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "2c10cd9eeed04ccb394641a93bda31aa1e5b4edd4985fd9c4186db6a92a7ea08"
+  },
+  {
+    "path": "templates/area1-fleet-overview/PlantCard.dc.html",
+    "origin": "repo/design/templates/area1-fleet-overview/PlantCard.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "378ffafc565aa4beee16b7810d428f05a7078fa7644b4b5c145eb9d526f71f1a"
+  },
+  {
+    "path": "templates/area1-fleet-overview/Sparkline.dc.html",
+    "origin": "repo/design/templates/area1-fleet-overview/Sparkline.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "ada08bb41f62ce44db54a4ae3cd5d883d4dc3d4407deb00a06c8a5a3c4e9d2d5"
+  },
+  {
+    "path": "templates/battery-safety/BatterySafety.dc.html",
+    "origin": "repo/design/templates/battery-safety/BatterySafety.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "d6dc3341254bfbeb37d0941be8eebad54b0315a9210fa11393e379656cd3a37f"
+  },
+  {
+    "path": "templates/battery-safety/BatterySafetyGallery.dc.html",
+    "origin": "repo/design/templates/battery-safety/BatterySafetyGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "e16b99eb9788e6934c86e798242dce08882f771e8e08b55cbb3000aadc3c4e43"
+  },
+  {
+    "path": "templates/calendar/Calendar.dc.html",
+    "origin": "repo/design/templates/calendar/Calendar.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "286d5940bbd626946a674fcd1824c065fa771e46908d27bf75b660d24e3ee358"
+  },
+  {
+    "path": "templates/callout/Callout.dc.html",
+    "origin": "repo/design/templates/callout/Callout.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "8591ca6befa554ee8120da14068e51137275ffca0912999069fe09917d0e4a26"
+  },
+  {
+    "path": "templates/callout/CalloutGallery.dc.html",
+    "origin": "repo/design/templates/callout/CalloutGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "e82a2b0ace098f648097259c9bfda5e010e762381bbadf8e1d44d758287f54b4"
+  },
+  {
+    "path": "templates/capacity-facts/CapacityFacts.dc.html",
+    "origin": "repo/design/templates/capacity-facts/CapacityFacts.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "487603dd88848d1d411dd47ce36ce5a68c9147a610f67c54c53ffa862035dc06"
+  },
+  {
+    "path": "templates/chart-primitives/ChartPrimitives.dc.html",
+    "origin": "repo/design/templates/chart-primitives/ChartPrimitives.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "46812620c1af600ae5eaedaba7bdd9d2a256cdc3ef2d08a20e805b3399bce0a5"
+  },
+  {
+    "path": "templates/chart-primitives/FreqVoltageScatter.dc.html",
+    "origin": "repo/design/templates/chart-primitives/FreqVoltageScatter.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "2b6b6b3dbc4616d442c2b042c0aadffc6d770c51b063eaaccd60d3d6d99056c0"
+  },
+  {
+    "path": "templates/chart-primitives/GenerationRadial.dc.html",
+    "origin": "repo/design/templates/chart-primitives/GenerationRadial.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "20f894c7fd5db6549b60ca4f074bcad30c4b6d126c236ff8abf4dd04cb9e60dc"
+  },
+  {
+    "path": "templates/chart-primitives/InverterPie.dc.html",
+    "origin": "repo/design/templates/chart-primitives/InverterPie.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "cec2863b79f5205507ef452d9773c6664aa8aeaca6e5563ea1f6fa0d57f8068a"
+  },
+  {
+    "path": "templates/chart-primitives/LoadBalancingBar.dc.html",
+    "origin": "repo/design/templates/chart-primitives/LoadBalancingBar.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "696005b1b03d4f2698cae57849b20ee58199dd03f60fc345bb65197b77f70ecd"
+  },
+  {
+    "path": "templates/chart-primitives/Sparkline.dc.html",
+    "origin": "repo/design/templates/chart-primitives/Sparkline.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "ada08bb41f62ce44db54a4ae3cd5d883d4dc3d4407deb00a06c8a5a3c4e9d2d5"
+  },
+  {
+    "path": "templates/chart-primitives/StatTile.dc.html",
+    "origin": "repo/design/templates/chart-primitives/StatTile.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "abfdfe258ea3f8dbb7fafd398c23608c1fdd662f113232e8f80d3977ad8a8f2a"
+  },
+  {
+    "path": "templates/chart-primitives/StatusDonut.dc.html",
+    "origin": "repo/design/templates/chart-primitives/StatusDonut.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "b0694f3827585cd6e344f7dfbd1edaa09ac755371e773aceb3475e17501ce9ff"
+  },
+  {
+    "path": "templates/chart-primitives/TimeSeriesChart.dc.html",
+    "origin": "repo/design/templates/chart-primitives/TimeSeriesChart.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "2a7383adbc620ba37590507e9774ab25aba84fd3fce507e3398476ee733a7b0a"
+  },
+  {
+    "path": "templates/chart-sankey/SankeyChart.dc.html",
+    "origin": "repo/design/templates/chart-sankey/SankeyChart.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "80c6e2e54844a2cb8cd0b1cc662d0d81d52a74da37a189cc675731e480fe3bdc"
+  },
+  {
+    "path": "templates/complex-table/ComplexTable.dc.html",
+    "origin": "repo/design/templates/complex-table/ComplexTable.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5dbf5a1e4e664730165755ae2fc11deb49c02b65af1a52c002336ec608b6738c"
+  },
+  {
+    "path": "templates/device-plant-crud/DevicePlantCrud.dc.html",
+    "origin": "repo/design/templates/device-plant-crud/DevicePlantCrud.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "47fe0bb62cc9e2a2f75f756a5c85a9de9cb35b6ed21fbc8203c0a444f9b6099b"
+  },
+  {
+    "path": "templates/domain-control-readout/Button.dc.html",
+    "origin": "repo/design/templates/domain-control-readout/Button.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "cee5410430437a82c35838d4ddfcb9a5328d68feb226861a471a026178a987ad"
+  },
+  {
+    "path": "templates/domain-control-readout/Chip.dc.html",
+    "origin": "repo/design/templates/domain-control-readout/Chip.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "61d14d1309b26338c9f0c27cc85ae08ae07542210764e4bb9d0431eaa85c7121"
+  },
+  {
+    "path": "templates/domain-control-readout/ControlReadout.dc.html",
+    "origin": "repo/design/templates/domain-control-readout/ControlReadout.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5220cbe8cf73607eb9e0039836e7146d04fae8eb74d2eee1993b58ca141e3de3"
+  },
+  {
+    "path": "templates/domain-control-readout/InfoTooltip.dc.html",
+    "origin": "repo/design/templates/domain-control-readout/InfoTooltip.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "59b65fb94cbbcbed208b5497aca391a6ceb0aee96c454ae56939f3320f8261d3"
+  },
+  {
+    "path": "templates/domain-control-readout/SeverityBadge.dc.html",
+    "origin": "repo/design/templates/domain-control-readout/SeverityBadge.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "f65fb128c9b45964b3f8b6ef7a2fccfce93f108e96c53d7c9383297dc163c035"
+  },
+  {
+    "path": "templates/domain-control-readout/Switch.dc.html",
+    "origin": "repo/design/templates/domain-control-readout/Switch.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "d1f277a4e88e968bbfafcaa9f0cb54d53aa767a473dd52ad68457a81d03d145a"
+  },
+  {
+    "path": "templates/domain-incident-console/IncidentConsole.dc.html",
+    "origin": "repo/design/templates/domain-incident-console/IncidentConsole.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "9c3aaaa3ff68f1b30a059771f033479e8a9ae06b9a4d619de3f05cdae71b0397"
+  },
+  {
+    "path": "templates/domain-notification-inbox/NotificationInbox.dc.html",
+    "origin": "repo/design/templates/domain-notification-inbox/NotificationInbox.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "6d754781077340c6c269d0cef1ff04e43cfd0adfc9671e5f0bf8cbc99ba7094a"
+  },
+  {
+    "path": "templates/domain-plant-shell/PlantShell.dc.html",
+    "origin": "repo/design/templates/domain-plant-shell/PlantShell.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "c81b58f14be9403da3265116c31b65824eacaac303d9b01b7706a364bf2e2109"
+  },
+  {
+    "path": "templates/domain-power-flow/PowerFlow.dc.html",
+    "origin": "repo/design/templates/domain-power-flow/PowerFlow.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "7db6558f5d63341f3a9c770298128a1dd41e3ec1c71f29c4df1366751719fda6"
+  },
+  {
+    "path": "templates/domain-scheduler/Scheduler.dc.html",
+    "origin": "repo/design/templates/domain-scheduler/Scheduler.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "c2ab611e39b92e1e91a1a0367ff69454e2e33351347058a6dccdc0919ebbe1e9"
+  },
+  {
+    "path": "templates/domain-subscription-settings/SubscriptionSettings.dc.html",
+    "origin": "repo/design/templates/domain-subscription-settings/SubscriptionSettings.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "7f45f693539dc3ff7b0fb84dbe98bfecc6b499961af809112ea70ca2a2bd1263"
+  },
+  {
+    "path": "templates/dropdown/Dropdown.dc.html",
+    "origin": "repo/design/templates/dropdown/Dropdown.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "20ec8fa3ab84ab6a085560944158ad584fe360ff8e40aad0f509b5e98a64219f"
+  },
+  {
+    "path": "templates/evolved-accordion/EvolvedAccordion.dc.html",
+    "origin": "repo/design/templates/evolved-accordion/EvolvedAccordion.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "27e6f58553ca7491718168f8ae753055ee882693a96ecd6ab3a463d29218871f"
+  },
+  {
+    "path": "templates/evolved-cardswitch/EvolvedCardSwitch.dc.html",
+    "origin": "repo/design/templates/evolved-cardswitch/EvolvedCardSwitch.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "e0fffb21081dac52efe468e10bcf1a266c85ec1f470e6bba5368a7d1d7bde1c8"
+  },
+  {
+    "path": "templates/evolved-carousel/EvolvedCarousel.dc.html",
+    "origin": "repo/design/templates/evolved-carousel/EvolvedCarousel.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "93fb7a4d0886d58bf7b7160704a27f19a76d7ed4ee0764d024b11551990563d7"
+  },
+  {
+    "path": "templates/evolved-chartlabel/EvolvedChartLabel.dc.html",
+    "origin": "repo/design/templates/evolved-chartlabel/EvolvedChartLabel.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "16e0fcfb974c6e6d6b0595c130f338df39a27ce603386b4f9d6f1881e4c590d5"
+  },
+  {
+    "path": "templates/evolved-datefilter/EvolvedDateFilter.dc.html",
+    "origin": "repo/design/templates/evolved-datefilter/EvolvedDateFilter.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "a791c28891b51e781b779ab506137646a921e1443a26e93addb9aac161a67046"
+  },
+  {
+    "path": "templates/evolved-errorelement/EvolvedErrorElement.dc.html",
+    "origin": "repo/design/templates/evolved-errorelement/EvolvedErrorElement.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "2f9c99fcdfcfca549cdaffca095d9ce8f6481022b5a6fd9a89c66073cc570d7e"
+  },
+  {
+    "path": "templates/evolved-formlabel/EvolvedFormLabel.dc.html",
+    "origin": "repo/design/templates/evolved-formlabel/EvolvedFormLabel.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "23dce2b6b44e3712961eecce08b1f85d67ba7493fb3cf8b2b9fa2bcf783d4df3"
+  },
+  {
+    "path": "templates/evolved-graphtooltip/EvolvedGraphTooltip.dc.html",
+    "origin": "repo/design/templates/evolved-graphtooltip/EvolvedGraphTooltip.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "e062a09f5c88f97affb68b75c2e4ccb1a00e8c06938e8da009c16a2474abdc6a"
+  },
+  {
+    "path": "templates/evolved-helperdialog/EvolvedHelperDialog.dc.html",
+    "origin": "repo/design/templates/evolved-helperdialog/EvolvedHelperDialog.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "248f4c4902cad7a31e781764485118dc77ad9f01d9e770dde3daf90ae5e14035"
+  },
+  {
+    "path": "templates/evolved-infotooltip/EvolvedInfoTooltip.dc.html",
+    "origin": "repo/design/templates/evolved-infotooltip/EvolvedInfoTooltip.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "90588605b741e9bbbddc48f33c94274245937954d91baded65a5c6ff224152ac"
+  },
+  {
+    "path": "templates/evolved-searchinput/EvolvedSearchInput.dc.html",
+    "origin": "repo/design/templates/evolved-searchinput/EvolvedSearchInput.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "3236781e356a094509b205acad2bfabd78edf261a9baffafc46a39a27bd37c5d"
+  },
+  {
+    "path": "templates/evolved-spinner/EvolvedSpinner.dc.html",
+    "origin": "repo/design/templates/evolved-spinner/EvolvedSpinner.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "9c30871e6d5a127b2181fe2fb729b3e6c57ece033fba56ed4b92d3d1b34712d4"
+  },
+  {
+    "path": "templates/evolved-statbox/EvolvedStatBox.dc.html",
+    "origin": "repo/design/templates/evolved-statbox/EvolvedStatBox.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "1dadd80772b4af32a7f1322644beb55aefd624af6e5c8375c72bd663892ce7d8"
+  },
+  {
+    "path": "templates/evolved-table/EvolvedTable.dc.html",
+    "origin": "repo/design/templates/evolved-table/EvolvedTable.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "8e4f85eb39f16df2a8d389d61cafa49181f19b9f331c2dc74cea8bc38d2da0d6"
+  },
+  {
+    "path": "templates/fleet-alert-strip/AlertStripGallery.dc.html",
+    "origin": "repo/design/templates/fleet-alert-strip/AlertStripGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "86e94b130f710a86807f0a0799eab4fc3c402576afa0b3dfbae2f9f8c602b6bf"
+  },
+  {
+    "path": "templates/fleet-alert-strip/AlertStripRow.dc.html",
+    "origin": "repo/design/templates/fleet-alert-strip/AlertStripRow.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "d334258d33d15fda110c53b08aa2d83c4f289aa39b8ceda7ad8c2364084872f1"
+  },
+  {
+    "path": "templates/fleet-coverage-label/CoverageGallery.dc.html",
+    "origin": "repo/design/templates/fleet-coverage-label/CoverageGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "17a734ab171af8232072522b1dec9cd8c040d1f16602ea120a760cee9afd8f6a"
+  },
+  {
+    "path": "templates/fleet-coverage-label/CoverageLabel.dc.html",
+    "origin": "repo/design/templates/fleet-coverage-label/CoverageLabel.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5f528c87eedfd5733d349b0717c255829b4f9d77acb840cea426cce5450da723"
+  },
+  {
+    "path": "templates/fleet-map/PlantMap.dc.html",
+    "origin": "repo/design/templates/fleet-map/PlantMap.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "8e9f3a3db3c5b73fa2bbec0049d547f12bd6a94d54c1162e500e01b8df9e461c"
+  },
+  {
+    "path": "templates/fleet-plant-card/PlantCard.dc.html",
+    "origin": "repo/design/templates/fleet-plant-card/PlantCard.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "a5a2a82dc094b948366cd29f36e3b979d279bf1ac3042f883a000008eaa9caf4"
+  },
+  {
+    "path": "templates/fleet-plant-card/PlantCardGallery.dc.html",
+    "origin": "repo/design/templates/fleet-plant-card/PlantCardGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "585fe8369c45b2c79c2606f331d13447ac87f3c3fad29a9b24e313fac31b4ca3"
+  },
+  {
+    "path": "templates/form-controls/Button.dc.html",
+    "origin": "repo/design/templates/form-controls/Button.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "cee5410430437a82c35838d4ddfcb9a5328d68feb226861a471a026178a987ad"
+  },
+  {
+    "path": "templates/form-controls/ButtonGallery.dc.html",
+    "origin": "repo/design/templates/form-controls/ButtonGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "35d35924220b430f0ff2b212859f5a68498a92cb6b4214bd74853e6500ba24d0"
+  },
+  {
+    "path": "templates/form-controls/Checkbox.dc.html",
+    "origin": "repo/design/templates/form-controls/Checkbox.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "c56227520f18ab5e0aee0660da3c6d676aa5765d9be209d4039f0aa6f52e171e"
+  },
+  {
+    "path": "templates/form-controls/CheckboxGallery.dc.html",
+    "origin": "repo/design/templates/form-controls/CheckboxGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "e184bdf2fd41ce9bbcf9a1d25ce4ce19b9c3ddc0343c7d7082f7e38439b0d1f8"
+  },
+  {
+    "path": "templates/form-controls/Controls.dc.html",
+    "origin": "repo/design/templates/form-controls/Controls.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "88b9e38f135f72f13c2d5747d4546c0e11846de36b16fe3febc7a8149998eaab"
+  },
+  {
+    "path": "templates/form-controls/Input.dc.html",
+    "origin": "repo/design/templates/form-controls/Input.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "4f953016892e4254ec292985f2bc19bb4b20f63fb0d565c8fde5be90b2db66d1"
+  },
+  {
+    "path": "templates/form-controls/InputGallery.dc.html",
+    "origin": "repo/design/templates/form-controls/InputGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "0df213227bd1e4f4a501df95cb3bba032e401184e398e65efa2a955f649ac0b5"
+  },
+  {
+    "path": "templates/form-controls/Radio.dc.html",
+    "origin": "repo/design/templates/form-controls/Radio.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "a9753636730f15f76360cde3ccdac2454ec4d5ef6765f4cae2274954cade3fd0"
+  },
+  {
+    "path": "templates/form-controls/RadioGallery.dc.html",
+    "origin": "repo/design/templates/form-controls/RadioGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "eb8cdd1757918e425af39dfc5194785ae129743055040caa223f3defb98b172f"
+  },
+  {
+    "path": "templates/form-controls/Select.dc.html",
+    "origin": "repo/design/templates/form-controls/Select.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "0e7d4354a3f0f64b9f36463686f22d7ee25f0035be49f30b1c23e65f7820da9a"
+  },
+  {
+    "path": "templates/form-controls/SelectGallery.dc.html",
+    "origin": "repo/design/templates/form-controls/SelectGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "6fa76be7f6eb26f2721ae432c03243804657dd53ddce86a7608cfeb33b707a7d"
+  },
+  {
+    "path": "templates/generation-purpose/GenerationPurpose.dc.html",
+    "origin": "repo/design/templates/generation-purpose/GenerationPurpose.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "12475b0d01e3a77c63addd5dbd43f7015dfae327336a58520672dd09c1b5883a"
+  },
+  {
+    "path": "templates/icon-set/IconGallery.dc.html",
+    "origin": "repo/design/templates/icon-set/IconGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "681f7853e4c8ad260ffefbb91cbc4cc9b71a612debc564e0432656b619c88876"
+  },
+  {
+    "path": "templates/load-balancing/LoadBalancing.dc.html",
+    "origin": "repo/design/templates/load-balancing/LoadBalancing.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "0838f4ea4ca1d019c727e7cdf63465e20bac5ef54e02bc6474bca82dcaa6e570"
+  },
+  {
+    "path": "templates/maintenance-log/MaintenanceLog.dc.html",
+    "origin": "repo/design/templates/maintenance-log/MaintenanceLog.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "3803e5725f045600776325490dfcab395e4d3ccc7b5768a8a3122eac32a461d9"
+  },
+  {
+    "path": "templates/pagination/Pagination.dc.html",
+    "origin": "repo/design/templates/pagination/Pagination.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "9edde6acabf3927bbe081285caa0cecbcba4762f2c99a6eefad900b0e672bb72"
+  },
+  {
+    "path": "templates/per-device-drilldown/PerDeviceDrilldown.dc.html",
+    "origin": "repo/design/templates/per-device-drilldown/PerDeviceDrilldown.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "023b2def6c5bacfcc255f09b8ad0712dfc6097ce85503d2efc6c1807471434a8"
+  },
+  {
+    "path": "templates/plant-photos/PlantPhotos.dc.html",
+    "origin": "repo/design/templates/plant-photos/PlantPhotos.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "228f0d6417b549ca551cc63395e36799f1f2581af4d8fe9296cef0b183b6b566"
+  },
+  {
+    "path": "templates/plant-popover/PlantPopover.dc.html",
+    "origin": "repo/design/templates/plant-popover/PlantPopover.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "8574c0efa88a77ff8340136034034fbfb4420640566f86a05fa44767b5cfb668"
+  },
+  {
+    "path": "templates/severity-system/SeverityBadge.dc.html",
+    "origin": "repo/design/templates/severity-system/SeverityBadge.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "c3d544135085ae6d2be56eac1a6ea5873224713f93d34ac534ff16c0368a169b"
+  },
+  {
+    "path": "templates/severity-system/SeverityBadgeGallery.dc.html",
+    "origin": "repo/design/templates/severity-system/SeverityBadgeGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "65c5f624b29e178678aa39bf413cd6dd8f7b52347fc379bd06a1f9945fb90eb1"
+  },
+  {
+    "path": "templates/severity-system/SeveritySystem.dc.html",
+    "origin": "repo/design/templates/severity-system/SeveritySystem.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "eb0dd511f9c4ca6822c556fabefeca2722fa742ba7f60d63c62ac2ba3c5b8da0"
+  },
+  {
+    "path": "templates/status-donut/StatusDonut.dc.html",
+    "origin": "repo/design/templates/status-donut/StatusDonut.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "40a51ac6a340e8aa0fd209e717436e82cebdd2c7678b5a0b46594fba7721cbf8"
+  },
+  {
+    "path": "templates/tag/Tag.dc.html",
+    "origin": "repo/design/templates/tag/Tag.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "51994ba3e5221aa8979ac17fcec04fa7164d1b73bbf7a7d45f54b862e25588a2"
+  },
+  {
+    "path": "templates/tag/TagGallery.dc.html",
+    "origin": "repo/design/templates/tag/TagGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "c974e2f9220131529a83d0c5e13d579d8594321415e6eefa0becd09b55e58805"
+  },
+  {
+    "path": "templates/time-filter/TimeFilter.dc.html",
+    "origin": "repo/design/templates/time-filter/TimeFilter.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "8d262f630f5276156fd9cae69cab9be9437c809a381403521d4e2896c8976ae7"
+  },
+  {
+    "path": "templates/toast/Toast.dc.html",
+    "origin": "repo/design/templates/toast/Toast.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "804bd9eb280aa1ec4f126aaddb988b50b79a5e1332a288ee0c2213645346a7a3"
+  },
+  {
+    "path": "templates/toast/ToastMobileGallery.dc.html",
+    "origin": "repo/design/templates/toast/ToastMobileGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "9088194e40b143717173335ce33971c0bb4d0f5a2b4474cccdc74d020aaf6b3a"
+  },
+  {
+    "path": "templates/today-panels/TodayPanels.dc.html",
+    "origin": "repo/design/templates/today-panels/TodayPanels.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "e14ca6d1c8182bfd41727ec99e6c5dd2ea4bc3e8464eef8de60d33b1182a51ca"
+  },
+  {
+    "path": "templates/ui-breadcrumbs/Breadcrumbs.dc.html",
+    "origin": "repo/design/templates/ui-breadcrumbs/Breadcrumbs.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5ab857917a177c7519f67a8c6b537e8c77366a1523989578624c5781244bd7f0"
+  },
+  {
+    "path": "templates/ui-chip/Chip.dc.html",
+    "origin": "repo/design/templates/ui-chip/Chip.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "3e489a2982d615c2ceadf729a1c46d04e9bbf3d31b5a316ecd31fc94f7d1e2c6"
+  },
+  {
+    "path": "templates/ui-chip/ChipGallery.dc.html",
+    "origin": "repo/design/templates/ui-chip/ChipGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "cdaf185ccb127366474d58151e58fcc71399cc4f226a0b408b566fc7fbd00fb6"
+  },
+  {
+    "path": "templates/ui-primitives/Avatar.dc.html",
+    "origin": "repo/design/templates/ui-primitives/Avatar.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "ca32e18ab1abc8671cc2f1f30c22daf7f4086be383f7a723457eddad1b729ffd"
+  },
+  {
+    "path": "templates/ui-primitives/AvatarGallery.dc.html",
+    "origin": "repo/design/templates/ui-primitives/AvatarGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "23f60697a69b28511a243dfea5d48a89f85dc29b39486f8cf1d38b81f5da74d5"
+  },
+  {
+    "path": "templates/ui-primitives/CustomSwitchDemo.dc.html",
+    "origin": "repo/design/templates/ui-primitives/CustomSwitchDemo.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "01a167f5ea3e5380b27e8e10b11337580035f69cddd2b3544f48031d5730c661"
+  },
+  {
+    "path": "templates/ui-primitives/Primitives.dc.html",
+    "origin": "repo/design/templates/ui-primitives/Primitives.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "6269aed95cab89c4f1d998435379149a30e9d9d91f470675ab261b9e54e9b2c4"
+  },
+  {
+    "path": "templates/ui-primitives/Progress.dc.html",
+    "origin": "repo/design/templates/ui-primitives/Progress.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "7e787668350a97ad31de78e05f75128b577cac8b225fc8e03b0b96297e7c0334"
+  },
+  {
+    "path": "templates/ui-primitives/ProgressGallery.dc.html",
+    "origin": "repo/design/templates/ui-primitives/ProgressGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5850d132d547b54eb53c1690a788e3d172cbf1fbaf35320150ab45cd0fcbf47d"
+  },
+  {
+    "path": "templates/ui-primitives/StatusDot.dc.html",
+    "origin": "repo/design/templates/ui-primitives/StatusDot.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5bbf6eca6c3a5af3f4e8dea1069163693a34b91af6f2d61ca94e252009c6b6c7"
+  },
+  {
+    "path": "templates/ui-primitives/StatusDotGallery.dc.html",
+    "origin": "repo/design/templates/ui-primitives/StatusDotGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "a45b43ef138decc3cc918e967f05b52db78305d2677bb96bd5e14097b53bc047"
+  },
+  {
+    "path": "templates/ui-primitives/Switch.dc.html",
+    "origin": "repo/design/templates/ui-primitives/Switch.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "d1f277a4e88e968bbfafcaa9f0cb54d53aa767a473dd52ad68457a81d03d145a"
+  },
+  {
+    "path": "templates/ui-primitives/SwitchGallery.dc.html",
+    "origin": "repo/design/templates/ui-primitives/SwitchGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "1f3ec5b9949a3de936a942ac93402b6042e38611fe24d85f67a34de1bf226e18"
+  },
+  {
+    "path": "templates/ui-primitives/Tabs.dc.html",
+    "origin": "repo/design/templates/ui-primitives/Tabs.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "c51f8e247f1bcbb653c5fd1681322e67e490b5cfab32178d4f20f040ae25ea3e"
+  },
+  {
+    "path": "templates/ui-primitives/TabsGallery.dc.html",
+    "origin": "repo/design/templates/ui-primitives/TabsGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "5bb6e3a26adf0b3f2af7d9933c515d6752cab4301e0be6bd154a0ac549bd2973"
+  },
+  {
+    "path": "templates/ui-primitives/Tooltip.dc.html",
+    "origin": "repo/design/templates/ui-primitives/Tooltip.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "deceff6638f4bb7eb47ab1bbd96ebf4176968f8692c456496dc8894300ca11f1"
+  },
+  {
+    "path": "templates/ui-primitives/TooltipGallery.dc.html",
+    "origin": "repo/design/templates/ui-primitives/TooltipGallery.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "354da50b9824a762d27f93dfed570475a26083ea07f5691e75f6bb90b2b1275c"
+  },
+  {
+    "path": "templates/weather-card/WeatherCard.dc.html",
+    "origin": "repo/design/templates/weather-card/WeatherCard.dc.html",
+    "mode": "verbatim",
+    "sourceSha256": "b459db093d34154eed3dc5cccb51560cbfb19f9903535205d5e29cd7178e4735"
+  },
+  {
+    "path": "templates/_ds-foundation/DESIGN-SYNC-HANDOFF.md",
+    "origin": "repo/design/templates/_ds-foundation/DESIGN-SYNC-HANDOFF.md",
+    "mode": "verbatim",
+    "sourceSha256": "f1f4f3541a0feedb9413d95330d49195a147b9af6ce6b7fcaf1f86916ef23b38"
+  },
+  {
+    "path": "templates/_ds-foundation/FAMILY-BUILD-SPEC.md",
+    "origin": "repo/design/templates/_ds-foundation/FAMILY-BUILD-SPEC.md",
+    "mode": "verbatim",
+    "sourceSha256": "0c923bbadaf5644970b35db820a9623b0e6eda9a6b76acbc49116f5cf87e151c"
+  },
+  {
+    "path": "templates/_ds-foundation/fig-tokens.css",
+    "origin": "repo/design/templates/_ds-foundation/fig-tokens.css",
+    "mode": "verbatim",
+    "sourceSha256": "337c12a62c4357f3a2b2c45508b662a414928fe5ad7543fbf7468784d12a7a89"
+  },
+  {
+    "path": "templates/_ds-foundation/fig-typography.css",
+    "origin": "repo/design/templates/_ds-foundation/fig-typography.css",
+    "mode": "verbatim",
+    "sourceSha256": "d833e1c38a04d5096328c145283f7fccbfb59d63dc1b1786dacad746e41f233f"
+  },
+  {
+    "path": "templates/_ds-foundation/README.draft.md",
+    "origin": "repo/design/templates/_ds-foundation/README.draft.md",
+    "mode": "verbatim",
+    "sourceSha256": "04e38f3245c1ae742af67befd400abfb8a22a7cf761843ae73c48dec64297862"
+  },
+  {
+    "path": "templates/_ds-foundation/REGROUPING-SPEC.md",
+    "origin": "repo/design/templates/_ds-foundation/REGROUPING-SPEC.md",
+    "mode": "verbatim",
+    "sourceSha256": "55dd60d14d88102022874702e911e3d19df9a289fe8d6ec584f2276707c44067"
+  },
+  {
+    "path": "visual-reference/index.html",
+    "origin": "static-gallery/index.html",
+    "mode": "verbatim",
+    "sourceSha256": "de7de61a6ad2f9ef62c60442df78e650edd48e4db7a8735038e52902caa8456b"
+  },
+  {
+    "path": "visual-reference/ovanova-logo.png",
+    "origin": "static-gallery/ovanova-logo.png",
+    "mode": "verbatim",
+    "sourceSha256": "87b93be4f7ea1098fb3e76794c8168fb2012e93dd93b1c28c9e6becae64fb334"
+  },
+  {
+    "path": "visual-reference/ovanova-logo.svg",
+    "origin": "static-gallery/ovanova-logo.svg",
+    "mode": "verbatim",
+    "sourceSha256": "8cbae3b351b81a0db014168a5b06a53ab90d6f9cd055e5f1928874adebc8ecd6"
+  },
+  {
+    "path": "visual-reference/README.md",
+    "origin": "static-gallery/README.md",
+    "mode": "verbatim",
+    "sourceSha256": "86309432d5f0b3aa527d6be9277ee74a90c99b87b17d42cdc23161b13091e0ab"
+  },
+  {
+    "path": "visual-reference/tokens.html",
+    "origin": "static-gallery/tokens.html",
+    "mode": "verbatim",
+    "sourceSha256": "1b6e48ab4287086aaf45e89fda7048721a18ea69d1eea6fdbc840d9d69ffff43"
+  },
+  {
+    "path": "visual-reference/type.html",
+    "origin": "static-gallery/type.html",
+    "mode": "verbatim",
+    "sourceSha256": "2e3d8203d2d3c53fcf65a7c7b0aab325baafdb4aae9803f318ca44e813d4f187"
+  },
+  {
+    "path": "visual-reference/assets/export.css",
+    "origin": "static-gallery/assets/export.css",
+    "mode": "verbatim",
+    "sourceSha256": "b9a2eea64970094d896e36b02e9c2dff002638d897f2075224385b1aafb143a6"
+  },
+  {
+    "path": "visual-reference/bundle/_ds_bundle.css",
+    "origin": "static-gallery/bundle/_ds_bundle.css",
+    "mode": "verbatim",
+    "sourceSha256": "8bc801676159d7b07acf1beb44f48ef4d91b2253cfe7ef333bb4123cf44df119"
+  },
+  {
+    "path": "visual-reference/bundle/_ds_bundle.js",
+    "origin": "static-gallery/bundle/_ds_bundle.js",
+    "mode": "verbatim",
+    "sourceSha256": "dd449ab1cf630a2821cf627a4589f0e337fc551916fd28819e1f438b78a07cca"
+  },
+  {
+    "path": "visual-reference/bundle/_ds_needs_recompile",
+    "origin": "static-gallery/bundle/_ds_needs_recompile",
+    "mode": "verbatim",
+    "sourceSha256": "014081cbd0701b2750816cc161d336f7416d7576449c6c4073ad8f6cc97083cf"
+  },
+  {
+    "path": "visual-reference/bundle/_ds_sync.json",
+    "origin": "static-gallery/bundle/_ds_sync.json",
+    "mode": "verbatim",
+    "sourceSha256": "d02624b944e1efc69d7862d5e06eff82293c8b88012847496fc48cf39be4ec33"
+  },
+  {
+    "path": "visual-reference/bundle/README.md",
+    "origin": "static-gallery/bundle/README.md",
+    "mode": "verbatim",
+    "sourceSha256": "dd1bb74392159e0f427fba8e62aad59df1af2e5634713333859369811766aa5d"
+  },
+  {
+    "path": "visual-reference/bundle/styles.css",
+    "origin": "static-gallery/bundle/styles.css",
+    "mode": "verbatim",
+    "sourceSha256": "76eb38b2044fbe4cc5b59ad2eef70e3b4669a8b83ae9082cde1122fdb8bf37df"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/ChartLegend/ChartLegend.d.ts",
+    "origin": "static-gallery/bundle/components/charts/ChartLegend/ChartLegend.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "4360702a00fc10b17a00b257f2d7a9ee038b5549c9e53cdc5beac662e3f29b09"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/ChartLegend/ChartLegend.html",
+    "origin": "static-gallery/bundle/components/charts/ChartLegend/ChartLegend.html",
+    "mode": "verbatim",
+    "sourceSha256": "d03bf657011cb9ee50be97da63f86f06d29f242f507b8af54327496f6c184e55"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/ChartLegend/ChartLegend.jsx",
+    "origin": "static-gallery/bundle/components/charts/ChartLegend/ChartLegend.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "cc50c7d36491ce2e074230b27c2a227397ddf1a7c980dd19b953365991fbd762"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/ChartLegend/ChartLegend.prompt.md",
+    "origin": "static-gallery/bundle/components/charts/ChartLegend/ChartLegend.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "651a1baf79dc9c67d3b91b668bf1f7bef1da1252e551c7fd3d614542b9657ba3"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/LiveLineChart/LiveLineChart.d.ts",
+    "origin": "static-gallery/bundle/components/charts/LiveLineChart/LiveLineChart.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "b42223213ec49a2f41ffca4c16b56373b65e09106bdda914903f3f86a059cbbc"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/LiveLineChart/LiveLineChart.html",
+    "origin": "static-gallery/bundle/components/charts/LiveLineChart/LiveLineChart.html",
+    "mode": "verbatim",
+    "sourceSha256": "c701045566676d036cec06ad1def53de0c1e3a6e0bd4665f939f0c84e9492bcd"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/LiveLineChart/LiveLineChart.jsx",
+    "origin": "static-gallery/bundle/components/charts/LiveLineChart/LiveLineChart.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "c58f8ae286045d226463b6a2a7ca8509006b9a4ae19e2781095e147f19033069"
+  },
+  {
+    "path": "visual-reference/bundle/components/charts/LiveLineChart/LiveLineChart.prompt.md",
+    "origin": "static-gallery/bundle/components/charts/LiveLineChart/LiveLineChart.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "14ccec7828f1fc5e10e5ce4b04504cb0e8078da0bc3d9dd8b9e38c6842d7c32b"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.d.ts",
+    "origin": "static-gallery/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "1d2f1bbc79a18b000c962190bac8d490d279e28fc3dee482487cd2fee9110631"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.html",
+    "origin": "static-gallery/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.html",
+    "mode": "verbatim",
+    "sourceSha256": "10656b2e1babd61d30c2fde0f870d4f5d08d708ffdbbc74b6108fa20ec71780b"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.jsx",
+    "origin": "static-gallery/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "a2f57e9275c931aa690252e3e146019663da221a438f2a81133c3b1a70d0796a"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.prompt.md",
+    "origin": "static-gallery/bundle/components/fleetmap/FleetMapPopup/FleetMapPopup.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "a21bb2e9408c1197d0538782018bf92469be60f958e1042bb76287999edbac82"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.d.ts",
+    "origin": "static-gallery/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "16185e97da37091cf062ec67305a9bde129cd779c000991e7d19a9ee41cf7959"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.html",
+    "origin": "static-gallery/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.html",
+    "mode": "verbatim",
+    "sourceSha256": "15fe23939d7064cee36eb3238c2c609e99d4a19839dc27e99d75e33179981581"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.jsx",
+    "origin": "static-gallery/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "d04a79d2f631d48cd5bbbb4c7b1d220881bdd2f37346255354fff1a284f2b47e"
+  },
+  {
+    "path": "visual-reference/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.prompt.md",
+    "origin": "static-gallery/bundle/components/fleetmap/PlantInfoWindow/PlantInfoWindow.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "9f98a197e8d752b0864f76a5fde555f4a66a65a61f5f0eff6a25738a2455663d"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CardSwitch/CardSwitch.d.ts",
+    "origin": "static-gallery/bundle/components/forms/CardSwitch/CardSwitch.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "120c2f48c3ba6641176fd560ded3d6572db56d7ca1bff9baa28dc4a95b76812c"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CardSwitch/CardSwitch.html",
+    "origin": "static-gallery/bundle/components/forms/CardSwitch/CardSwitch.html",
+    "mode": "verbatim",
+    "sourceSha256": "8a45e0346de830ba960fb8ddcb0240dfe7e1c3a7e8a96738a3394b429142c1c8"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CardSwitch/CardSwitch.jsx",
+    "origin": "static-gallery/bundle/components/forms/CardSwitch/CardSwitch.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "cc6dec3dc552c47683149f336fa57ad986553026e45bd7714562646351219e36"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CardSwitch/CardSwitch.prompt.md",
+    "origin": "static-gallery/bundle/components/forms/CardSwitch/CardSwitch.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "2028dc28d92ae84216e153fdf77f85da926174ce9ef4d30c2ada4531c03a1764"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CheckBox/CheckBox.d.ts",
+    "origin": "static-gallery/bundle/components/forms/CheckBox/CheckBox.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "183c3f472f900f4c608327c18ec445b4754df3b6801c43f63371cb0b4677e7cc"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CheckBox/CheckBox.html",
+    "origin": "static-gallery/bundle/components/forms/CheckBox/CheckBox.html",
+    "mode": "verbatim",
+    "sourceSha256": "1c3554ddb5b8bd8496737986b90b084fa5aebcbb134caedd9f9d63015813a31b"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CheckBox/CheckBox.jsx",
+    "origin": "static-gallery/bundle/components/forms/CheckBox/CheckBox.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "22cdc4fc46aab792c8e135bb62dbc087d4b9363742435199d82d6ec329c7d042"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CheckBox/CheckBox.prompt.md",
+    "origin": "static-gallery/bundle/components/forms/CheckBox/CheckBox.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "55cf8c8449b7a49c224bdc664dcf8e22a0e8aed0dbfafffb0eb979d8991616fb"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CustomSwitch/CustomSwitch.d.ts",
+    "origin": "static-gallery/bundle/components/forms/CustomSwitch/CustomSwitch.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "28647680648fb7076a5d3a2980131e2fb41e718ff0d8816b83dd28f939235ed3"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CustomSwitch/CustomSwitch.html",
+    "origin": "static-gallery/bundle/components/forms/CustomSwitch/CustomSwitch.html",
+    "mode": "verbatim",
+    "sourceSha256": "e2fdaf80fceff9782a55b8c45aa80a2ae25ab11311ad1efc4291b8c8c929d88d"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CustomSwitch/CustomSwitch.jsx",
+    "origin": "static-gallery/bundle/components/forms/CustomSwitch/CustomSwitch.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "d496cb123687ad20c27df4f072b4582195e4022ac8aea2d19aead092ed5b08cd"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/CustomSwitch/CustomSwitch.prompt.md",
+    "origin": "static-gallery/bundle/components/forms/CustomSwitch/CustomSwitch.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "23030b7c3e1882f1c0e5da4be7ca93ee879cf835d4c7541e85fb64b054999f0b"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/DateFilter/DateFilter.d.ts",
+    "origin": "static-gallery/bundle/components/forms/DateFilter/DateFilter.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "57a9445fb8328bfa91184db2bd7f1c542debe398010936a3b0f1dd5907950d35"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/DateFilter/DateFilter.html",
+    "origin": "static-gallery/bundle/components/forms/DateFilter/DateFilter.html",
+    "mode": "verbatim",
+    "sourceSha256": "921c3dd40f9d1515570d9e2e59e541633a26d2ebaf620d0160bf9267da5eb8c4"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/DateFilter/DateFilter.jsx",
+    "origin": "static-gallery/bundle/components/forms/DateFilter/DateFilter.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "c119e945cba61fc81adb041b9b172a82509b6b27d37d70acaa101391b38c629b"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/DateFilter/DateFilter.prompt.md",
+    "origin": "static-gallery/bundle/components/forms/DateFilter/DateFilter.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "aab95594ee4a23195aa6a5be198a6697d30e79f8de4278f5aa3b41b715afe953"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/SearchInput/SearchInput.d.ts",
+    "origin": "static-gallery/bundle/components/forms/SearchInput/SearchInput.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "71b142522ab4511466645ffe090aec209611dfd49b81372748ee18e6a0911f49"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/SearchInput/SearchInput.html",
+    "origin": "static-gallery/bundle/components/forms/SearchInput/SearchInput.html",
+    "mode": "verbatim",
+    "sourceSha256": "af1c61b9f6fbed9d3d2e4cdaeab51d7271c95a9e0f055313e1f26e90e05973c2"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/SearchInput/SearchInput.jsx",
+    "origin": "static-gallery/bundle/components/forms/SearchInput/SearchInput.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "186565bb6fad27117a5b9c92cf07d39961c6804df867ed1279ad7dd530fa901c"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/SearchInput/SearchInput.prompt.md",
+    "origin": "static-gallery/bundle/components/forms/SearchInput/SearchInput.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "aff6caa2d81729b0110fc217895bcab33e1a1373850488c95c23d371a5532989"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/Select/Select.d.ts",
+    "origin": "static-gallery/bundle/components/forms/Select/Select.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "4c88f4d2ccce6a16ba317decebdb9c9b3fcf4740e43a1ff02ec4f689fcef22f5"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/Select/Select.html",
+    "origin": "static-gallery/bundle/components/forms/Select/Select.html",
+    "mode": "verbatim",
+    "sourceSha256": "20f7449f20cdd55219c6b977753cda92ffe9b840ae46a8cbeefdd1e0b63a168f"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/Select/Select.jsx",
+    "origin": "static-gallery/bundle/components/forms/Select/Select.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "657d47e9bbbef102dbd30be182bc14d6b616160f57beda9d5cc12b9172dbc23f"
+  },
+  {
+    "path": "visual-reference/bundle/components/forms/Select/Select.prompt.md",
+    "origin": "static-gallery/bundle/components/forms/Select/Select.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "c0641d6a0880b962665319282fb9fa2141901ab5c05a1e17ad6bbcc188c601a4"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Accordion/Accordion.d.ts",
+    "origin": "static-gallery/bundle/components/general/Accordion/Accordion.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "d4bf4d0d950fa0907e8f79401a4a130218fac1fcd8291f592d68817f7c7a9512"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Accordion/Accordion.html",
+    "origin": "static-gallery/bundle/components/general/Accordion/Accordion.html",
+    "mode": "verbatim",
+    "sourceSha256": "d9d8ab8595746f724b04c2095f432db89044943de8cf1a50f13e5f2240d6ca92"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Accordion/Accordion.jsx",
+    "origin": "static-gallery/bundle/components/general/Accordion/Accordion.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "12e5abb98407185b33308227335ab52395ec608a54fd94c30b891f1bef1b0db2"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Accordion/Accordion.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Accordion/Accordion.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "5899cf7c431408e4aa46264554ad6c43e9a581ffd59f6a2ea72395768a33771d"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/AlertStripRow/AlertStripRow.d.ts",
+    "origin": "static-gallery/bundle/components/general/AlertStripRow/AlertStripRow.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "a3daa46ba3dcfd69983999786e896f0e25b40e75fccef3736449acc3cb4d1076"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/AlertStripRow/AlertStripRow.html",
+    "origin": "static-gallery/bundle/components/general/AlertStripRow/AlertStripRow.html",
+    "mode": "verbatim",
+    "sourceSha256": "4f20250c9648335f05df7eb8aebd80f2e2423ce68338457c344ba66830730295"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/AlertStripRow/AlertStripRow.jsx",
+    "origin": "static-gallery/bundle/components/general/AlertStripRow/AlertStripRow.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "d391c3911b6063c1acde22ced515fb7f3af75af6d4670044fe41771c317db069"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/AlertStripRow/AlertStripRow.prompt.md",
+    "origin": "static-gallery/bundle/components/general/AlertStripRow/AlertStripRow.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "75e7cbb167cd7eb8388ceb42ee79eac6741b0c84484ad334e603c3317dea6397"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Button/Button.d.ts",
+    "origin": "static-gallery/bundle/components/general/Button/Button.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "d24de557871bfe226fcd87ee3ffa3c1e98d9c30f2831efc745a23028738191af"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Button/Button.html",
+    "origin": "static-gallery/bundle/components/general/Button/Button.html",
+    "mode": "verbatim",
+    "sourceSha256": "e9b1c069f2b2d117e7c11fee2959e63947d40abad8b2b750719b9c2e72df7f70"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Button/Button.jsx",
+    "origin": "static-gallery/bundle/components/general/Button/Button.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "f1e0101695b99b3ddcbb462259725ee66cbd491fa6cdb61f413a1dd43ffec5c9"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Button/Button.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Button/Button.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "e5c065d6ce20331940cd435ac1cbd13714aff478291c29e1f0e82a706e5b96fc"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Carousel/Carousel.d.ts",
+    "origin": "static-gallery/bundle/components/general/Carousel/Carousel.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "fd3b1b291eae216117392b317df88d4269cf8b69e1041040e517b0e62a48b979"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Carousel/Carousel.html",
+    "origin": "static-gallery/bundle/components/general/Carousel/Carousel.html",
+    "mode": "verbatim",
+    "sourceSha256": "269d555e46d01c254de95f16cfdb92d7fbc09b3a6481213260d3d04277f265cb"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Carousel/Carousel.jsx",
+    "origin": "static-gallery/bundle/components/general/Carousel/Carousel.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "6113ab553eea3d65105a1600fa00545e67f937a0c91115de2e8bc0da51511bd1"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Carousel/Carousel.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Carousel/Carousel.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "6555f60c98f03fc8187ae70119640d8bccf8f4b10c8e3545cb485f446db9d7b3"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.d.ts",
+    "origin": "static-gallery/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "31f73f51dd3b3e2d750e91deb8473496406eaa60eca5e6216c06831bda4f4a4f"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.html",
+    "origin": "static-gallery/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.html",
+    "mode": "verbatim",
+    "sourceSha256": "bcac8ddf6895fa03b855031f9e0d932b3da946f80caf99574314c117df561b4e"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.jsx",
+    "origin": "static-gallery/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "a0a7b9cc7b5456890912838a807a35a7597f28f58afbd85be89d64b4ae2ff4d6"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.prompt.md",
+    "origin": "static-gallery/bundle/components/general/ChangeDateRangeButton/ChangeDateRangeButton.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "a6dc2c46523e9aea5bdeb7aa96edb9125bbba22c3f2670c3b006696764114ea8"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/CoverageQualifier/CoverageQualifier.d.ts",
+    "origin": "static-gallery/bundle/components/general/CoverageQualifier/CoverageQualifier.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "01f3d51b766e547888de19cfbfc79716ef1fa593c75e245178450d9126908d75"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/CoverageQualifier/CoverageQualifier.html",
+    "origin": "static-gallery/bundle/components/general/CoverageQualifier/CoverageQualifier.html",
+    "mode": "verbatim",
+    "sourceSha256": "6b5d11ea8787f69210574650bc97394c0ca96c44a827c0cc67f9c6db051dd9ce"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/CoverageQualifier/CoverageQualifier.jsx",
+    "origin": "static-gallery/bundle/components/general/CoverageQualifier/CoverageQualifier.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "23664d64af629f6c2615785ab6117230d59b4a3e559dd5d827af32b4df4112f0"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/CoverageQualifier/CoverageQualifier.prompt.md",
+    "origin": "static-gallery/bundle/components/general/CoverageQualifier/CoverageQualifier.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "32fcf8f748250819665d0b2262f56b2dc897a5eeddfacc08fa34bf57386af37c"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Donut/Donut.d.ts",
+    "origin": "static-gallery/bundle/components/general/Donut/Donut.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "729eeb46c4b19b4d33d0144d99d5bc8ff3f0ad96b9eba5a83cd2d6896263bdf1"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Donut/Donut.html",
+    "origin": "static-gallery/bundle/components/general/Donut/Donut.html",
+    "mode": "verbatim",
+    "sourceSha256": "ba42091f89393ab6dfc378c9a7adf6405b996cae0c892a8b7372522fce3dd268"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Donut/Donut.jsx",
+    "origin": "static-gallery/bundle/components/general/Donut/Donut.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "401ff6fd3c9ac8881f9197e2c50b3626d743481aca402fffa59a547337ac4c41"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Donut/Donut.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Donut/Donut.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "87c8ea2657ea350bb104ab02c08f0d9dcd27d2cbd68c5217549a7bc4a9b46b4b"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorElement/ErrorElement.d.ts",
+    "origin": "static-gallery/bundle/components/general/ErrorElement/ErrorElement.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "029cd4732307eeac0acb4438fa0f908c351784e0a1f56bc468b6dba9b085edc7"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorElement/ErrorElement.html",
+    "origin": "static-gallery/bundle/components/general/ErrorElement/ErrorElement.html",
+    "mode": "verbatim",
+    "sourceSha256": "33a8e336778207f26c7df16d06605b647981b264885d1cae80a263898ce7ce40"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorElement/ErrorElement.jsx",
+    "origin": "static-gallery/bundle/components/general/ErrorElement/ErrorElement.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "bd04134d466c091d3e6556c34be869b0ddb87984480df0f8259b35efdc5b5b94"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorElement/ErrorElement.prompt.md",
+    "origin": "static-gallery/bundle/components/general/ErrorElement/ErrorElement.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "0b5b593e0f1f5bab6b52141b952d2df58ae6458c9869a36d7bccd57fc75cea33"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorScreen/ErrorScreen.d.ts",
+    "origin": "static-gallery/bundle/components/general/ErrorScreen/ErrorScreen.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "b2b9dc5107146e529e0da4613f3bc91377f17a31f467ed5f25d635f8f2351b6b"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorScreen/ErrorScreen.html",
+    "origin": "static-gallery/bundle/components/general/ErrorScreen/ErrorScreen.html",
+    "mode": "verbatim",
+    "sourceSha256": "5b3b83d154fd74d385de819e2fb9459a0f3b556bb24f8834e8dca1f9bcb880e2"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorScreen/ErrorScreen.jsx",
+    "origin": "static-gallery/bundle/components/general/ErrorScreen/ErrorScreen.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "8bd94ec1b73754ebb56b386f1ec308420e2b04df4bd4a6c4f73040311a4107af"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/ErrorScreen/ErrorScreen.prompt.md",
+    "origin": "static-gallery/bundle/components/general/ErrorScreen/ErrorScreen.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "1953f4e1dc7bfd13a19db0415aa06802053c1c8352a2034c623dd28872a267db"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/FleetMap/FleetMap.d.ts",
+    "origin": "static-gallery/bundle/components/general/FleetMap/FleetMap.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "3727ede0183d29cebaa4f2aaf10e3853d39085612fcf07bc415319e66b31c9db"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/FleetMap/FleetMap.html",
+    "origin": "static-gallery/bundle/components/general/FleetMap/FleetMap.html",
+    "mode": "verbatim",
+    "sourceSha256": "bb06a0bad952e7c96e31db42e8a484913cb9af14089cebde9ec3dbb66d21c9a3"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/FleetMap/FleetMap.jsx",
+    "origin": "static-gallery/bundle/components/general/FleetMap/FleetMap.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "32e664d7e4aca343aa12b736024e27edb502d7309d6ecac7959ec08fe4f9e8eb"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/FleetMap/FleetMap.prompt.md",
+    "origin": "static-gallery/bundle/components/general/FleetMap/FleetMap.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "5670faf38537b8e32e8a40f7204969e43a6ad6b42df44c8661dcdd5e02c64f49"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/HelpHint/HelpHint.d.ts",
+    "origin": "static-gallery/bundle/components/general/HelpHint/HelpHint.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "1d957ab0bbcf7fd63b6df46a372a680ded8c87258f9329d7ad30fe474ae18e5f"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/HelpHint/HelpHint.html",
+    "origin": "static-gallery/bundle/components/general/HelpHint/HelpHint.html",
+    "mode": "verbatim",
+    "sourceSha256": "8d74e8a74b638618e1369da520257fc2f8e3f2881bc989bac2e4ee7ffe1495a1"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/HelpHint/HelpHint.jsx",
+    "origin": "static-gallery/bundle/components/general/HelpHint/HelpHint.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "c8423359c86a90014cae59782852eb11b8dddc0e5436d3eb17977527f8694b05"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/HelpHint/HelpHint.prompt.md",
+    "origin": "static-gallery/bundle/components/general/HelpHint/HelpHint.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "59fc3c0055040ccc3569538a6b72f4aea589aca70cce18137a0eb99031b0fba3"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Input/Input.d.ts",
+    "origin": "static-gallery/bundle/components/general/Input/Input.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "4473435e0a6099d7a777b0dfb47d6f85528a4ad99a4cd438fa6dac99dcdbf938"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Input/Input.html",
+    "origin": "static-gallery/bundle/components/general/Input/Input.html",
+    "mode": "verbatim",
+    "sourceSha256": "c28bf606b7ed0340c6f74798c2fb063c897b3a730fdfb149a84ed3aa3f893be1"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Input/Input.jsx",
+    "origin": "static-gallery/bundle/components/general/Input/Input.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "7a1ed93aa8d5e04a3fb12aaf4dabc21302681863e52b8102abc70ca1baa1ca40"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Input/Input.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Input/Input.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "0e42699529cd53804a8f97e7368fa163f6c193bd4d15df43857ed4909ccb56f5"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PlantCard/PlantCard.d.ts",
+    "origin": "static-gallery/bundle/components/general/PlantCard/PlantCard.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "d569edc57d99f29d91068718ffe7f13c430822991f4a622ef6dcb93762ad026a"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PlantCard/PlantCard.html",
+    "origin": "static-gallery/bundle/components/general/PlantCard/PlantCard.html",
+    "mode": "verbatim",
+    "sourceSha256": "8c6577f12058aa6c242e01944973cd1ebaa9ecc2eda59ef4d3ee91ed43251539"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PlantCard/PlantCard.jsx",
+    "origin": "static-gallery/bundle/components/general/PlantCard/PlantCard.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "da7213c06ca7e85d38770ad379ab65b163546a40a817cbeeae3f118ca01eb24d"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PlantCard/PlantCard.prompt.md",
+    "origin": "static-gallery/bundle/components/general/PlantCard/PlantCard.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "e96d83ef451d9456758474155c7ea9d8457c59f60d977affe5e55c1f92d28d01"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PreviewCard/PreviewCard.d.ts",
+    "origin": "static-gallery/bundle/components/general/PreviewCard/PreviewCard.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "15522ddb8fd0f51828eadf8db2dd057db17ccb88f570f82073c64a8e3d7824b9"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PreviewCard/PreviewCard.html",
+    "origin": "static-gallery/bundle/components/general/PreviewCard/PreviewCard.html",
+    "mode": "verbatim",
+    "sourceSha256": "b6864f70ba200ce0ff0f68214cfda7341620888aa18d6517989ca6397982070b"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PreviewCard/PreviewCard.jsx",
+    "origin": "static-gallery/bundle/components/general/PreviewCard/PreviewCard.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "5ff90cb5efbf48c7a9f45cd8d9beac6fc69d44d1e9d695a8c49de860354626b8"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/PreviewCard/PreviewCard.prompt.md",
+    "origin": "static-gallery/bundle/components/general/PreviewCard/PreviewCard.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "e043a3990470195f17ef0cf6c2445160fdaa82b4ed1ff81500f15993a6cd559b"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Radio/Radio.d.ts",
+    "origin": "static-gallery/bundle/components/general/Radio/Radio.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "a51b146f0b2c458613ee8861e797854a847ce44ef908ddb7aafd26e6618ebbd9"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Radio/Radio.html",
+    "origin": "static-gallery/bundle/components/general/Radio/Radio.html",
+    "mode": "verbatim",
+    "sourceSha256": "96b4f11188f15feda3b0cb7a4a4d857ffc3b9e41ad5c85e007ba6efc3e32f168"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Radio/Radio.jsx",
+    "origin": "static-gallery/bundle/components/general/Radio/Radio.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "f3f5abd4f4b809171d0060873538ecd63984dd22dd89aefe1989ab7e26d497e8"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Radio/Radio.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Radio/Radio.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "1dc41b0535c8afc35724edceb5a629574492c3b85db310ead048214ec7b52d7e"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Sparkline/Sparkline.d.ts",
+    "origin": "static-gallery/bundle/components/general/Sparkline/Sparkline.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "e227f1876e39d1963db1671ca0b476b3ea2da15c51d8fa20fb5e47fd40396fe5"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Sparkline/Sparkline.html",
+    "origin": "static-gallery/bundle/components/general/Sparkline/Sparkline.html",
+    "mode": "verbatim",
+    "sourceSha256": "c5c9ecc038782d4f6a5ae0d622b13cd5e7ab2a76eb5ff05d6012b2f2f5f0b149"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Sparkline/Sparkline.jsx",
+    "origin": "static-gallery/bundle/components/general/Sparkline/Sparkline.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "6010a44a3e814d937848f1ef72b381051e3fc948b3a42140609b4cec6a448c10"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Sparkline/Sparkline.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Sparkline/Sparkline.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "27a4c890489c2dbe3caaddcb358fac9e12a09e1e072c1eaabdab724454fa24cc"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Spinner/Spinner.d.ts",
+    "origin": "static-gallery/bundle/components/general/Spinner/Spinner.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "24669defcb3b3747c91a2a6fa876080da39f3ce05bb9db5bade811ab33e52620"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Spinner/Spinner.html",
+    "origin": "static-gallery/bundle/components/general/Spinner/Spinner.html",
+    "mode": "verbatim",
+    "sourceSha256": "7fb3b1dc2f83065975c684f0fe8cddf1725db7f5e88ddcb279ec9c9bee249281"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Spinner/Spinner.jsx",
+    "origin": "static-gallery/bundle/components/general/Spinner/Spinner.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "473df00651444d9d375866919a7702281d176f15cd1f68902d94e324ddec1314"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/Spinner/Spinner.prompt.md",
+    "origin": "static-gallery/bundle/components/general/Spinner/Spinner.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "8e106cd7588e0cd54000f61add754e0b94378a696f6fe91adade852edaee3399"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatCard/StatCard.d.ts",
+    "origin": "static-gallery/bundle/components/general/StatCard/StatCard.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "07d33912b7c79b8fed7dfd9d2acd075c33d4330d8dd8b558e0572f05e9e9ca16"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatCard/StatCard.html",
+    "origin": "static-gallery/bundle/components/general/StatCard/StatCard.html",
+    "mode": "verbatim",
+    "sourceSha256": "affeaa56eea7bbf7bf9020e7f7ad2d4ae9cf2bb62fdc3d52c0048742b31e594d"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatCard/StatCard.jsx",
+    "origin": "static-gallery/bundle/components/general/StatCard/StatCard.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "be06e11a879c30ef3d49500a9a5cf123cab63a1e866d27d0bf1006df97427542"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatCard/StatCard.prompt.md",
+    "origin": "static-gallery/bundle/components/general/StatCard/StatCard.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "93dc72361e1ba7bf1946495add1720236e48ecd2a9481ff9c99efe6a99497351"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusBadge/StatusBadge.d.ts",
+    "origin": "static-gallery/bundle/components/general/StatusBadge/StatusBadge.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "a2afa0fa54896291416bc30428edfa1de2bb434e9b31a8db4db99de251811497"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusBadge/StatusBadge.html",
+    "origin": "static-gallery/bundle/components/general/StatusBadge/StatusBadge.html",
+    "mode": "verbatim",
+    "sourceSha256": "8ba892e96b1cefdb4a73937974fc846d4a32daf939ce8f6c6cdf78e630f746ac"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusBadge/StatusBadge.jsx",
+    "origin": "static-gallery/bundle/components/general/StatusBadge/StatusBadge.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "64b946bb192413b16edb6e687d1605df19aa6bcfdb631fca57d78a667dd9fd60"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusBadge/StatusBadge.prompt.md",
+    "origin": "static-gallery/bundle/components/general/StatusBadge/StatusBadge.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "ce2d13397b8d08a0a75f1ac4a9e06df51dfdc7465376e4452df4ce87d748553c"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDonut/StatusDonut.d.ts",
+    "origin": "static-gallery/bundle/components/general/StatusDonut/StatusDonut.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "214d2d2afc18c1f40dbaa58a8fdf9c899552d37c151f51f34a94d029c0f281ba"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDonut/StatusDonut.html",
+    "origin": "static-gallery/bundle/components/general/StatusDonut/StatusDonut.html",
+    "mode": "verbatim",
+    "sourceSha256": "b70c66862be62c3ebb98780a09939bf6fafc26bda9f5834f23dfbef47c9d53b1"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDonut/StatusDonut.jsx",
+    "origin": "static-gallery/bundle/components/general/StatusDonut/StatusDonut.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "df8905fb2c559d47bc3950d72df779a5e2cd08267540189baf032a2c7c1074ae"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDonut/StatusDonut.prompt.md",
+    "origin": "static-gallery/bundle/components/general/StatusDonut/StatusDonut.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "727e91297ad1abc4e122179c55f04e99cda54699a83603454b8efc20cd3c74f5"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDot/StatusDot.d.ts",
+    "origin": "static-gallery/bundle/components/general/StatusDot/StatusDot.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "05b460fd1ead547468bedebc54e6393e4443c204872d2fca86a78f0ce2b461f1"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDot/StatusDot.html",
+    "origin": "static-gallery/bundle/components/general/StatusDot/StatusDot.html",
+    "mode": "verbatim",
+    "sourceSha256": "afd83f6aee7223e7ea746a5fe38e8201cf3716572f2d00cb1fe1fdba0d34af82"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDot/StatusDot.jsx",
+    "origin": "static-gallery/bundle/components/general/StatusDot/StatusDot.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "744a2ecb7da932a1059d5d98b14366ea4f0267f9de71e52500fc5f959f21421c"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/StatusDot/StatusDot.prompt.md",
+    "origin": "static-gallery/bundle/components/general/StatusDot/StatusDot.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "045a5b6bb0768ca0f910a60c0bc07c8942060c8b21c11facab279b444fcb9ff8"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/TablePager/TablePager.d.ts",
+    "origin": "static-gallery/bundle/components/general/TablePager/TablePager.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "e590e64ebb592dd809c800812cde8a391a35aae05c9d259f73e23aec81c78b3a"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/TablePager/TablePager.html",
+    "origin": "static-gallery/bundle/components/general/TablePager/TablePager.html",
+    "mode": "verbatim",
+    "sourceSha256": "d8d5866ff63f4369ac318d3c28643d9346111a86c5ecd51f825440de42ea514c"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/TablePager/TablePager.jsx",
+    "origin": "static-gallery/bundle/components/general/TablePager/TablePager.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "f98e95e94766d17a653d80e69de42965a04800a4d23fa3674e4e8668da0d1414"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/TablePager/TablePager.prompt.md",
+    "origin": "static-gallery/bundle/components/general/TablePager/TablePager.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "6f12e361b5033f43e3b612d734386fd28b832c9d72473fa19847213e78e4c999"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/WeatherGlyph/WeatherGlyph.d.ts",
+    "origin": "static-gallery/bundle/components/general/WeatherGlyph/WeatherGlyph.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "3ea7be27e710f66a1052103d1f1a9ee0c0c6b865af23c4cc2d20c6c727732f12"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/WeatherGlyph/WeatherGlyph.html",
+    "origin": "static-gallery/bundle/components/general/WeatherGlyph/WeatherGlyph.html",
+    "mode": "verbatim",
+    "sourceSha256": "82e6f73d820afae22258d3c1c5a67ef9991a93de03e993873e23d151ffcccc4b"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/WeatherGlyph/WeatherGlyph.jsx",
+    "origin": "static-gallery/bundle/components/general/WeatherGlyph/WeatherGlyph.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "8c6ef6e1b015af3a14423b9e7cd7d77d40ff5fdf0cc24cc92abc2849fdce768a"
+  },
+  {
+    "path": "visual-reference/bundle/components/general/WeatherGlyph/WeatherGlyph.prompt.md",
+    "origin": "static-gallery/bundle/components/general/WeatherGlyph/WeatherGlyph.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "e617cc9b32d3ca4f31cc96690dec372adc1f276591b32bfcada87fd246af088a"
+  },
+  {
+    "path": "visual-reference/bundle/components/graphs/GraphWrapper/GraphWrapper.d.ts",
+    "origin": "static-gallery/bundle/components/graphs/GraphWrapper/GraphWrapper.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "bf89379c19909b38de9df8750150586b4132bde0a7bf1f5fe602e3824b882125"
+  },
+  {
+    "path": "visual-reference/bundle/components/graphs/GraphWrapper/GraphWrapper.html",
+    "origin": "static-gallery/bundle/components/graphs/GraphWrapper/GraphWrapper.html",
+    "mode": "verbatim",
+    "sourceSha256": "96565e73815913924e88837c5a9e5762b0cea533b7e32ae9d4e9cdd02d8a2d1d"
+  },
+  {
+    "path": "visual-reference/bundle/components/graphs/GraphWrapper/GraphWrapper.jsx",
+    "origin": "static-gallery/bundle/components/graphs/GraphWrapper/GraphWrapper.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "c65e7d8944faf92be89902f8325a4e6c29de9ba48fba23c8f340cf3ab6affffe"
+  },
+  {
+    "path": "visual-reference/bundle/components/graphs/GraphWrapper/GraphWrapper.prompt.md",
+    "origin": "static-gallery/bundle/components/graphs/GraphWrapper/GraphWrapper.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "e15805eca7752b54afbea5b53737d7a021c0d0f5eec42dedf6335c297cf72236"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/ChartLabel/ChartLabel.d.ts",
+    "origin": "static-gallery/bundle/components/labels/ChartLabel/ChartLabel.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "3deaafe188ebb38230033a84657d9a2f8efe0d765da203a05d28d0df4bbb1249"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/ChartLabel/ChartLabel.html",
+    "origin": "static-gallery/bundle/components/labels/ChartLabel/ChartLabel.html",
+    "mode": "verbatim",
+    "sourceSha256": "7fac6671224af87338a6e8a6b88322e45c3298c27a550553c78fb90c849a2817"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/ChartLabel/ChartLabel.jsx",
+    "origin": "static-gallery/bundle/components/labels/ChartLabel/ChartLabel.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "e3fac14e773186c9c93f206a434115049b3dc585bb5d9cf93ce6f2cd2816f2bd"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/ChartLabel/ChartLabel.prompt.md",
+    "origin": "static-gallery/bundle/components/labels/ChartLabel/ChartLabel.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "2be657c43dbd6ddefae139b7f73165e4778bac65891313444d3f822dd3381acf"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/FormLabel/FormLabel.d.ts",
+    "origin": "static-gallery/bundle/components/labels/FormLabel/FormLabel.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "715bb9d01c548adb903d0305aa1b68eee04db18817d32787cd1c0aebc30f7827"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/FormLabel/FormLabel.html",
+    "origin": "static-gallery/bundle/components/labels/FormLabel/FormLabel.html",
+    "mode": "verbatim",
+    "sourceSha256": "aa3b6bd09cc1fbeededd4b7c4c209900103d4cba5d36daacaa32271377fec715"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/FormLabel/FormLabel.jsx",
+    "origin": "static-gallery/bundle/components/labels/FormLabel/FormLabel.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "c40256193d29011fb8a4e13503fe9a7d9e9704a39dae4d3ef7b6b9f9f4e66229"
+  },
+  {
+    "path": "visual-reference/bundle/components/labels/FormLabel/FormLabel.prompt.md",
+    "origin": "static-gallery/bundle/components/labels/FormLabel/FormLabel.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "c777b589ee7ed4c050f285fcc7deaa802df2bd7f25e01798cd0ce164d7a94166"
+  },
+  {
+    "path": "visual-reference/bundle/components/stats/StatBox/StatBox.d.ts",
+    "origin": "static-gallery/bundle/components/stats/StatBox/StatBox.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "cf6e3aa0ba96eb4abe25a7797361fa43a74428b447c50d2047150dacfa15b1a6"
+  },
+  {
+    "path": "visual-reference/bundle/components/stats/StatBox/StatBox.html",
+    "origin": "static-gallery/bundle/components/stats/StatBox/StatBox.html",
+    "mode": "verbatim",
+    "sourceSha256": "ed784d5813647eb9550ccb6fef026feef4e387432f983d64bde03a5ea5d40215"
+  },
+  {
+    "path": "visual-reference/bundle/components/stats/StatBox/StatBox.jsx",
+    "origin": "static-gallery/bundle/components/stats/StatBox/StatBox.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "afbf7b522f9d5f184d33918307d129bfc0167f69ac2a1d19099d86e9aecd38c8"
+  },
+  {
+    "path": "visual-reference/bundle/components/stats/StatBox/StatBox.prompt.md",
+    "origin": "static-gallery/bundle/components/stats/StatBox/StatBox.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "cce5495c1aa1b6e5d96d1ffc63a7b31cc7a4112ea5062bc6288cb2bed2f09fd3"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/BasicTable/BasicTable.d.ts",
+    "origin": "static-gallery/bundle/components/tables/BasicTable/BasicTable.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "9122fa6818ec3f0be9d4c070e868786fa383bbb522f2ee6afe877a7c057d78c5"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/BasicTable/BasicTable.html",
+    "origin": "static-gallery/bundle/components/tables/BasicTable/BasicTable.html",
+    "mode": "verbatim",
+    "sourceSha256": "f5591f017c973fb4514a3fb0ef9483b5662754f5f54eae86d175e6b94563a9af"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/BasicTable/BasicTable.jsx",
+    "origin": "static-gallery/bundle/components/tables/BasicTable/BasicTable.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "32139c042e53f9d139e3a9550af879220512690cc7693cbd057d394db68b109d"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/BasicTable/BasicTable.prompt.md",
+    "origin": "static-gallery/bundle/components/tables/BasicTable/BasicTable.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "cd7be5bdb1a171b5eec7d3e6c6214a79061e5c073d4a137ff24c111186d8ad94"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/SimpleTable/SimpleTable.d.ts",
+    "origin": "static-gallery/bundle/components/tables/SimpleTable/SimpleTable.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "3150383006c8f22b82ff47b1ac9d075c0589ed3e01c4fb5e17c12b5f93273acd"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/SimpleTable/SimpleTable.html",
+    "origin": "static-gallery/bundle/components/tables/SimpleTable/SimpleTable.html",
+    "mode": "verbatim",
+    "sourceSha256": "e41e763e006f4ea35cc9e57f5735c6d1bc770b6ed7fc48c9c116a3fb324aed1f"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/SimpleTable/SimpleTable.jsx",
+    "origin": "static-gallery/bundle/components/tables/SimpleTable/SimpleTable.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "712d5b53a90eccf5afee7bbb78d410c33d5be4f4b879823879bd21e42793e188"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/SimpleTable/SimpleTable.prompt.md",
+    "origin": "static-gallery/bundle/components/tables/SimpleTable/SimpleTable.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "4adb5697b862f4194de3f85e39cfb5b2ec778ccc43893e47501010a51e3b7c91"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.d.ts",
+    "origin": "static-gallery/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "0eab4a8842ad95d37483b5d587611acfd77d142d6ee2075364ac7ab3c3cd420d"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.html",
+    "origin": "static-gallery/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.html",
+    "mode": "verbatim",
+    "sourceSha256": "31477c25fb5f0af38771e5b5c6e45e47273279679186ae4132df893b9f7abf5e"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.jsx",
+    "origin": "static-gallery/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "8c110b07264765870e71a6b9b7bf7e7f6dc4134b99c6bf94f3dac0ae86890bdb"
+  },
+  {
+    "path": "visual-reference/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.prompt.md",
+    "origin": "static-gallery/bundle/components/tables/UtilityTimeOfUseTable/UtilityTimeOfUseTable.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "067b553bbed389f929f454d72899efb9cd501ce1d5e5524348d7199983aa1d83"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/ChartTooltip/ChartTooltip.d.ts",
+    "origin": "static-gallery/bundle/components/tooltips/ChartTooltip/ChartTooltip.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "80c3fabf93efe0773c6f2ca7676dd5465bf7d58c8f4757f6f336984d3472d7d8"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/ChartTooltip/ChartTooltip.html",
+    "origin": "static-gallery/bundle/components/tooltips/ChartTooltip/ChartTooltip.html",
+    "mode": "verbatim",
+    "sourceSha256": "8fb6f47e21d3a539556864d86b559c7581a2c93eb9b6539f474412d94b026fa0"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/ChartTooltip/ChartTooltip.jsx",
+    "origin": "static-gallery/bundle/components/tooltips/ChartTooltip/ChartTooltip.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "8eade6e75a207ff16bf6bb34d1677620edc480684152353b269c9c725cc424be"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/ChartTooltip/ChartTooltip.prompt.md",
+    "origin": "static-gallery/bundle/components/tooltips/ChartTooltip/ChartTooltip.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "fecd630558177a23d7b066384d9738beb0fe37a7628482e8afe239d4d234a358"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/GraphTooltip/GraphTooltip.d.ts",
+    "origin": "static-gallery/bundle/components/tooltips/GraphTooltip/GraphTooltip.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "fac861ec38d590d26573cff9070bf6cafaea9a89ae64440f9c688562bde55bcc"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/GraphTooltip/GraphTooltip.html",
+    "origin": "static-gallery/bundle/components/tooltips/GraphTooltip/GraphTooltip.html",
+    "mode": "verbatim",
+    "sourceSha256": "6049738e9173e0496ea96d39e33143fc0962a9beb801e42279ad18817565576a"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/GraphTooltip/GraphTooltip.jsx",
+    "origin": "static-gallery/bundle/components/tooltips/GraphTooltip/GraphTooltip.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "dc1531a115949be419ac7c86d9acad7889664fb11fed38d9d6cef7381fb263b2"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/GraphTooltip/GraphTooltip.prompt.md",
+    "origin": "static-gallery/bundle/components/tooltips/GraphTooltip/GraphTooltip.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "83679567353dcd49b425fab9bea799b8ef216bb7c2e2dd69f673c4c03320bfef"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/InfoTooltip/InfoTooltip.d.ts",
+    "origin": "static-gallery/bundle/components/tooltips/InfoTooltip/InfoTooltip.d.ts",
+    "mode": "verbatim",
+    "sourceSha256": "db62b5cf380e80d7fe76869892769541cdf8661a37166ca8f540a1527c64b337"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/InfoTooltip/InfoTooltip.html",
+    "origin": "static-gallery/bundle/components/tooltips/InfoTooltip/InfoTooltip.html",
+    "mode": "verbatim",
+    "sourceSha256": "40a2f74fbfe037a44ca32690caa5955cb9b8e80c0d0829899d9ec7c9d66317f0"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/InfoTooltip/InfoTooltip.jsx",
+    "origin": "static-gallery/bundle/components/tooltips/InfoTooltip/InfoTooltip.jsx",
+    "mode": "verbatim",
+    "sourceSha256": "4a8b2620a0b4e16394226cf72e64f459cbcce1a6aaa6e411c021c75640f54d22"
+  },
+  {
+    "path": "visual-reference/bundle/components/tooltips/InfoTooltip/InfoTooltip.prompt.md",
+    "origin": "static-gallery/bundle/components/tooltips/InfoTooltip/InfoTooltip.prompt.md",
+    "mode": "verbatim",
+    "sourceSha256": "81e1ce84583767fd63b5bb854729f9c323c420f5858cb3b1c967b094239660b7"
+  },
+  {
+    "path": "visual-reference/bundle/fonts/fonts.css",
+    "origin": "static-gallery/bundle/fonts/fonts.css",
+    "mode": "verbatim",
+    "sourceSha256": "547c273fa300986c8bf09ba86359a6bb2a30a33d77430baf49f5e91453eaca51"
+  },
+  {
+    "path": "visual-reference/bundle/fonts/opening-hours-sans-latin.woff2",
+    "origin": "static-gallery/bundle/fonts/opening-hours-sans-latin.woff2",
+    "mode": "verbatim",
+    "sourceSha256": "6888d14da01317fd27c944916e1eba7e08ad0ce2083f7f897946d38536ba5c06"
+  },
+  {
+    "path": "visual-reference/bundle/fonts/overused-grotesk-latin-variable.woff2",
+    "origin": "static-gallery/bundle/fonts/overused-grotesk-latin-variable.woff2",
+    "mode": "verbatim",
+    "sourceSha256": "7e4b467446c4cd7fd42c69a4285bd7c59a5511b520cc37e840b794bdcf1f7cd9"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Accordion.js",
+    "origin": "static-gallery/bundle/_preview/Accordion.js",
+    "mode": "verbatim",
+    "sourceSha256": "4d61e8d4728707dd349f27f51e5fe2563215cbaba218a5e40498af11b6ff2743"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/AlertStripRow.js",
+    "origin": "static-gallery/bundle/_preview/AlertStripRow.js",
+    "mode": "verbatim",
+    "sourceSha256": "55ea9efbf0c571b603cedc45c9464e1c15df61cfe432e8ad24d6b4114f7d66e3"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/BasicTable.js",
+    "origin": "static-gallery/bundle/_preview/BasicTable.js",
+    "mode": "verbatim",
+    "sourceSha256": "99e0a43c27c4017916cb3ed264f38e82d97a7a02503c0b53c7fa5bc96105f1cf"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Button.js",
+    "origin": "static-gallery/bundle/_preview/Button.js",
+    "mode": "verbatim",
+    "sourceSha256": "1ddc939d89a29ff270597bda1e1056eef3473c28fbcbc27c5612ac671ccb1061"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/CardSwitch.js",
+    "origin": "static-gallery/bundle/_preview/CardSwitch.js",
+    "mode": "verbatim",
+    "sourceSha256": "3be601afeb8efcf15467690e117eab55cb94cc1b62171e42b52199bf8d8e230e"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/ChangeDateRangeButton.js",
+    "origin": "static-gallery/bundle/_preview/ChangeDateRangeButton.js",
+    "mode": "verbatim",
+    "sourceSha256": "7df45871cb4eed09a62ba2715315a376590f2c2d71c01329815cd3301ab4b6eb"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/ChartLabel.js",
+    "origin": "static-gallery/bundle/_preview/ChartLabel.js",
+    "mode": "verbatim",
+    "sourceSha256": "6e7ec5956832ca10d447af7987cef668bad190382c7b724b7a167aaea7a5dfed"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/CheckBox.js",
+    "origin": "static-gallery/bundle/_preview/CheckBox.js",
+    "mode": "verbatim",
+    "sourceSha256": "13152c11d80d045d4123d5367197e0a8b8a85e0268683533406d8402410984b9"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/CoverageQualifier.js",
+    "origin": "static-gallery/bundle/_preview/CoverageQualifier.js",
+    "mode": "verbatim",
+    "sourceSha256": "95b2ac865660aec132a5a847e1e13c8815276fbbc9701f63ce814bd83a02c24d"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/CustomSwitch.js",
+    "origin": "static-gallery/bundle/_preview/CustomSwitch.js",
+    "mode": "verbatim",
+    "sourceSha256": "254885a61c8ab76f65ae8a22e8a8c57e5b01d49cce27ae8f62cd8de9bcb271ad"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/DateFilter.js",
+    "origin": "static-gallery/bundle/_preview/DateFilter.js",
+    "mode": "verbatim",
+    "sourceSha256": "71a33f80ca5e61b499f2bf1362730eda762d3f7f2b53cb8dea7121b9b8e7d723"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/ErrorElement.js",
+    "origin": "static-gallery/bundle/_preview/ErrorElement.js",
+    "mode": "verbatim",
+    "sourceSha256": "ae7a6b928cf6b03798ce8cf2e4693083a3308b2a5b7a3584356e455d29e69130"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/FleetMap.js",
+    "origin": "static-gallery/bundle/_preview/FleetMap.js",
+    "mode": "verbatim",
+    "sourceSha256": "b115035dc57e0c6387af0efde791708c1c5258e0a23557225221b6e64d6710c3"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/FormLabel.js",
+    "origin": "static-gallery/bundle/_preview/FormLabel.js",
+    "mode": "verbatim",
+    "sourceSha256": "e9b75d9aef754f090efd8ab261ee3a9d04c2c14c62b2979dfccd58e7c2740c29"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/GraphTooltip.js",
+    "origin": "static-gallery/bundle/_preview/GraphTooltip.js",
+    "mode": "verbatim",
+    "sourceSha256": "de3e8447fe39a459cc3a594536757dfdff853215632f0eadc3d6b52bb8d81f38"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/GraphWrapper.js",
+    "origin": "static-gallery/bundle/_preview/GraphWrapper.js",
+    "mode": "verbatim",
+    "sourceSha256": "4a7851a2b5437111f9eff7ceb99de6004d0146b0a4fab4c49f11d3bc378d714b"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/InfoTooltip.js",
+    "origin": "static-gallery/bundle/_preview/InfoTooltip.js",
+    "mode": "verbatim",
+    "sourceSha256": "eab7b510731e7d11adf25af4080e74503a5af748917d42aca744314c8825b86a"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Input.js",
+    "origin": "static-gallery/bundle/_preview/Input.js",
+    "mode": "verbatim",
+    "sourceSha256": "cb1d31ff85c8a7e5d9ddd19f2c94434f2a784649a38e7232738b543ec0d2fb27"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/PreviewCard.js",
+    "origin": "static-gallery/bundle/_preview/PreviewCard.js",
+    "mode": "verbatim",
+    "sourceSha256": "af10b9532f0fc8660c819189b8c50c5bad8e54a4e8376a8a41150ff79964443e"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Radio.js",
+    "origin": "static-gallery/bundle/_preview/Radio.js",
+    "mode": "verbatim",
+    "sourceSha256": "2fbee373727372da5e045d6e2b016100819906f735990416b0a90f955e821a9c"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/SearchInput.js",
+    "origin": "static-gallery/bundle/_preview/SearchInput.js",
+    "mode": "verbatim",
+    "sourceSha256": "a059be7a955572050bba59534f29b4fbfc9fca42dd218dcfbaf8e999536c91cc"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Select.js",
+    "origin": "static-gallery/bundle/_preview/Select.js",
+    "mode": "verbatim",
+    "sourceSha256": "202ad56a8a26a2075f8da7a87aac5269dad3b1a2fa4ea6879492059324956a3a"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Sparkline.js",
+    "origin": "static-gallery/bundle/_preview/Sparkline.js",
+    "mode": "verbatim",
+    "sourceSha256": "b52b8da55b731abb181fb191c57fbb289d714036158f9d72769eb4e4a2f71cb9"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/Spinner.js",
+    "origin": "static-gallery/bundle/_preview/Spinner.js",
+    "mode": "verbatim",
+    "sourceSha256": "e7aa3f730582dbf97ddc3081c4dde439f83490b6dab609983b481685ba68d035"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/StatBox.js",
+    "origin": "static-gallery/bundle/_preview/StatBox.js",
+    "mode": "verbatim",
+    "sourceSha256": "b00888bfa6415b7b6e84fab484dcd09a469b1dc4adfc5ca4fd4fb2ad433ac8da"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/StatCard.js",
+    "origin": "static-gallery/bundle/_preview/StatCard.js",
+    "mode": "verbatim",
+    "sourceSha256": "93e69c14c49d6a2aa14c734e9adcb240fc8573e7d076820fb8eed981b8593980"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/StatusBadge.js",
+    "origin": "static-gallery/bundle/_preview/StatusBadge.js",
+    "mode": "verbatim",
+    "sourceSha256": "5d1a1da4457c88856daaa458b6fac24f336f9c10e5344c3f2243aa98d5b301ec"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/StatusDot.js",
+    "origin": "static-gallery/bundle/_preview/StatusDot.js",
+    "mode": "verbatim",
+    "sourceSha256": "9e953c7a2d205d57db5008e2e0509ef4f9cc1b43cbb76012d0b62efcebc701f8"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/TablePager.js",
+    "origin": "static-gallery/bundle/_preview/TablePager.js",
+    "mode": "verbatim",
+    "sourceSha256": "35b2fad6be0437ef763ad70a7a7d5c2f3403ee082f78904d8fb51cbe4d793cae"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/UtilityTimeOfUseTable.js",
+    "origin": "static-gallery/bundle/_preview/UtilityTimeOfUseTable.js",
+    "mode": "verbatim",
+    "sourceSha256": "54ae3b33139b289e0278ddfb5bd9cc051ee861aa66eff74ab316724cba314123"
+  },
+  {
+    "path": "visual-reference/bundle/_preview/WeatherGlyph.js",
+    "origin": "static-gallery/bundle/_preview/WeatherGlyph.js",
+    "mode": "verbatim",
+    "sourceSha256": "d7c47b3dfab722687289eb0eaa6304c91a9a9d06db3133e04464e815d39e7a89"
+  },
+  {
+    "path": "visual-reference/bundle/_vendor/react-dom.js",
+    "origin": "static-gallery/bundle/_vendor/react-dom.js",
+    "mode": "verbatim",
+    "sourceSha256": "4f90394a7579bb9bb836e721e2a437da5c1be2286c764b579ac95a29c75d3803"
+  },
+  {
+    "path": "visual-reference/bundle/_vendor/react.js",
+    "origin": "static-gallery/bundle/_vendor/react.js",
+    "mode": "verbatim",
+    "sourceSha256": "7c9bfed7871dd5fdffc630a555920a8d173025081a7b9894cc753e0e17c1612b"
+  },
+  {
+    "path": "visual-reference/components/Accordion.html",
+    "origin": "static-gallery/components/Accordion.html",
+    "mode": "verbatim",
+    "sourceSha256": "3ff2c24e18f228b828670228bfd2e14daa1b3682cd94be6bd8ea7147fd95db8a"
+  },
+  {
+    "path": "visual-reference/components/AlertStripRow.html",
+    "origin": "static-gallery/components/AlertStripRow.html",
+    "mode": "verbatim",
+    "sourceSha256": "4568a6204b0615948272b866c5bb136cda63f24db5052534078be62f840fa82f"
+  },
+  {
+    "path": "visual-reference/components/BasicTable.html",
+    "origin": "static-gallery/components/BasicTable.html",
+    "mode": "verbatim",
+    "sourceSha256": "b57736758564d794e72549b270178e64651c6e570e97bf71dfc56b97530f7536"
+  },
+  {
+    "path": "visual-reference/components/Button.html",
+    "origin": "static-gallery/components/Button.html",
+    "mode": "verbatim",
+    "sourceSha256": "9db4a68744bc205d937b3874e81bb68bafeba39f26e05c447c3f533c57e184ff"
+  },
+  {
+    "path": "visual-reference/components/CardSwitch.html",
+    "origin": "static-gallery/components/CardSwitch.html",
+    "mode": "verbatim",
+    "sourceSha256": "f1c33f37591477cf749b65197fcd50b1b5ed4b6ebfa34909db4d8caad33e3355"
+  },
+  {
+    "path": "visual-reference/components/Carousel.html",
+    "origin": "static-gallery/components/Carousel.html",
+    "mode": "verbatim",
+    "sourceSha256": "04cd2faaf587447b64cd3f5d82b6cc21ea55e5756fb746859a941f6253ef4052"
+  },
+  {
+    "path": "visual-reference/components/ChangeDateRangeButton.html",
+    "origin": "static-gallery/components/ChangeDateRangeButton.html",
+    "mode": "verbatim",
+    "sourceSha256": "0ae8be7d599fe7104bc616706ba6e64d60a3168ffdd9b815ef00752479418206"
+  },
+  {
+    "path": "visual-reference/components/ChartLabel.html",
+    "origin": "static-gallery/components/ChartLabel.html",
+    "mode": "verbatim",
+    "sourceSha256": "536078816bc6574fe0c77b1fabd97b45d3b67d68eb70a74df54809ae375aeef5"
+  },
+  {
+    "path": "visual-reference/components/ChartLegend.html",
+    "origin": "static-gallery/components/ChartLegend.html",
+    "mode": "verbatim",
+    "sourceSha256": "eab3cc2f9dc161892424b3cea30b2e798fb78e03bbe18c8eb5cb06943bd5e8ed"
+  },
+  {
+    "path": "visual-reference/components/ChartTooltip.html",
+    "origin": "static-gallery/components/ChartTooltip.html",
+    "mode": "verbatim",
+    "sourceSha256": "163645c9b8a382c9bffbfe6472f02815a4920ecef2c9bf4be9d4d00af56640e7"
+  },
+  {
+    "path": "visual-reference/components/CheckBox.html",
+    "origin": "static-gallery/components/CheckBox.html",
+    "mode": "verbatim",
+    "sourceSha256": "18d5f7bfd60412aa0e0d39aefbd88d830417361b1fe5c79b7f590849c763f0aa"
+  },
+  {
+    "path": "visual-reference/components/CoverageQualifier.html",
+    "origin": "static-gallery/components/CoverageQualifier.html",
+    "mode": "verbatim",
+    "sourceSha256": "1fa0cd62cd96c97a594bb31fe0b130ca4cb9451be3e116c67327386b2463dcb6"
+  },
+  {
+    "path": "visual-reference/components/CustomSwitch.html",
+    "origin": "static-gallery/components/CustomSwitch.html",
+    "mode": "verbatim",
+    "sourceSha256": "572dc7adab2f20e1bd0229bc76de51ae05a863c5bb6db2b34412191dedc23ae7"
+  },
+  {
+    "path": "visual-reference/components/DateFilter.html",
+    "origin": "static-gallery/components/DateFilter.html",
+    "mode": "verbatim",
+    "sourceSha256": "580d45acb0520688086120de3e14419711d17a9b346af431cd08521e5ad5ef0b"
+  },
+  {
+    "path": "visual-reference/components/Donut.html",
+    "origin": "static-gallery/components/Donut.html",
+    "mode": "verbatim",
+    "sourceSha256": "9cc975e9673426e48dd75eefe7f6299e333f8ab8dbe3ae0c69d80f9cec5f20b0"
+  },
+  {
+    "path": "visual-reference/components/ErrorElement.html",
+    "origin": "static-gallery/components/ErrorElement.html",
+    "mode": "verbatim",
+    "sourceSha256": "2529ce250498db3942527ba6ed71469ae66036a181e5e89c065938e0eb6c8b73"
+  },
+  {
+    "path": "visual-reference/components/ErrorScreen.html",
+    "origin": "static-gallery/components/ErrorScreen.html",
+    "mode": "verbatim",
+    "sourceSha256": "afdc21364c76044f96d6d9be1433ebbb9c5f626b874884cbe32349ce94c56d9c"
+  },
+  {
+    "path": "visual-reference/components/FleetMap.html",
+    "origin": "static-gallery/components/FleetMap.html",
+    "mode": "verbatim",
+    "sourceSha256": "8e7d8fce1e45f3015683e8ceaeae3824b93d9126877b8e07932432f47743c936"
+  },
+  {
+    "path": "visual-reference/components/FleetMapPopup.html",
+    "origin": "static-gallery/components/FleetMapPopup.html",
+    "mode": "verbatim",
+    "sourceSha256": "79cf537c31bf5f4ea92228f4a5045ee3ca86750dd96159c016061185146ff0de"
+  },
+  {
+    "path": "visual-reference/components/FormLabel.html",
+    "origin": "static-gallery/components/FormLabel.html",
+    "mode": "verbatim",
+    "sourceSha256": "743ce6672d034362948140ab21bba91a37c3bbbed73b7c5905e2259f9b672c13"
+  },
+  {
+    "path": "visual-reference/components/GraphTooltip.html",
+    "origin": "static-gallery/components/GraphTooltip.html",
+    "mode": "verbatim",
+    "sourceSha256": "bac4f2cbeb01eb7665d186f57a1cb623a8679bfcfc542a7e74f056920fc6eb3d"
+  },
+  {
+    "path": "visual-reference/components/GraphWrapper.html",
+    "origin": "static-gallery/components/GraphWrapper.html",
+    "mode": "verbatim",
+    "sourceSha256": "4d6f30888f5855e1c70af86047a07c85202ef407da6d4ef70387c3f76f1bd2b6"
+  },
+  {
+    "path": "visual-reference/components/HelpHint.html",
+    "origin": "static-gallery/components/HelpHint.html",
+    "mode": "verbatim",
+    "sourceSha256": "ca8335032a72eec90a1ce5e1a85177b54e4a5f88cdc5f3e93d28605431a3fa9c"
+  },
+  {
+    "path": "visual-reference/components/InfoTooltip.html",
+    "origin": "static-gallery/components/InfoTooltip.html",
+    "mode": "verbatim",
+    "sourceSha256": "22388d3eb446f71b7a4f1b533b5c0d78b948b2f7cc2d91d284e6248480092120"
+  },
+  {
+    "path": "visual-reference/components/Input.html",
+    "origin": "static-gallery/components/Input.html",
+    "mode": "verbatim",
+    "sourceSha256": "e6f37090edc90361ec95c9256deeacd42606eab08ee6051dec4908d67b750157"
+  },
+  {
+    "path": "visual-reference/components/LiveLineChart.html",
+    "origin": "static-gallery/components/LiveLineChart.html",
+    "mode": "verbatim",
+    "sourceSha256": "47236c576a303b3326ffa22ddde7239e14297816224b9cfb235c53f16cb3f491"
+  },
+  {
+    "path": "visual-reference/components/PlantCard.html",
+    "origin": "static-gallery/components/PlantCard.html",
+    "mode": "verbatim",
+    "sourceSha256": "5a524a9a99c5dd4ba5b4604e6e69420d2bb4e6586990d45def5e6563acc4dbf0"
+  },
+  {
+    "path": "visual-reference/components/PlantInfoWindow.html",
+    "origin": "static-gallery/components/PlantInfoWindow.html",
+    "mode": "verbatim",
+    "sourceSha256": "cdc3e0656163f6e82755b14e54815889a172e2e7035b92a6bd834c838e0ca185"
+  },
+  {
+    "path": "visual-reference/components/PreviewCard.html",
+    "origin": "static-gallery/components/PreviewCard.html",
+    "mode": "verbatim",
+    "sourceSha256": "c81af9551e8f0c741255eb722a57c468ea3f0845c43c88df3b05bba12eefaa1b"
+  },
+  {
+    "path": "visual-reference/components/Radio.html",
+    "origin": "static-gallery/components/Radio.html",
+    "mode": "verbatim",
+    "sourceSha256": "0ac50ad2135a26d524a19b375318f384007384412505f4ad08831bff3d787da0"
+  },
+  {
+    "path": "visual-reference/components/SearchInput.html",
+    "origin": "static-gallery/components/SearchInput.html",
+    "mode": "verbatim",
+    "sourceSha256": "0db376bd16d9463a62f19440bc78f1865740d2fdfc1b15f76db34e3d41ac1132"
+  },
+  {
+    "path": "visual-reference/components/Select.html",
+    "origin": "static-gallery/components/Select.html",
+    "mode": "verbatim",
+    "sourceSha256": "dad5814060a2c502863dd1d3205b479885019f2f7978bee00ba2be68624b5835"
+  },
+  {
+    "path": "visual-reference/components/SimpleTable.html",
+    "origin": "static-gallery/components/SimpleTable.html",
+    "mode": "verbatim",
+    "sourceSha256": "eb826ca4a9c054aaa39f375db23211e8c3ee557cac4ae01828220f37919b2d0c"
+  },
+  {
+    "path": "visual-reference/components/Sparkline.html",
+    "origin": "static-gallery/components/Sparkline.html",
+    "mode": "verbatim",
+    "sourceSha256": "ae2c05dc07b04830f8cdb74186127838e6a017a5820f75f6c3d9d6ed4b51c4fd"
+  },
+  {
+    "path": "visual-reference/components/Spinner.html",
+    "origin": "static-gallery/components/Spinner.html",
+    "mode": "verbatim",
+    "sourceSha256": "3e2d36bbbd5ab69596bc6ff4b257c7b2ef858128a61a138056a31a8d3771af07"
+  },
+  {
+    "path": "visual-reference/components/StatBox.html",
+    "origin": "static-gallery/components/StatBox.html",
+    "mode": "verbatim",
+    "sourceSha256": "69f8cc7b497b3c8a26753bd6f37112cb41c0bd2cc9a333734b86b72150650d07"
+  },
+  {
+    "path": "visual-reference/components/StatCard.html",
+    "origin": "static-gallery/components/StatCard.html",
+    "mode": "verbatim",
+    "sourceSha256": "6a2a80f338c6e1d94cdb32722bdfeebb71411624b03ec7ec3b5c415e0c0fc646"
+  },
+  {
+    "path": "visual-reference/components/StatusBadge.html",
+    "origin": "static-gallery/components/StatusBadge.html",
+    "mode": "verbatim",
+    "sourceSha256": "682245f87af7ba32038527d53c9da06883fb62f68f0c92c067840f0b71f14c01"
+  },
+  {
+    "path": "visual-reference/components/StatusDonut.html",
+    "origin": "static-gallery/components/StatusDonut.html",
+    "mode": "verbatim",
+    "sourceSha256": "ae6c33342d56c217a1a7c6df0bcc38379541803e65ea6dfa7831af578fb3e721"
+  },
+  {
+    "path": "visual-reference/components/StatusDot.html",
+    "origin": "static-gallery/components/StatusDot.html",
+    "mode": "verbatim",
+    "sourceSha256": "40694bc8de43b5979bfc3f9b836cf4ae5df0d9618a182018035f86a7901761a9"
+  },
+  {
+    "path": "visual-reference/components/TablePager.html",
+    "origin": "static-gallery/components/TablePager.html",
+    "mode": "verbatim",
+    "sourceSha256": "35053329dbc829af81277a16c1bb0f96611c5fb3ea093f1d99d8672734ccaf04"
+  },
+  {
+    "path": "visual-reference/components/UtilityTimeOfUseTable.html",
+    "origin": "static-gallery/components/UtilityTimeOfUseTable.html",
+    "mode": "verbatim",
+    "sourceSha256": "db1808210d47afa8cabf55f335ed5f7a42a66fb8a94aaa96a433009cef344bc8"
+  },
+  {
+    "path": "visual-reference/components/WeatherGlyph.html",
+    "origin": "static-gallery/components/WeatherGlyph.html",
+    "mode": "verbatim",
+    "sourceSha256": "7d476f1a429d51346a4cc8d22ef4227abb679dd70f892aadb9adbdb335d4c030"
+  },
+  {
+    "path": "source-snapshot/theme/borderRadius.ts",
+    "origin": "repo/theme/borderRadius.ts",
+    "mode": "verbatim",
+    "sourceSha256": "5c608f2e3e98d43f14014bb9c35fac93974e3182ba7f99470b6f76143fb15f4a"
+  },
+  {
+    "path": "source-snapshot/theme/borderWidth.ts",
+    "origin": "repo/theme/borderWidth.ts",
+    "mode": "verbatim",
+    "sourceSha256": "9967ce3ff2d8a4732366eaef458c47714471f6d6bcfe7de5da81b85aeb0cc835"
+  },
+  {
+    "path": "source-snapshot/theme/boxShadow.ts",
+    "origin": "repo/theme/boxShadow.ts",
+    "mode": "verbatim",
+    "sourceSha256": "cc6f8b6270c59ea14c0bbd7e0f138af07f62adc4d2f4e367cf43ac5ed20061d8"
+  },
+  {
+    "path": "source-snapshot/theme/categorical.ts",
+    "origin": "repo/theme/categorical.ts",
+    "mode": "verbatim",
+    "sourceSha256": "c7d2fab191720bfe5b050ba2ce6a060820ca6715c4130d28610c05fb001de30e"
+  },
+  {
+    "path": "source-snapshot/theme/colors.ts",
+    "origin": "repo/theme/colors.ts",
+    "mode": "verbatim",
+    "sourceSha256": "7266ac6b66dbebee09acf1454c64b2d2c3d020d226e4fae2c53fde1ab86b8a51"
+  },
+  {
+    "path": "source-snapshot/theme/fontFamily.ts",
+    "origin": "repo/theme/fontFamily.ts",
+    "mode": "verbatim",
+    "sourceSha256": "7701ec7a0bf6a73970f4763c574061afdd80552e886c5d2f85f70b793fb783ba"
+  },
+  {
+    "path": "source-snapshot/theme/fontsize.ts",
+    "origin": "repo/theme/fontsize.ts",
+    "mode": "verbatim",
+    "sourceSha256": "896224024380236cf3f2c6251a19299433e978b13de8fc701e6484fa2a2b129a"
+  },
+  {
+    "path": "source-snapshot/theme/index.ts",
+    "origin": "repo/theme/index.ts",
+    "mode": "verbatim",
+    "sourceSha256": "d3ae54665298255118b2e674f4a440769c3480e296ae8ce48cb33f9439fe3c3a"
+  },
+  {
+    "path": "source-snapshot/theme/ink.ts",
+    "origin": "repo/theme/ink.ts",
+    "mode": "verbatim",
+    "sourceSha256": "b89cdf93f910c904d72c673ab6f86eaa969e04cfdea640f7a1cc10707e22f42a"
+  },
+  {
+    "path": "source-snapshot/theme/spacing.ts",
+    "origin": "repo/theme/spacing.ts",
+    "mode": "verbatim",
+    "sourceSha256": "90dad3a3c0b48b248ad5487504bcecd38d2430dd5d2e8dc038d4daab2d1208ea"
+  },
+  {
+    "path": "source-snapshot/theme/status.ts",
+    "origin": "repo/theme/status.ts",
+    "mode": "verbatim",
+    "sourceSha256": "8b8a92e2599510a486fc7e8f82fd769422f68c78fc8f49d2d5c8131a66ad78e1"
+  },
+  {
+    "path": "source-snapshot/theme/typography.ts",
+    "origin": "repo/theme/typography.ts",
+    "mode": "verbatim",
+    "sourceSha256": "0e79e0e8a6f61de25902a429ce6251c22033d8d905dfb42921d1b38682d47d87"
+  },
+  {
+    "path": "source-snapshot/public/fonts/opening-hours-sans-latin.woff2",
+    "origin": "repo/public/fonts/opening-hours-sans-latin.woff2",
+    "mode": "verbatim",
+    "sourceSha256": "6888d14da01317fd27c944916e1eba7e08ad0ce2083f7f897946d38536ba5c06"
+  },
+  {
+    "path": "source-snapshot/public/fonts/overused-grotesk-latin-variable.woff2",
+    "origin": "repo/public/fonts/overused-grotesk-latin-variable.woff2",
+    "mode": "verbatim",
+    "sourceSha256": "7e4b467446c4cd7fd42c69a4285bd7c59a5511b520cc37e840b794bdcf1f7cd9"
+  },
+  {
+    "path": "source-snapshot/tailwind.config.ts",
+    "origin": "repo/tailwind.config.ts",
+    "mode": "verbatim",
+    "sourceSha256": "8bc481fa0d5e209166393bd5c842271787085642cefb67803811f800efd00451"
+  },
+  {
+    "path": "source-snapshot/package.json",
+    "origin": "repo/package.json",
+    "mode": "verbatim",
+    "sourceSha256": "a609954804f18066d946b5b27fb69f5448e927c9336cc8c0660819050a746e5e"
+  },
+  {
+    "path": "source-snapshot/vitest.config.ts",
+    "origin": "repo/vitest.config.ts",
+    "mode": "verbatim",
+    "sourceSha256": "ed614b945ddefcada1a5289b32b087b53ae7ea925769f05696468b0c357b7b8d"
+  },
+  {
+    "path": "source-snapshot/app/tailwind.css",
+    "origin": "repo/app/tailwind.css",
+    "mode": "verbatim",
+    "sourceSha256": "7dd361e55398c3630f8e224a7d8460f9ef1dc81f34f460808a65ef307532f50d"
+  },
+  {
+    "path": "source-snapshot/app/utils/status.ts",
+    "origin": "repo/app/utils/status.ts",
+    "mode": "verbatim",
+    "sourceSha256": "db54556cd07136cbb8ad9620a2b1d834b77ba632b147ab384f7fb61be5d16576"
+  },
+  {
+    "path": "source-snapshot/app/utils/spacingScale.test.ts",
+    "origin": "repo/app/utils/spacingScale.test.ts",
+    "mode": "verbatim",
+    "sourceSha256": "757cb6ddefb435106a851d0304f9d958898aa4a718d05eed896ad643f64d542b"
+  },
+  {
+    "path": "source-snapshot/app/utils/trendsAxis.ts",
+    "origin": "repo/app/utils/trendsAxis.ts",
+    "mode": "verbatim",
+    "sourceSha256": "8327f175400785c24b9b2aa614fb12dde1d02aaf8f852ef6fae3c106c752ee50"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/plantTabs.ts",
+    "origin": "repo/app/containers/Plant/PlantHome/plantTabs.ts",
+    "mode": "verbatim",
+    "sourceSha256": "dac716ca7058d553fcc95e5d64aee3d978f665317769110a2a25218bb67f1098"
+  },
+  {
+    "path": "source-snapshot/app/components/Graphs/GraphWrapper.tsx",
+    "origin": "repo/app/components/Graphs/GraphWrapper.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "9964609c6913affcdacbc42cd973dd60b0ec85785dfeead1fae7ee6fd13399e8"
+  },
+  {
+    "path": "source-snapshot/app/components/Tooltips/ChartTooltip.tsx",
+    "origin": "repo/app/components/Tooltips/ChartTooltip.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "d6ada4a4bafcde642f9eaeb06134851987c5f0677335dc07893534ac436252a8"
+  },
+  {
+    "path": "source-snapshot/app/containers/Home/AlertsList.tsx",
+    "origin": "repo/app/containers/Home/AlertsList.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "2310e3481b3b29cd0888c600420b5a8548041ce44c3bd34d28e7f0b33050a82d"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Control/ModeOptionRow.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Control/ModeOptionRow.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "d2950bbcce60747489705ab1c52ecde81f5e584f8c7aa08472a1efdd35402313"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Control/InfoHint.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Control/InfoHint.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "7a49a44e926521d945b3e909669706c9bcdaf8bd8a1fafac95d2e5c568d24f9e"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Control/ControlCard.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Control/ControlCard.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "c7a85467c49422939fdd17ef6cd4abcaed5f77076b7ddf956af9d44d30f4d450"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Trends/trendsChartFills.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Trends/trendsChartFills.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "bd0995f4541eed35ef564ec323a43ea732e67ed76539ba8e807e01d9b3d2362b"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Trends/trendsEntrance.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Trends/trendsEntrance.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "58d417b5a5042a6ffc3c22e5026bfa13894030306c69c09684cdf3909ef81390"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Trends/trendsTicks.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Trends/trendsTicks.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "ba928dc381ae1cc7a752a29eecb1c37fe43a9353bcce58629dafccc30a4f07c6"
+  },
+  {
+    "path": "source-snapshot/app/containers/Plant/PlantHome/Trends/trendsCursor.tsx",
+    "origin": "repo/app/containers/Plant/PlantHome/Trends/trendsCursor.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "0da6fc99a05100ad2a0707cd105607d0e178bea1a258d0092d59310c57aaf07f"
+  },
+  {
+    "path": "source-snapshot/app/components/Button/index.tsx",
+    "origin": "repo/app/components/Button/index.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "1dcf54b6eccdbde17692f0ef2b8affcffc757f7ec137b5513582d0c8e958f9d1"
+  },
+  {
+    "path": "source-snapshot/app/components/PreviewCard/index.tsx",
+    "origin": "repo/app/components/PreviewCard/index.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "d31c047d1974e79d57a4bf16e9e5345c448ee9989523be883f92cd7bcf508613"
+  },
+  {
+    "path": "source-snapshot/app/components/PreviewCard/PreviewCard.test.tsx",
+    "origin": "repo/app/components/PreviewCard/PreviewCard.test.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "6bb239ea6853247e1bc44bbcf1d1fbb129fb31c0519b52aeea99fbecade860fa"
+  },
+  {
+    "path": "source-snapshot/app/components/StatusDonut/index.tsx",
+    "origin": "repo/app/components/StatusDonut/index.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "46389829fe3ce44fd4e2208e128dbf2b848b6e356599f3d427996cfc01bfcf37"
+  },
+  {
+    "path": "source-snapshot/app/components/StatusDonut/StatusDonut.test.tsx",
+    "origin": "repo/app/components/StatusDonut/StatusDonut.test.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "fc22e773aca80f9d916b3ab1903c0d984c57f0dd4d9506c88d46c9b59e1ccffa"
+  },
+  {
+    "path": "source-snapshot/app/components/StatusDot/index.tsx",
+    "origin": "repo/app/components/StatusDot/index.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "d4498d52835e4b0ec8677b345888adadc187827a9e8d1a76f1fd9a1e27426ade"
+  },
+  {
+    "path": "source-snapshot/app/components/StatusDot/StatusDot.test.tsx",
+    "origin": "repo/app/components/StatusDot/StatusDot.test.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "971862a649f64e006a1556ad4a67ba14cfe3c232a2f235e83629f87b46bc8076"
+  },
+  {
+    "path": "source-snapshot/app/components/HelpHint/index.tsx",
+    "origin": "repo/app/components/HelpHint/index.tsx",
+    "mode": "verbatim",
+    "sourceSha256": "9a65e3608ecd9663538ae429ee77f1ad07f49a336d60221e2827a7ca76aad6c7"
+  },
+  {
+    "path": "references/repo/design-guide-excerpt.md",
+    "origin": "repo/CLAUDE.md (skill and design sections)",
+    "mode": "excerpt",
+    "sourceSha256": "9b5ccc30224af7509347910b846413da1d83e25d1c84ac8ae3ede1d06538220d"
+  },
+  {
+    "path": "references/reasoning/design-decisions.md",
+    "origin": "design-wiki/memory/decision-log.md (selected DL entries)",
+    "mode": "excerpt",
+    "sourceSha256": "9636c6d8c838e6c56aca6865c5032600384574eec418a21aa9809a82e37140e5"
+  },
+  {
+    "path": "references/reasoning/home-design-catch-up.md",
+    "origin": "repo/CATCH-UP.md (selected UI entries)",
+    "mode": "excerpt",
+    "sourceSha256": "71c065e9bbd5270d8b11cc55bb78c30d21c096aaedd21a7b9c883e13722c09bc"
+  }
+]

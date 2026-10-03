@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Fleet · Per-plant card" description="End-user portfolio framing (Area 1): one card per plant replacing list density. Header = plant name + status badge; SOC gauge; 2×2 metric grid (SOC / Today / Self-sufficiency / Saved). Tap to open Area 2." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="width:250px;box-sizing:border-box;font-family:'Space Grotesk',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#FFFFFF;border:1px solid #E2E7EB;border-radius:14px;padding:15px 16px;cursor:pointer;box-shadow:0 1px 2px rgba(20,30,45,.04),0 6px 18px rgba(20,30,45,.05);" style-hover="border-color:#8AD9FD;box-shadow:0 2px 4px rgba(20,30,45,.06),0 10px 26px rgba(3,157,228,.10);">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    <span style="font-size:14px;font-weight:700;color:#17222E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ plantName }}</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;font-size:11.5px;font-weight:600;color:#5A636B;">
+      <sc-if value="{{ isNormal }}" hint-placeholder-val="{{ true }}"><span style="width:8px;height:8px;border-radius:50%;background:#009DE4;flex:0 0 auto;"></span></sc-if>
+      
+      <sc-if value="{{ isWarning }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:#E08600;flex:0 0 auto;"></span></sc-if>
+      <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:#6B7177;flex:0 0 auto;"></span></sc-if>
+      <sc-if value="{{ isAnomaly }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:#8B5CF6;flex:0 0 auto;"></span></sc-if>
+      <sc-if value="{{ isFault }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:#D92D20;flex:0 0 auto;"></span></sc-if>{{ statusLabel }}
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:9px;margin-top:13px;">
+    <div style="flex:1;height:8px;border-radius:999px;background:#EEF1F5;overflow:hidden;">
+      <div style="display:block;height:100%;width:{{ socPct }}%;background:linear-gradient(90deg,#1FA845,#27C24C);border-radius:999px;"></div>
+    </div>
+    <span style="font-size:12px;font-weight:700;color:#17222E;font-variant-numeric:tabular-nums;flex:0 0 auto;">{{ socText }}</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px 10px;margin-top:14px;">
+    <div>
+      <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:#9AA6B0;font-weight:700;">Today</div>
+      <div style="font-size:15px;font-weight:700;color:#17222E;margin-top:2px;font-variant-numeric:tabular-nums;">{{ today }}</div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:#9AA6B0;font-weight:700;">Self-suff.</div>
+      <div style="font-size:15px;font-weight:700;color:#17222E;margin-top:2px;font-variant-numeric:tabular-nums;">{{ selfSuff }}</div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:#9AA6B0;font-weight:700;">Power</div>
+      <div style="display:flex;align-items:center;gap:5px;margin-top:2px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" style="flex:0 0 auto;color:#009DE4;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-2 8 9-12h-7z"></path></g></svg>
+        <span style="font-size:15px;font-weight:700;color:#009DE4;font-variant-numeric:tabular-nums;">{{ power }}</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:#9AA6B0;font-weight:700;">Saved</div>
+      <div style="display:flex;align-items:center;gap:5px;margin-top:2px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" style="flex:0 0 auto;color:#15702F;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-3V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"></path><path d="M16 10h.01"></path><path d="M2 8v1a2 2 0 0 0 2 2h1"></path></g></svg>
+        <span style="font-size:15px;font-weight:700;color:#15702F;font-variant-numeric:tabular-nums;">{{ saved }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 282, &quot;height&quot;: 200}, &quot;plantName&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Dome&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;status&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;normal&quot;, &quot;warning&quot;, &quot;offline&quot;, &quot;fault&quot;, &quot;anomaly&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;'normal' | 'warning' | 'offline' | 'fault' | 'anomaly'&quot;}, &quot;soc&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 71, &quot;min&quot;: 0, &quot;max&quot;: 100, &quot;unit&quot;: &quot;%&quot;, &quot;tsType&quot;: &quot;number&quot;}, &quot;today&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;24 kWh&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;selfSuff&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;86%&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;power&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;3.4 kW&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;saved&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;$52&quot;, &quot;tsType&quot;: &quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const NAME = { normal: "Normal", warning: "Warning", offline: "Offline", fault: "Fault", anomaly: "Anomaly" };
+    const raw = String(this.props.status || "normal").toLowerCase();
+    const status = raw === "online" ? "normal" : raw;
+    const soc = this.props.soc;
+    const socNum = soc == null || soc === "" ? null : Number(soc);
+    const socText = socNum == null ? "\u2014" : socNum + "%";
+    return {
+      plantName: this.props.plantName ?? "Dome",
+      statusLabel: NAME[status] || "Normal",
+      isNormal: status === "normal", isWarning: status === "warning", isOffline: status === "offline", isFault: status === "fault", isAnomaly: status === "anomaly",
+      socText,
+      socPct: socNum == null ? 0 : Math.max(0, Math.min(100, socNum)),
+      today: this.props.today ?? "24 kWh",
+      selfSuff: this.props.selfSuff ?? "86%",
+      power: this.props.power ?? "3.4 kW",
+      saved: this.props.saved ?? "$52",
+    };
+  }
+}
+</script>
+</body>
+</html>

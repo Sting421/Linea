@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Maintenance & audit log" description="Area 2 per-plant activity timeline: a chronological, typed log of control writes, firmware updates, acknowledgements, service visits, equipment changes, and inspections. Ties the Control audit-log requirement to the Equipment CRUD trail." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;box-sizing:border-box;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 18px 4px;">
+    <div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#1F4173;">Maintenance &amp; audit log</div>
+      <div style="font-size:12px;color:#8A9199;margin-top:2px;">{{ plant }} · last 30 days</div>
+    </div>
+    <span style="font-size:11px;color:#5A636B;background:#F2F5F8;border:1px solid #E7ECF0;border-radius:999px;padding:4px 10px;font-weight:500;white-space:nowrap;">All events</span>
+  </div>
+  <div style="padding:12px 18px 16px;">
+    <sc-for list="{{ entries }}" as="e" hint-placeholder-count="5">
+      <div style="display:flex;gap:13px;">
+        <div style="display:flex;flex-direction:column;align-items:center;flex:none;">
+          {{ e.iconEl }}
+          <sc-if value="{{ e.notLast }}"><div style="flex:1;width:2px;background:#EEF2F5;margin-top:5px;min-height:16px;"></div></sc-if>
+        </div>
+        <div style="flex:1;padding-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:13.5px;font-weight:600;color:#20262B;">{{ e.title }}</span>
+              <sc-if value="{{ e.tControl }}" hint-placeholder-val="{{ true }}"><span style="font-size:10px;font-weight:700;letter-spacing:0.02em;color:#009DE4;background:#009DE418;border-radius:5px;padding:2px 7px;text-transform:uppercase;">{{ e.typeLabel }}</span></sc-if>
+              <sc-if value="{{ e.tFirmware }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;letter-spacing:0.02em;color:#7C5CE0;background:#7C5CE018;border-radius:5px;padding:2px 7px;text-transform:uppercase;">{{ e.typeLabel }}</span></sc-if>
+              <sc-if value="{{ e.tAck }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;letter-spacing:0.02em;color:#0E9AA8;background:#0E9AA818;border-radius:5px;padding:2px 7px;text-transform:uppercase;">{{ e.typeLabel }}</span></sc-if>
+              <sc-if value="{{ e.tService }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;letter-spacing:0.02em;color:#E8833A;background:#E8833A18;border-radius:5px;padding:2px 7px;text-transform:uppercase;">{{ e.typeLabel }}</span></sc-if>
+              <sc-if value="{{ e.tDevice }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;letter-spacing:0.02em;color:#1FA86E;background:#1FA86E18;border-radius:5px;padding:2px 7px;text-transform:uppercase;">{{ e.typeLabel }}</span></sc-if>
+              <sc-if value="{{ e.tInspection }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:700;letter-spacing:0.02em;color:#64748B;background:#64748B18;border-radius:5px;padding:2px 7px;text-transform:uppercase;">{{ e.typeLabel }}</span></sc-if>
+            </div>
+            <span style="font-size:11px;color:#B4BBC1;white-space:nowrap;flex:none;">{{ e.time }}</span>
+          </div>
+          <div style="font-size:11.5px;color:#8A9199;margin-top:3px;">{{ e.meta }}</div>
+          <div style="font-size:12px;color:#5A636B;margin-top:5px;line-height:1.45;">{{ e.desc }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:580,&quot;height&quot;:470},&quot;plant&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Riverside Solar&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  icon(type) {
+    const h = (...a) => React.createElement(...a);
+    const map = { control: ["#009DE4", "#E5F5FC"], firmware: ["#7C5CE0", "#EEE9FB"], service: ["#E8833A", "#FBEEDD"], device: ["#1FA86E", "#E3F6EE"], ack: ["#0E9AA8", "#DBF3F5"], inspection: ["#64748B", "#EEF1F4"] };
+    const c = map[type] || map.inspection;
+    const svg = (...kids) => h("svg", { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: c[0], strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, ...kids);
+    let g;
+    if (type === "control") g = svg(h("line", { key: 1, x1: 4, y1: 8, x2: 20, y2: 8 }), h("circle", { key: 2, cx: 15, cy: 8, r: 2.4, fill: "#fff" }), h("line", { key: 3, x1: 4, y1: 16, x2: 20, y2: 16 }), h("circle", { key: 4, cx: 9, cy: 16, r: 2.4, fill: "#fff" }));
+    else if (type === "firmware") g = svg(h("rect", { key: 1, x: 7, y: 7, width: 10, height: 10, rx: 2 }), h("path", { key: 2, d: "M10 3v4 M14 3v4 M10 17v4 M14 17v4 M3 10h4 M3 14h4 M17 10h4 M17 14h4" }));
+    else if (type === "service") g = svg(h("path", { key: 1, d: "M14.7 6.3a3.6 3.6 0 0 0-4.8 4.8L4 17v3h3l5.9-5.9a3.6 3.6 0 0 0 4.8-4.8l-2.3 2.3-2-2 2.3-2.3z" }));
+    else if (type === "device") g = svg(h("rect", { key: 1, x: 4, y: 4, width: 16, height: 16, rx: 2.5 }), h("path", { key: 2, d: "M12 9v6 M9 12h6" }));
+    else if (type === "ack") g = svg(h("path", { key: 1, d: "M12 3l7 3v5c0 4.4-3 7.5-7 8.9C8 18.5 5 15.4 5 11V6z" }), h("path", { key: 2, d: "M9 11.5l2 2 4-4" }));
+    else g = svg(h("rect", { key: 1, x: 5, y: 4, width: 14, height: 17, rx: 2 }), h("path", { key: 2, d: "M9 4V3h6v1" }), h("path", { key: 3, d: "M8.5 10h7 M8.5 14h5" }));
+    return h("div", { style: { width: "30px", height: "30px", borderRadius: "999px", background: c[1], display: "flex", alignItems: "center", justifyContent: "center", flex: "none" } }, g);
+  }
+  renderVals() {
+    const p = this.props;
+    const raw = [
+      { type: "control", title: "Working mode → Peak Shaving", typeLabel: "Control", meta: "Aggregator · K. Osei · Inverter 3", time: "Today 09:12", desc: "Register 30003 set to 3. Confirmed, audit #A-4471." },
+      { type: "firmware", title: "Firmware 1.4.1 → 1.4.2", typeLabel: "Firmware", meta: "System · 4 devices", time: "Yesterday 02:40", desc: "Scheduled OTA update completed on all inverters." },
+      { type: "ack", title: "Cell over-temp acknowledged", typeLabel: "Acknowledge", meta: "Aggregator · K. Osei · ESS Pack 2", time: "Jun 24 · 16:05", desc: "Warning acknowledged; monitoring, no dispatch change." },
+      { type: "service", title: "Quarterly service visit", typeLabel: "Service", meta: "Field · R. Diaz", time: "Jun 20", desc: "Combiner-box torque check and array cleaning." },
+      { type: "device", title: "Revenue meter M-02 added", typeLabel: "Equipment", meta: "Admin · P. Lund", time: "Jun 12", desc: "Revenue-grade meter commissioned on feeder B." },
+      { type: "inspection", title: "Power-quality audit passed", typeLabel: "Inspection", meta: "Utility · Grid Ops", time: "Jun 05", desc: "Voltage and frequency within grid-code limits." },
+    ];
+    const entries = raw.map((e, i) => ({ ...e, iconEl: this.icon(e.type), notLast: i < raw.length - 1,
+      tControl: e.type === "control", tFirmware: e.type === "firmware", tService: e.type === "service", tDevice: e.type === "device", tAck: e.type === "ack", tInspection: e.type === "inspection" }));
+    return { plant: p.plant ?? "Riverside Solar", entries };
+  }
+}
+</script>
+</body>
+</html>

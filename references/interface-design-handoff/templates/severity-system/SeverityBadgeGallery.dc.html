@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>body{margin:0;background:#fff}*{box-sizing:border-box}</style>
+</helmet>
+<div style="font-family:'Opening Hours Sans',ui-sans-serif,system-ui,sans-serif;font-weight:400;color:#20262B;background:#fff;padding:28px 30px 34px;display:flex;flex-direction:column;gap:26px;">
+<div style="display:flex;flex-direction:column;gap:6px;margin:-4px 0 -6px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B6A78;">SeverityBadge · sizes</span>
+<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.7;color:#8A97A3;padding-bottom:10px;border-bottom:1px solid #EAEFF3;">Faces render in a fallback here, read the numbers. Display + numerals: Overused Grotesk, variable 300–900. Prose: Opening Hours Sans, single cut 400, never bolded.<br>Badge is a state label: radius fully round (999px), no shadow (elev-0). Soft fill + text tone per status: Normal #E6F7FF/#03587F · Warning #FFF4E2/#8F5500 · Offline #EEF0F1/#474C51 · Fault #FDECEA/#9E1B12 · Anomaly #F1EAFE/#5B21B6. Count suffix ×N is a numeral, so it sits on Overused Grotesk. Sample count: <span style="color:#03587F;cursor:pointer;" onClick="{{ bump }}">{{ count }}, click to cycle</span></div>
+</div>
+
+<section style="display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Small</span><span style="font-size:11px;color:#9AA3AB;">sm · Overused Grotesk 600 11px · lh 1 · ls 0.012em · pad 2.5/9 · count suffix 500 at 72% · radius 999 (fully round) · elev-0 · table cells, alert strip rows, map pins</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+<dc-import name="SeverityBadge" status="normal" size="sm" hint-size="62px,18px"></dc-import>
+<dc-import name="SeverityBadge" status="warning" size="sm" hint-size="66px,18px"></dc-import>
+<dc-import name="SeverityBadge" status="offline" size="sm" hint-size="60px,18px"></dc-import>
+<dc-import name="SeverityBadge" status="fault" size="sm" hint-size="52px,18px"></dc-import>
+<dc-import name="SeverityBadge" status="anomaly" size="sm" hint-size="66px,18px"></dc-import>
+<span style="width:1px;height:16px;background:#E2E7EB;margin:0 4px;"></span>
+<dc-import name="SeverityBadge" status="fault" size="sm" count="{{ count }}" hint-size="74px,18px"></dc-import>
+<dc-import name="SeverityBadge" status="warning" size="sm" count="{{ count }}" hint-size="88px,18px"></dc-import>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Medium</span><span style="font-size:11px;color:#9AA3AB;">md · default · Overused Grotesk 600 12.5px · lh 1 · ls 0.012em · pad 3.5/11 · count suffix 500 at 72% · radius 999 (fully round) · elev-0 · plant cards, incident headers, KPI tiles</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
+<dc-import name="SeverityBadge" status="normal" size="md" hint-size="72px,22px"></dc-import>
+<dc-import name="SeverityBadge" status="warning" size="md" hint-size="78px,22px"></dc-import>
+<dc-import name="SeverityBadge" status="offline" size="md" hint-size="70px,22px"></dc-import>
+<dc-import name="SeverityBadge" status="fault" size="md" hint-size="60px,22px"></dc-import>
+<dc-import name="SeverityBadge" status="anomaly" size="md" hint-size="78px,22px"></dc-import>
+<span style="width:1px;height:18px;background:#E2E7EB;margin:0 4px;"></span>
+<dc-import name="SeverityBadge" status="fault" size="md" count="{{ count }}" hint-size="86px,22px"></dc-import>
+<dc-import name="SeverityBadge" status="warning" size="md" count="{{ count }}" hint-size="104px,22px"></dc-import>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Large</span><span style="font-size:11px;color:#9AA3AB;">lg · Overused Grotesk 600 14px · lh 1 · ls 0.012em · pad 5/14 · count suffix 500 at 72% · radius 999 (fully round) · elev-0 · plant shell title, fleet summary, power-flow status</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+<dc-import name="SeverityBadge" status="normal" size="lg" hint-size="86px,26px"></dc-import>
+<dc-import name="SeverityBadge" status="warning" size="lg" hint-size="92px,26px"></dc-import>
+<dc-import name="SeverityBadge" status="offline" size="lg" hint-size="82px,26px"></dc-import>
+<dc-import name="SeverityBadge" status="fault" size="lg" hint-size="70px,26px"></dc-import>
+<dc-import name="SeverityBadge" status="anomaly" size="lg" hint-size="92px,26px"></dc-import>
+<span style="width:1px;height:20px;background:#E2E7EB;margin:0 4px;"></span>
+<dc-import name="SeverityBadge" status="fault" size="lg" count="{{ count }}" hint-size="100px,26px"></dc-import>
+<dc-import name="SeverityBadge" status="warning" size="lg" count="{{ count }}" hint-size="120px,26px"></dc-import>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:10px;border-top:1px solid #EEF2F5;padding-top:22px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">In context</span><span style="font-size:11px;color:#9AA3AB;">Sizes match the type they sit beside</span></div>
+<div style="display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;align-items:center;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:22px;color:#1F4173;">Love Shack</span><dc-import name="SeverityBadge" status="fault" size="lg" hint-size="70px,26px"></dc-import></div>
+<div style="display:flex;align-items:center;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:15px;color:#20262B;">Maple Grove</span><dc-import name="SeverityBadge" status="warning" size="md" hint-size="78px,22px"></dc-import></div>
+<div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:#46505A;"><span style="width:110px;">INV-02 · 14:32</span><span style="width:120px;">Grid frequency</span><dc-import name="SeverityBadge" status="normal" size="sm" hint-size="62px,18px"></dc-import></div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 760, &quot;height&quot;: 520}, &quot;count&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 3, &quot;min&quot;: 1, &quot;max&quot;: 99, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Count suffix&quot;}}">
+class Component extends DCLogic {
+  state = { bumps: 0 };
+  renderVals() {
+    const base = Number(this.props.count ?? 3);
+    const count = ((base - 1 + this.state.bumps * 4) % 99) + 1;
+    return { count, bump: () => this.setState((s) => ({ bumps: s.bumps + 1 })) };
+  }
+}
+</script>
+</body>
+</html>

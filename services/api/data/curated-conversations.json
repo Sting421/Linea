@@ -1,0 +1,583 @@
+[
+  {
+    "id": "fall_recovered_after_clarification",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I fell yesterday, but I'm okay now."
+      ],
+      [
+        "linea",
+        "Were you injured when you fell?"
+      ],
+      [
+        "elder",
+        "No, I wasn't hurt. I'm moving normally, and it only happened once."
+      ]
+    ]
+  },
+  {
+    "id": "fall_unknown_before_clarification",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I fell."
+      ]
+    ]
+  },
+  {
+    "id": "fall_ongoing_leg_pain",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I fell earlier and my lower leg still aches a little."
+      ]
+    ]
+  },
+  {
+    "id": "fall_reassurance_cannot_cancel_inability_to_get_up",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I'm fine, but I fell and I'm still on the floor. I can't get up."
+      ]
+    ]
+  },
+  {
+    "id": "near_fall_preserves_actual_event",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I almost fell but caught myself. I'm not hurt, I feel normal now, and this hasn't happened before."
+      ]
+    ]
+  },
+  {
+    "id": "breathing_familiar_resolved_exertion",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I was a little winded after my usual walk, just like usual. It passed completely and nothing else happened."
+      ]
+    ]
+  },
+  {
+    "id": "breathing_new_but_resolved",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I was unusually short of breath this morning. It's completely gone now, and there were no other symptoms."
+      ]
+    ]
+  },
+  {
+    "id": "breathing_current_severe",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I can't breathe. I'm gasping."
+      ]
+    ]
+  },
+  {
+    "id": "chest_current_mild_conservative_fallback",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "My chest hurts right now, but only a little. It's probably indigestion."
+      ]
+    ]
+  },
+  {
+    "id": "chest_resolved_without_associated_features",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "My chest hurt earlier."
+      ],
+      [
+        "linea",
+        "Do you have any chest pain right now?"
+      ],
+      [
+        "elder",
+        "No, it completely stopped."
+      ],
+      [
+        "linea",
+        "Did anything else happen while your chest hurt?"
+      ],
+      [
+        "elder",
+        "No, nothing else."
+      ]
+    ]
+  },
+  {
+    "id": "chest_resolved_with_delayed_red_flags",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "My chest pain stopped."
+      ],
+      [
+        "linea",
+        "Did anything else happen while it hurt?"
+      ],
+      [
+        "elder",
+        "I was sweaty and short of breath."
+      ]
+    ]
+  },
+  {
+    "id": "chest_recurrence_between_episodes",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "My chest has hurt a few times this week. There was nothing else with it. It's gone completely right now."
+      ]
+    ]
+  },
+  {
+    "id": "chest_remote_assessed_history",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I had chest pain years ago. My doctor checked it, and I haven't had any since."
+      ]
+    ]
+  },
+  {
+    "id": "chest_negation_and_third_party_story",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I don't have chest pain. My sister had it years ago."
+      ]
+    ]
+  },
+  {
+    "id": "dizziness_isolated_resolved",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I felt a little dizzy once this morning. It was brief and it's completely gone. I didn't faint or fall, and nothing else happened."
+      ]
+    ]
+  },
+  {
+    "id": "dizziness_persistent",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I'm still dizzy. It hasn't stopped."
+      ]
+    ]
+  },
+  {
+    "id": "dizziness_recurrent_but_resolved_now",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I've been dizzy several times today. Nothing else happens, and it's gone right now."
+      ]
+    ]
+  },
+  {
+    "id": "dizziness_recent_neurological_features_resolved",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "An hour ago I suddenly got dizzy and my left arm went weak. Both stopped, so I'm fine now."
+      ]
+    ]
+  },
+  {
+    "id": "dizziness_new_inability_to_walk",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I suddenly became dizzy and now I can't walk, although I could earlier."
+      ]
+    ]
+  },
+  {
+    "id": "faint_fully_recovered_without_emergency_circumstances",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I fainted earlier while standing in the kitchen. I recovered completely, wasn't exercising, wasn't hurt, and had no other symptoms."
+      ]
+    ]
+  },
+  {
+    "id": "faint_during_exertion",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I passed out while exercising earlier, but I woke up and feel better."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_explicit_taken",
+    "context": {
+      "medicine": "Losartan",
+      "due_period": "this_morning"
+    },
+    "dialogue": [
+      [
+        "linea",
+        "Have you taken your Losartan this morning?"
+      ],
+      [
+        "elder",
+        "Yes, I took it after breakfast this morning."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_intention_is_not_completion",
+    "context": {
+      "medicine": "Losartan",
+      "due_period": "this_morning",
+      "dose_due": true,
+      "isolated": true,
+      "other_concerns": false
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I haven't taken my Losartan this morning. I'll take it later."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_uncertain_after_clarification",
+    "context": {
+      "medicine": "Losartan",
+      "dose_due": true,
+      "isolated": true,
+      "other_concerns": false
+    },
+    "dialogue": [
+      [
+        "linea",
+        "Have you taken your Losartan this morning?"
+      ],
+      [
+        "elder",
+        "I think so."
+      ],
+      [
+        "linea",
+        "Do you remember taking it today?"
+      ],
+      [
+        "elder",
+        "I'm not sure."
+      ],
+      [
+        "linea",
+        "Is there anything you remember about taking today's tablet?"
+      ],
+      [
+        "elder",
+        "No, I can't remember."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_repeated_omissions",
+    "context": {
+      "medicine": "Losartan",
+      "dose_due": true
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I didn't take my Losartan yesterday or today."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_repeated_unknown_not_missed",
+    "context": {
+      "medicine": "Losartan",
+      "dose_due": true,
+      "previous_due_period_result": "unknown",
+      "current_result_after_clarification": "unknown"
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I still can't remember if I took today's dose."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_access_barrier",
+    "context": {
+      "medicine": "Losartan",
+      "dose_due": true
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I haven't taken it because I ran out and can't get more."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_not_due_yet",
+    "context": {
+      "medicine": "Losartan",
+      "dose_due": false,
+      "other_concerns": false
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I haven't taken it yet."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_reported_doctor_stop",
+    "context": {
+      "medicine": "Losartan"
+    },
+    "dialogue": [
+      [
+        "elder",
+        "My doctor told me to stop Losartan, so I haven't taken it."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_possible_extra_dose",
+    "context": {
+      "medicine": "Losartan",
+      "emergency_symptoms": false
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I took my tablet this morning, but I might have taken another one too."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_reported_large_excess",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I took a handful of my tablets just now, but I feel fine."
+      ]
+    ]
+  },
+  {
+    "id": "medicine_other_drug_no_approved_omission_policy",
+    "context": {
+      "medicine": "unspecified",
+      "approved_omission_policy": false
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I missed my medicine today."
+      ]
+    ]
+  },
+  {
+    "id": "interrupted_medicine_yes_belongs_to_injury_question",
+    "context": {
+      "unfinished_beat": "medicine",
+      "medicine_result": "unknown"
+    },
+    "dialogue": [
+      [
+        "linea",
+        "Have you taken your Losartan this morning?"
+      ],
+      [
+        "elder",
+        "I dropped it when I fell earlier."
+      ],
+      [
+        "linea",
+        "Are you hurt now?"
+      ],
+      [
+        "elder",
+        "Yes."
+      ]
+    ]
+  },
+  {
+    "id": "one_answer_contains_two_facts",
+    "context": {
+      "medicine": "Losartan",
+      "dose_due": true,
+      "unfinished_beat": "medicine"
+    },
+    "dialogue": [
+      [
+        "linea",
+        "Have you taken your Losartan this morning?"
+      ],
+      [
+        "elder",
+        "I dropped it when I fell earlier."
+      ],
+      [
+        "linea",
+        "Are you hurt now?"
+      ],
+      [
+        "elder",
+        "No, but I haven't taken the tablet."
+      ]
+    ]
+  },
+  {
+    "id": "later_emergency_overrides_resolved_dizziness",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I was briefly dizzy, but it passed."
+      ],
+      [
+        "linea",
+        "Did anything else happen?"
+      ],
+      [
+        "elder",
+        "My chest is hurting now."
+      ]
+    ]
+  },
+  {
+    "id": "symptom_clarification_exhausted",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I was dizzy earlier."
+      ],
+      [
+        "linea",
+        "Are you still dizzy now?"
+      ],
+      [
+        "elder",
+        "My daughter lives abroad."
+      ],
+      [
+        "linea",
+        "How are you feeling right now?"
+      ],
+      [
+        "elder",
+        "I don't know."
+      ]
+    ]
+  },
+  {
+    "id": "explicit_subject_correction",
+    "context": {},
+    "dialogue": [
+      [
+        "elder",
+        "I fell yesterday."
+      ],
+      [
+        "linea",
+        "Were you hurt?"
+      ],
+      [
+        "elder",
+        "Sorry, I meant my sister fell. I didn't fall."
+      ]
+    ]
+  },
+  {
+    "id": "emergency_in_listen_mode",
+    "context": {
+      "mode": "LISTEN",
+      "speaker_uid": "100"
+    },
+    "dialogue": [
+      [
+        "elder",
+        "I can't breathe."
+      ]
+    ]
+  },
+  {
+    "id": "emergency_during_consent",
+    "context": {
+      "mode": "CONSENT",
+      "consent": "pending"
+    },
+    "dialogue": [
+      [
+        "elder",
+        "My chest hurts right now."
+      ]
+    ]
+  },
+  {
+    "id": "repeated_same_incident_no_duplicate_alert",
+    "context": {
+      "same_incident": true,
+      "existing_tier": "significant",
+      "previous_notification_sent": true,
+      "medicine": "Losartan"
+    },
+    "dialogue": [
+      [
+        "elder",
+        "Like I said, I'm still out of the tablets."
+      ]
+    ]
+  },
+  {
+    "id": "new_details_upgrade_existing_incident",
+    "context": {
+      "same_incident": true,
+      "existing_tier": "significant",
+      "previous_notification_sent": true
+    },
+    "dialogue": [
+      [
+        "elder",
+        "About that dizzy spell earlier: I suddenly couldn't speak properly either."
+      ]
+    ]
+  }
+]

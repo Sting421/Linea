@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <div style="padding: 14px 18px 0;">
+    <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">{{ title }}</div>
+    <div style="font-size: 12px; color: #8A9199; margin-top: 2px;">{{ subtitle }}</div>
+  </div>
+  <div style="position: relative; width: 100%; height: 220px; padding: 0 10px 8px; box-sizing: border-box;">
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+      {{ chartEl }}
+    </sc-if>
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+      <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #B4BBC1; font-size: 13px;">Loading…</div>
+    </sc-if>
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+      <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 30px; color: #20262B; line-height: 1;">{{ pct }}</div>
+      <div style="font-size: 11px; color: #8A9199; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 3px;">Utilised</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 360, &quot;height&quot;: 280}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Generation utilisation&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;subtitle&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Production vs curtailment&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;production&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 82, &quot;min&quot;: 0, &quot;max&quot;: 100, &quot;step&quot;: 1, &quot;unit&quot;: &quot;%&quot;, &quot;tsType&quot;: &quot;number&quot;}, &quot;curtailment&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 18, &quot;min&quot;: 0, &quot;max&quot;: 100, &quot;step&quot;: 1, &quot;unit&quot;: &quot;%&quot;, &quot;tsType&quot;: &quot;number&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this._tries = 0; }
+  componentDidMount() { this.waitForLib(); }
+  waitForLib() {
+    if (window.Recharts) { this.forceUpdate(); return; }
+    if (this._tries++ < 150) setTimeout(() => this.waitForLib(), 60);
+  }
+
+  vals() {
+    const production = this.props.production != null ? this.props.production : 82;
+    const curtailment = this.props.curtailment != null ? this.props.curtailment : 18;
+    return { production, curtailment };
+  }
+
+  buildChart() {
+    const R = window.Recharts;
+    const { ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } = R;
+    const h = (...a) => React.createElement(...a);
+    const { production } = this.vals();
+    const data = [{ name: "Utilised", value: production, fill: "#009DE4" }];
+    const axis = h(PolarAngleAxis, { type: "number", domain: [0, 100], angleAxisId: 0, tick: false });
+    const bar = h(RadialBar, { background: { fill: "#EEF2F5" }, dataKey: "value", cornerRadius: 8, isAnimationActive: false });
+    const chart = h(RadialBarChart, { data, cx: "50%", cy: "50%", innerRadius: "68%", outerRadius: "100%", startAngle: 90, endAngle: -270, barSize: 16 }, axis, bar);
+    return h(ResponsiveContainer, { width: "100%", height: "100%" }, chart);
+  }
+
+  renderVals() {
+    const ready = !!window.Recharts;
+    const { production } = this.vals();
+    return {
+      ready, loading: !ready,
+      chartEl: ready ? this.buildChart() : null,
+      title: this.props.title ?? "Generation utilisation",
+      subtitle: this.props.subtitle ?? "Production vs curtailment",
+      pct: production + "%",
+    };
+  }
+}
+</script>
+</body>
+</html>

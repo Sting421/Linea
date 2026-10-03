@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Chip" description="Readout / control fact chip: a rounded pill for a value, grid state or working mode. Three color families: NEUTRAL (facts) / STATUS hues that mirror SeverityBadge (sky·green·amber·red — use only for real status) / the Area 2 WORKING-MODE palette (sky Self-Consumption, green Backup, orange Time-of-Use, teal Peak, rust AC Charge). Optional leading dot. Net-new." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<sc-if value="{{ isNeutral }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#F1F4F6; border:1px solid #E2E7EB; color:#46505A;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#8A9199; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isSky }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#E6F7FF; border:1px solid #A9DEF7; color:#03587F;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#009DE4; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isGreen }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#E7F8EC; border:1px solid #BEE6CB; color:#15702F;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#1FA845; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isAmber }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#FFF4E2; border:1px solid #F2D69B; color:#8F5500;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#E08600; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isRed }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#FDECEA; border:1px solid #F2B7AF; color:#9E1B12;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#D92D20; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isNavy }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#EAF1FB; border:1px solid #C6D6EE; color:#1F4173;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#2A6FDB; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isTeal }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#E0F5F2; border:1px solid #A7DED6; color:#0A5C53;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#0E9384; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isOrange }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#FDF1E0; border:1px solid #F3D9B0; color:#9A5B00;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#E08600; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+<sc-if value="{{ isRust }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; line-height:1; border-radius:999px; padding:5px 12px; white-space:nowrap; box-sizing:border-box; vertical-align:middle; background:#FCEBE4; border:1px solid #F4C9B4; color:#9E3A12;"><sc-if value="{{ dot }}" hint-placeholder-val="{{ false }}"><span style="width:7px; height:7px; border-radius:50%; background:#E0521E; flex:0 0 auto;"></span></sc-if>{{ label }}</span></sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 240, &quot;height&quot;: 60}, &quot;label&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;On-grid&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;tone&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;neutral&quot;, &quot;sky&quot;, &quot;green&quot;, &quot;amber&quot;, &quot;red&quot;, &quot;navy&quot;, &quot;teal&quot;, &quot;orange&quot;, &quot;rust&quot;], &quot;default&quot;: &quot;neutral&quot;, &quot;tsType&quot;: &quot;'neutral'|'sky'|'green'|'amber'|'red'|'navy'|'teal'|'orange'|'rust'&quot;}, &quot;dot&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const tone = String(this.props.tone || "neutral").toLowerCase();
+    const dot = this.props.dot === true || this.props.dot === "true";
+    const label = (this.props.label != null && this.props.label !== "") ? this.props.label : "Chip";
+    return {
+      isNeutral: tone === "neutral",
+      isSky: tone === "sky",
+      isGreen: tone === "green",
+      isAmber: tone === "amber",
+      isRed: tone === "red",
+      isNavy: tone === "navy",
+      isTeal: tone === "teal",
+      isOrange: tone === "orange",
+      isRust: tone === "rust",
+      dot, label,
+    };
+  }
+}
+</script>
+</body>
+</html>

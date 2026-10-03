@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 14px 18px 0;">
+    <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">{{ title }}</div>
+    <div style="font-size: 12px; color: #8A9199;">Click a segment to filter</div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 8px; padding: 6px 14px 16px;">
+    <div style="position: relative; width: 190px; height: 190px; flex: 0 0 auto;">
+      <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+        {{ chartEl }}
+      </sc-if>
+      <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+        <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #B4BBC1; font-size: 13px;">Loading…</div>
+      </sc-if>
+      <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+        <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 34px; color: #20262B; line-height: 1;">{{ total }}</div>
+        <div style="font-size: 11px; color: #8A9199; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 3px;">Plants</div>
+      </div>
+    </div>
+    <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+      <sc-if value="{{ showFault }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 7px; cursor: pointer; transition: background .15s;" style-hover="background: #F2F7FA;">
+          <span style="width: 10px; height: 10px; border-radius: 3px; background: #D92D20; flex: 0 0 auto;"></span>
+          <span style="font-size: 13px; color: #3A434B; flex: 1 1 auto;">Fault</span>
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #20262B; font-variant-numeric: tabular-nums;">{{ nFault }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showWarning }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 7px; cursor: pointer; transition: background .15s;" style-hover="background: #F2F7FA;">
+          <span style="width: 10px; height: 10px; border-radius: 3px; background: #E08600; flex: 0 0 auto;"></span>
+          <span style="font-size: 13px; color: #3A434B; flex: 1 1 auto;">Warning</span>
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #20262B; font-variant-numeric: tabular-nums;">{{ nWarning }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showAnomaly }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 7px; cursor: pointer; transition: background .15s;" style-hover="background: #F2F7FA;">
+          <span style="width: 10px; height: 10px; border-radius: 3px; background: #8B5CF6; flex: 0 0 auto;"></span>
+          <span style="font-size: 13px; color: #3A434B; flex: 1 1 auto;">Anomaly</span>
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #20262B; font-variant-numeric: tabular-nums;">{{ nAnomaly }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showOffline }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 7px; cursor: pointer; transition: background .15s;" style-hover="background: #F2F7FA;">
+          <span style="width: 10px; height: 10px; border-radius: 3px; background: #6B7177; flex: 0 0 auto;"></span>
+          <span style="font-size: 13px; color: #3A434B; flex: 1 1 auto;">Offline</span>
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #20262B; font-variant-numeric: tabular-nums;">{{ nOffline }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showNormal }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 7px; cursor: pointer; transition: background .15s;" style-hover="background: #F2F7FA;">
+          <span style="width: 10px; height: 10px; border-radius: 3px; background: #009DE4; flex: 0 0 auto;"></span>
+          <span style="font-size: 13px; color: #3A434B; flex: 1 1 auto;">Normal</span>
+          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #20262B; font-variant-numeric: tabular-nums;">{{ nNormal }}</span>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 420, &quot;height&quot;: 230}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Fleet status&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;counts&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;{ normal?: number; warning?: number; anomaly?: number; offline?: number; fault?: number }&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this._tries = 0; this.state = { active: null }; }
+  componentDidMount() { this.waitForLib(); }
+  waitForLib() {
+    if (window.Recharts) { this.forceUpdate(); return; }
+    if (this._tries++ < 150) setTimeout(() => this.waitForLib(), 60);
+  }
+
+  counts() {
+    const c = this.props.counts;
+    if (c && typeof c === "object") return c;
+    return { normal: 4, warning: 5, anomaly: 1, offline: 1, fault: 2 };
+  }
+  segments() {
+    const COLOR = { fault: "#D92D20", warning: "#E08600", anomaly: "#8B5CF6", offline: "#6B7177", normal: "#009DE4" };
+    const c = this.counts();
+    return ["fault", "warning", "anomaly", "offline", "normal"]
+      .map((k) => ({ key: k, label: k.charAt(0).toUpperCase() + k.slice(1), color: COLOR[k], value: c[k] || 0 }))
+      .filter((s) => s.value > 0);
+  }
+
+  buildChart() {
+    const R = window.Recharts;
+    const { ResponsiveContainer, PieChart, Pie, Cell } = R;
+    const h = (...a) => React.createElement(...a);
+    const data = this.segments();
+    const active = this.state.active;
+    const cells = data.map((r) => h(Cell, {
+      key: r.key, fill: r.color, stroke: "#fff", strokeWidth: 2,
+      opacity: active && active !== r.key ? 0.35 : 1,
+      style: { cursor: "pointer", transition: "opacity .15s" },
+    }));
+    const pie = h(Pie, {
+      data, dataKey: "value", nameKey: "label",
+      cx: "50%", cy: "50%", innerRadius: 58, outerRadius: 86,
+      paddingAngle: 2, startAngle: 90, endAngle: -270, isAnimationActive: false,
+      onMouseEnter: (_, i) => this.setState({ active: data[i] && data[i].key }),
+      onMouseLeave: () => this.setState({ active: null }),
+    }, cells);
+    return h(ResponsiveContainer, { width: "100%", height: "100%" }, h(PieChart, null, pie));
+  }
+
+  renderVals() {
+    const ready = !!window.Recharts;
+    const c = this.counts();
+    const total = ["normal", "warning", "anomaly", "offline", "fault"].reduce((a, k) => a + (c[k] || 0), 0);
+    return {
+      ready, loading: !ready,
+      chartEl: ready ? this.buildChart() : null,
+      title: this.props.title ?? "Fleet status",
+      total,
+      nFault: c.fault || 0, nWarning: c.warning || 0, nAnomaly: c.anomaly || 0, nOffline: c.offline || 0, nNormal: c.normal || 0,
+      showFault: (c.fault || 0) > 0, showWarning: (c.warning || 0) > 0, showAnomaly: (c.anomaly || 0) > 0, showOffline: (c.offline || 0) > 0,
+      showNormal: (c.normal || 0) > 0,
+    };
+  }
+}
+</script>
+</body>
+</html>

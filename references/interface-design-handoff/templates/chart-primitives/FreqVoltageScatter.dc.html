@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 14px 18px 8px;">
+    <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">{{ title }}</div>
+    <div style="font-size: 12px; color: #8A9199;">Shaded = nominal band</div>
+  </div>
+  <div style="width: 100%; height: 280px; padding: 4px 10px 12px; box-sizing: border-box;">
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+      {{ chartEl }}
+    </sc-if>
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+      <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #B4BBC1; font-size: 13px;">Loading chart…</div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 560, &quot;height&quot;: 340}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Frequency × Voltage&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;data&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;Array&lt;{ f: number; v: number; out?: boolean }&gt;&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this._tries = 0; }
+  componentDidMount() { this.waitForLib(); }
+  waitForLib() {
+    if (window.Recharts) { this.forceUpdate(); return; }
+    if (this._tries++ < 150) setTimeout(() => this.waitForLib(), 60);
+  }
+
+  sampleData() {
+    // freq (Hz) vs voltage (V) cloud; a few out-of-band outliers (provisional shape)
+    const pts = [];
+    for (let i = 0; i < 60; i += 1) {
+      const f = 49.85 + Math.random() * 0.3;
+      const v = 228 + Math.random() * 8;
+      const out = f < 49.9 || f > 50.1 || v < 230 || v > 235;
+      pts.push({ f: +f.toFixed(3), v: +v.toFixed(1), out });
+    }
+    pts.push({ f: 49.78, v: 226.4, out: true }, { f: 50.18, v: 237.1, out: true });
+    return pts;
+  }
+
+  buildChart() {
+    const R = window.Recharts;
+    const { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ReferenceArea, Cell } = R;
+    const h = (...a) => React.createElement(...a);
+    const data = (Array.isArray(this.props.data) && this.props.data.length) ? this.props.data : this.sampleData();
+
+    const cells = data.map((d, i) => h(Cell, { key: i, fill: d.out ? "#D92D20" : "#009DE4" }));
+    const scatter = h(Scatter, { data, isAnimationActive: false }, cells);
+
+    const children = [
+      h(CartesianGrid, { key: "g", strokeDasharray: "3 3", stroke: "#EEF2F5" }),
+      h(ReferenceArea, { key: "band", x1: 49.9, x2: 50.1, y1: 230, y2: 235, fill: "#009DE4", fillOpacity: 0.07, stroke: "#9AD4F0", strokeOpacity: 0.5, strokeDasharray: "4 3" }),
+      h(XAxis, { key: "x", type: "number", dataKey: "f", name: "Frequency", unit: " Hz", domain: [49.7, 50.3], tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: { stroke: "#E2E7EB" } }),
+      h(YAxis, { key: "y", type: "number", dataKey: "v", name: "Voltage", unit: " V", domain: [224, 240], tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: false, width: 42 }),
+      h(ZAxis, { key: "z", range: [42, 42] }),
+      h(Tooltip, { key: "t", cursor: { strokeDasharray: "3 3" }, contentStyle: { borderRadius: 8, border: "1px solid #E2E7EB", fontSize: 12, fontFamily: "'Space Grotesk', sans-serif" } }),
+      scatter,
+    ];
+    return h(ResponsiveContainer, { width: "100%", height: "100%" }, h(ScatterChart, { margin: { top: 8, right: 10, left: 0, bottom: 0 } }, children));
+  }
+
+  renderVals() {
+    const ready = !!window.Recharts;
+    return {
+      ready, loading: !ready,
+      chartEl: ready ? this.buildChart() : null,
+      title: this.props.title ?? "Frequency \u00d7 Voltage",
+    };
+  }
+}
+</script>
+</body>
+</html>

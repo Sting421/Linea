@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Evolved · InfoTooltip" description="Brand-evolved InfoTooltip: Ovanova sky trigger, deep-navy surface, Space Grotesk. Reusable via content/label props (bare mode drops the demo chrome for inline use). The reskin target for the reap InfoTooltip (react-tooltip); repo retints via --rt-color-* + token-driven trigger." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<sc-if value="{{ demo }}" hint-placeholder-val="{{ true }}">
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding:92px 30px 34px; display:flex; flex-direction:column; gap:22px; align-items:flex-start; background:#fff;">
+  <div style="display:flex; align-items:center; gap:9px;">
+    <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span style="font-size:15px; color:#20262B; font-weight:500;">{{ label }}</span></sc-if>
+    <span onMouseEnter="{{ onEnter }}" onMouseLeave="{{ onLeave }}" onClick="{{ onToggle }}" style="position:relative; display:inline-flex;">
+      <span style="width:19px; height:19px; border-radius:50%; background:#E6F7FF; color:#03587F; border:1px solid #8AD9FD; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; font-family:'Space Grotesk',sans-serif; font-style:normal; cursor:help;">i</span>
+      <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+        <span style="position:absolute; bottom:150%; left:50%; transform:translateX(-50%); background:#03587F; color:#EAF4FB; font-size:12.5px; line-height:1.45; font-family:'Space Grotesk',sans-serif; padding:9px 12px; border-radius:8px; width:212px; box-shadow:0 8px 22px rgba(31,65,115,0.28); z-index:5;">
+          {{ content }}
+          <span style="position:absolute; top:100%; left:50%; transform:translateX(-50%); width:0; height:0; border:6px solid transparent; border-top-color:#03587F;"></span>
+        </span>
+      </sc-if>
+    </span>
+  </div>
+  <div style="font-size:12.5px; color:#8A9199; max-width:48ch; border-top:1px solid #EEF2F5; padding-top:14px; line-height:1.6;">
+    <b style="color:#03587F; font-family:'Space Grotesk',sans-serif;">Evolved:</b> Ovanova sky trigger, deep-navy surface, Space Grotesk, replacing the legacy gray <code style="font-family:'Space Grotesk',monospace;">react-tooltip</code> default. Pass <code style="font-family:'Space Grotesk',monospace;">content</code> / <code style="font-family:'Space Grotesk',monospace;">label</code>; use <code style="font-family:'Space Grotesk',monospace;">bare</code> to embed inline.
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ bare }}" hint-placeholder-val="{{ false }}">
+<span style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; display:inline-flex; align-items:center; gap:8px;">
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px; color:#46505A;">{{ label }}</span></sc-if>
+  <span onMouseEnter="{{ onEnter }}" onMouseLeave="{{ onLeave }}" onClick="{{ onToggle }}" style="position:relative; display:inline-flex;">
+    <span style="width:19px; height:19px; border-radius:50%; background:#E6F7FF; color:#03587F; border:1px solid #8AD9FD; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; font-family:'Space Grotesk',sans-serif; font-style:normal; cursor:help;">i</span>
+    <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+      <span style="position:absolute; bottom:150%; left:50%; transform:translateX(-50%); background:#03587F; color:#EAF4FB; font-size:12.5px; line-height:1.45; font-family:'Space Grotesk',sans-serif; padding:9px 12px; border-radius:8px; width:250px; box-shadow:0 8px 22px rgba(8,17,36,0.4); z-index:6;">
+        {{ content }}
+        <span style="position:absolute; top:100%; left:50%; transform:translateX(-50%); width:0; height:0; border:6px solid transparent; border-top-color:#03587F;"></span>
+      </span>
+    </sc-if>
+  </span>
+</span>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 440, &quot;height&quot;: 230}, &quot;content&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Percentage of usable battery capacity currently stored.&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;label&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;State of charge&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;bare&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { open: null };
+  renderVals() {
+    const bare = this.props.bare === true || this.props.bare === "true";
+    const label = this.props.label != null ? this.props.label : "State of charge";
+    const content = this.props.content || "Percentage of usable battery capacity currently stored.";
+    const open = this.state.open == null ? !bare : this.state.open;
+    return {
+      demo: !bare, bare,
+      hasLabel: label != null && label !== "",
+      label, content, open,
+      onEnter: () => this.setState({ open: true }),
+      onLeave: () => this.setState({ open: false }),
+      onToggle: () => this.setState({ open: !open }),
+    };
+  }
+}
+</script>
+</body>
+</html>

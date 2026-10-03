@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Today panels" description="Area 2 plant-detail multi-series trend: PV, load and net-grid on a shared kW axis with battery SOC on a right % axis. Click a legend chip to toggle a series. Realizes the DR 'today panels' ask (PV / load / battery SOC / net-grid on a shared axis); the SOC time-series is net-new." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;max-width:620px;margin:0 auto;box-sizing:border-box;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px 6px;">
+    <div style="display:flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:23px;color:#1F4173;">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" style="flex:none;"><rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="#009DE4" stroke-width="1.8"></rect><path d="M3 9.5h18" stroke="#009DE4" stroke-width="1.8"></path><path d="M8 2.5v4M16 2.5v4" stroke="#009DE4" stroke-width="1.8" stroke-linecap="round"></path></svg>
+      <span>Today <span style="font-weight:500;font-size:14px;color:#8A9199;letter-spacing:0;">· Jul 2, 2026</span></span>
+    </div>
+    <div style="font-size:16px;color:#46505A;font-weight:500;text-align:right;white-space:nowrap;">{{ plant }}</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;padding:11px 18px 2px;">{{ legendEls }}</div>
+  <div style="padding:6px 14px 2px;">
+    {{ chartEl }}
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#B4BBC1;margin-top:2px;padding:0 30px 0 24px;">
+      <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;padding:12px 18px 16px;">
+    <sc-for list="{{ nowStats }}" as="s" hint-placeholder-count="4">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:#8A9199;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;">{{ s.label }}</div>
+        <div style="margin-top:6px;">{{ s.valueEl }}</div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:430},&quot;plant&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Riverside Solar&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;date&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Jun 30&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { hidden: {} };
+  d() {
+    const pv   = [0,0,0,0,0.2,0.8,1.8,2.9,3.9,4.6,5.0,5.2,5.1,4.8,4.2,3.3,2.2,1.1,0.3,0,0,0,0,0];
+    const load = [1.2,1.0,0.9,0.9,1.0,1.4,2.1,2.6,2.4,2.2,2.3,2.5,2.6,2.4,2.3,2.5,3.1,3.8,4.2,3.9,3.2,2.4,1.8,1.4];
+    const soc  = [42,40,38,36,35,34,33,36,45,58,72,84,92,96,97,95,90,82,72,64,58,52,48,45];
+    const net  = load.map((l, i) => Math.round((l - pv[i]) * 10) / 10);
+    return { pv, load, net, soc };
+  }
+  series() {
+    return [
+      { key: "pv",   label: "PV",           color: "#EAB308", axis: "kw" },
+      { key: "load", label: "Load",         color: "#E0521E", axis: "kw" },
+      { key: "net",  label: "Net grid",     color: "#0B7285", axis: "kw" },
+      { key: "soc",  label: "SOC",          color: "#1FA845", axis: "pct" },
+    ];
+  }
+  toggle(k) { this.setState(s => ({ hidden: { ...s.hidden, [k]: !s.hidden[k] } })); }
+  chart() {
+    const h = (...a) => React.createElement(...a);
+    const d = this.d(), n = 24;
+    const W = 560, H = 190, padL = 24, padR = 30, padT = 14, padB = 14;
+    const KMIN = -4, KMAX = 8;
+    const x = i => padL + (i / (n - 1)) * (W - padL - padR);
+    const yK = v => padT + (1 - (v - KMIN) / (KMAX - KMIN)) * (H - padT - padB);
+    const yP = v => padT + (1 - v / 100) * (H - padT - padB);
+    const line = (arr, yf) => arr.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + yf(v).toFixed(1)).join(" ");
+    const kids = [];
+    [6, 3, 0, -3].forEach((g, gi) => {
+      kids.push(h("line", { key: "g" + gi, x1: padL, y1: yK(g), x2: W - padR, y2: yK(g), stroke: g === 0 ? "#D3DBE2" : "#F0F3F5", strokeWidth: 1, strokeDasharray: g === 0 ? "4 3" : undefined }));
+      kids.push(h("text", { key: "lt" + gi, x: padL - 6, y: yK(g) + 3, textAnchor: "end", fontSize: 9, fill: "#AEB6BE" }, String(g)));
+    });
+    [100, 50, 0].forEach((g, gi) => kids.push(h("text", { key: "rt" + gi, x: W - padR + 6, y: yP(g) + 3, textAnchor: "start", fontSize: 9, fill: "#1FA845" }, g + "%")));
+    this.series().forEach(s => {
+      if (this.state.hidden[s.key]) return;
+      const yf = s.axis === "pct" ? yP : yK;
+      kids.push(h("path", { key: s.key, d: line(d[s.key], yf), fill: "none", stroke: s.color, strokeWidth: s.key === "soc" ? 2 : 2.3, strokeDasharray: s.key === "soc" ? "5 4" : undefined, strokeLinejoin: "round", strokeLinecap: "round" }));
+    });
+    return h("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", height: "auto", style: { display: "block" } }, ...kids);
+  }
+  legendEls() {
+    const h = (...a) => React.createElement(...a);
+    return this.series().map(s => {
+      const on = !this.state.hidden[s.key];
+      const hex = s.color;
+      return h("div", { key: s.key, onClick: () => this.toggle(s.key), role: "checkbox", "aria-checked": on,
+        style: { display: "inline-flex", alignItems: "center", gap: "7px", cursor: "pointer", userSelect: "none",
+          padding: "5px 12px", borderRadius: "999px", transition: "background .12s, border-color .12s, color .12s",
+          background: on ? hex + "1A" : "#F4F7F9", border: "1px solid " + (on ? hex + "66" : "#E4EAEF"),
+          color: on ? "#33404A" : "#9AA3AB", fontSize: "12px", fontWeight: 600 } },
+        h("span", { key: "d", style: { width: "9px", height: "9px", borderRadius: "999px", flex: "none", boxSizing: "border-box",
+          background: on ? hex : "transparent", border: on ? "none" : "1.5px solid #B7C0C8" } }),
+        h("span", { key: "l" }, s.label));
+    });
+  }
+  renderVals() {
+    const p = this.props, d = this.d();
+    const h = (...a) => React.createElement(...a);
+    const now = 11;
+    const mk = (label, val, hex) => ({ label, valueEl: h("span", { style: { display: "inline-block", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: "20px", lineHeight: 1, borderRadius: "999px", padding: "8px 15px", background: "color-mix(in oklab, " + hex + ", white 82%)", color: "color-mix(in oklab, " + hex + ", black 42%)" } }, val) });
+    const nowStats = [
+      mk("PV", d.pv[now].toFixed(1) + " kW", "#EAB308"),
+      mk("Load", d.load[now].toFixed(1) + " kW", "#E0521E"),
+      mk("Net grid", (d.net[now] < 0 ? "−" : "+") + Math.abs(d.net[now]).toFixed(1) + " kW", "#0B7285"),
+      mk("SOC", d.soc[now] + "%", "#1FA845"),
+    ];
+    return {
+      plant: p.plant ?? "Riverside Solar",
+      date: p.date ?? "Jun 30",
+      legendEls: this.legendEls(),
+      chartEl: this.chart(),
+      nowStats,
+    };
+  }
+}
+</script>
+</body>
+</html>

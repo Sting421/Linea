@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="UI Primitives (Tier 1)" description="Reap-idiom Tier-1 primitives, StatusDot, Avatar, Switch, Progress, Tabs, Tooltip, built to the keystone palette, ready to lift into the reap repo." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #F4F6F8; }
+  * { box-sizing: border-box; }
+</style>
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #20262B; background: #F4F6F8; padding: 0 0 80px;">
+
+  <div style="background: linear-gradient(180deg, #03587F 0%, #1F4173 100%); color: #fff; padding: 44px 56px 40px;">
+    <div style="max-width: 1180px; margin: 0 auto;">
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #8AD9FD; font-weight: 600;">
+        Ovanova Microgrid Platform · Design System
+      </div>
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 40px; line-height: 1.08; margin: 18px 0 10px; letter-spacing: -0.01em;">UI Primitives</h1>
+      <p style="font-size: 17px; line-height: 1.5; max-width: 760px; margin: 0; color: #D6ECF7;">Tier-1 building blocks the kit was missing, built in the reap idiom and wired to the keystone status palette. Each is a reusable component with props/Tweaks, ready to lift into the <strong style="color:#fff;">reap</strong> repo as <code style="background:rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;">components/&lt;Name&gt;</code>.</p>
+      <div style="display: flex; gap: 28px; margin-top: 26px; font-size: 13px; color: #9FC9DF;">
+        <span><strong style="color:#fff;">Tier 1</strong> · primitives</span>
+        <span><strong style="color:#fff;">6</strong> families</span>
+        <span><strong style="color:#fff;">Palette-wired</strong> · status-aware</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1180px; margin: 0 auto; padding: 0 56px;">
+
+    <!-- StatusDot -->
+    <section style="margin-top: 44px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;"><h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">StatusDot <span style="font-size:13px;color:#8A9199;font-weight:400;">· _Dot</span></h2></div>
+      <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:24px; display:flex; flex-wrap:wrap; gap:28px; align-items:center;">
+        <dc-import name="StatusDot" status="normal" label="Normal" hint-size="90px,24px"></dc-import>
+        <dc-import name="StatusDot" status="online" label="Online" hint-size="90px,24px"></dc-import>
+        <dc-import name="StatusDot" status="warning" label="Warning" hint-size="90px,24px"></dc-import>
+        <dc-import name="StatusDot" status="offline" label="Offline" hint-size="90px,24px"></dc-import>
+        <dc-import name="StatusDot" status="fault" label="Fault" pulse="true" hint-size="90px,24px"></dc-import>
+        <span style="width:1px; height:28px; background:#E2E7EB;"></span>
+        <dc-import name="StatusDot" status="fault" size="sm" hint-size="14px,14px"></dc-import>
+        <dc-import name="StatusDot" status="fault" size="md" hint-size="16px,16px"></dc-import>
+        <dc-import name="StatusDot" status="fault" size="lg" hint-size="18px,18px"></dc-import>
+        <span style="font-size:12px;color:#9AA3AB;">sm · md · lg · (fault pulses)</span>
+      </div>
+    </section>
+
+    <!-- Avatar -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;"><h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Avatar</h2></div>
+      <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:24px; display:flex; flex-wrap:wrap; gap:22px; align-items:center;">
+        <dc-import name="Avatar" name="Ada Powers" size="xs" hint-size="24px,24px"></dc-import>
+        <dc-import name="Avatar" name="Ada Powers" size="sm" hint-size="32px,32px"></dc-import>
+        <dc-import name="Avatar" name="Ada Powers" size="md" status="online" hint-size="40px,40px"></dc-import>
+        <dc-import name="Avatar" name="Bao Tran" size="lg" status="warning" hint-size="48px,48px"></dc-import>
+        <dc-import name="Avatar" name="Chen Wu" size="xl" status="fault" hint-size="56px,56px"></dc-import>
+        <dc-import name="Avatar" name="Dee Vos" size="2xl" status="offline" hint-size="64px,64px"></dc-import>
+        <span style="font-size:12px;color:#9AA3AB;">initials fallback · status indicator</span>
+      </div>
+    </section>
+
+    <!-- Switch + Progress -->
+    <section style="margin-top: 40px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div>
+          <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;"><h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Switch</h2></div>
+          <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:18px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <dc-import name="Switch" checked="true" size="sm" hint-size="32px,18px"></dc-import>
+              <dc-import name="Switch" checked="true" size="md" hint-size="40px,22px"></dc-import>
+              <dc-import name="Switch" checked="true" size="lg" hint-size="48px,26px"></dc-import>
+              <span style="font-size:12px;color:#9AA3AB;">sm · md · lg</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+              <dc-import name="Switch" checked="true" colorScheme="blue" hint-size="40px,22px"></dc-import>
+              <dc-import name="Switch" checked="true" colorScheme="green" hint-size="40px,22px"></dc-import>
+              <dc-import name="Switch" checked="true" colorScheme="amber" hint-size="40px,22px"></dc-import>
+              <dc-import name="Switch" checked="false" hint-size="40px,22px"></dc-import>
+              <dc-import name="Switch" checked="true" disabled="true" hint-size="40px,22px"></dc-import>
+              <span style="font-size:12px;color:#9AA3AB;">schemes · off · disabled</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;"><h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Progress</h2></div>
+          <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:16px;">
+            <dc-import name="Progress" label="State of charge" value="78" colorScheme="green" hint-size="100%,40px"></dc-import>
+            <dc-import name="Progress" label="Grid import" value="42" colorScheme="amber" hint-size="100%,40px"></dc-import>
+            <dc-import name="Progress" label="Fault budget" value="12" colorScheme="red" hint-size="100%,40px"></dc-import>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:2px;">
+              <dc-import name="Progress" value="60" showValue="false" size="xs" hint-size="100%,8px"></dc-import>
+              <dc-import name="Progress" value="60" showValue="false" size="sm" hint-size="100%,10px"></dc-import>
+              <dc-import name="Progress" value="60" showValue="false" size="lg" hint-size="100%,16px"></dc-import>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;"><h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Tabs</h2></div>
+      <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:26px; align-items:flex-start;">
+        <dc-import name="Tabs" variant="line" hint-size="460px,46px"></dc-import>
+        <dc-import name="Tabs" variant="soft" hint-size="460px,46px"></dc-import>
+        <dc-import name="Tabs" variant="enclosed" hint-size="460px,46px"></dc-import>
+      </div>
+    </section>
+
+    <!-- Tooltip -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;"><h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Tooltip <span style="font-size:13px;color:#8A9199;font-weight:400;">· always-open for preview</span></h2></div>
+      <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:60px 24px; display:flex; flex-wrap:wrap; gap:64px; align-items:center; justify-content:center;">
+        <dc-import name="Tooltip" placement="top" text="Top placement" hint-size="60px,30px"><span style="font-size:13px; color:#46505A; border:1px dashed #C7CDD2; border-radius:7px; padding:7px 12px;">Top</span></dc-import>
+        <dc-import name="Tooltip" placement="bottom" theme="light" title="Communication fault" text="Gateway last seen 1h ago." hint-size="60px,30px"><span style="font-size:13px; color:#46505A; border:1px dashed #C7CDD2; border-radius:7px; padding:7px 12px;">Bottom · light · titled</span></dc-import>
+        <dc-import name="Tooltip" placement="right" text="Right placement" hint-size="60px,30px"><span style="font-size:13px; color:#46505A; border:1px dashed #C7CDD2; border-radius:7px; padding:7px 12px;">Right</span></dc-import>
+      </div>
+    </section>
+
+    <div style="margin-top: 44px; padding: 22px 24px; background: #EAF5FB; border: 1px solid #C3E5F4; border-radius: 12px; display: flex; gap: 16px; align-items: flex-start;">
+      <span style="width: 26px; height: 26px; border-radius: 7px; background: #009DE4; flex: 0 0 auto; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-family:'Space Grotesk',sans-serif;">i</span>
+      <div style="font-size: 13.5px; line-height: 1.55; color: #2A4A5C;">
+        <strong style="color:#1F4173;">Lift path.</strong> These are authored as DCs in <code style="font-family:'Space Grotesk',monospace; background:#EEF2F5; padding:1px 5px; border-radius:4px;">templates/_ds-foundation/</code> because <code style="font-family:'Space Grotesk',monospace; background:#EEF2F5; padding:1px 5px; border-radius:4px;">components/</code> is read-only synced source. To make them count toward the kit's 22→88, port each into the reap repo as <code style="font-family:'Space Grotesk',monospace; background:#EEF2F5; padding:1px 5px; border-radius:4px;">components/&lt;group&gt;/&lt;Name&gt;</code> (React + Tailwind <code style="font-family:'Space Grotesk',monospace; background:#EEF2F5; padding:1px 5px; border-radius:4px;">hue-*</code>) and re-run <code style="font-family:'Space Grotesk',monospace; background:#EEF2F5; padding:1px 5px; border-radius:4px;">/design-sync</code>. See <strong>FAMILY-BUILD-SPEC.md</strong> for the full Tier 1–3 plan.
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;padding:24px 20px;font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;">
+  <dc-import name="PlantCard" plant-name="Dome" status="normal" soc="71" today="24 kWh" self-suff="86%" power="3.4 kW" saved="$52" hint-size="250px,196px"></dc-import>
+  <dc-import name="PlantCard" plant-name="Gratitude Ranch" status="warning" soc="9" today="11 kWh" self-suff="61%" power="1.1 kW" saved="$28" hint-size="250px,196px"></dc-import>
+  <dc-import name="PlantCard" plant-name="Cabin Test" status="offline" soc="" today="—" self-suff="—" power="— kW" saved="—" hint-size="250px,196px"></dc-import>
+</div>
+</x-dc>
+</body>
+</html>

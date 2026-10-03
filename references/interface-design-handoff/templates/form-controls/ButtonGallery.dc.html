@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>@keyframes bg-spin { to { transform: rotate(360deg); } }</style>
+</helmet>
+<div style="padding:24px 26px 26px; background:#fff; font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; color:#1F4173;">
+
+  <div style="margin-bottom:26px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">Variants</div>
+    <div style="display:flex; flex-wrap:wrap; gap:16px 18px; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#009DE4; color:#fff;">Save</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">save</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#F1F4F6; color:#46505A;">Default</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">default</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid #CFE8F6; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#fff; color:#1F4173;">Details</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">outline</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:transparent; color:#1F4173;">Discard</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">discard</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#D92D20; color:#fff;">Delete</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">big_red</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:26px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">Sizes</div>
+    <div style="display:flex; flex-wrap:wrap; gap:16px 18px; align-items:flex-end;">
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; font-weight:600; font-size:13.5px; line-height:1.1; letter-spacing:.005em; padding:7px 13px; border-radius:8px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#009DE4; color:#fff;">Save</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">sm</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#009DE4; color:#fff;">Save</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">md</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; font-weight:600; font-size:15px; line-height:1.1; letter-spacing:.005em; padding:11px 20px; border-radius:10px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#009DE4; color:#fff;">Save</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">lg</span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">States</div>
+    <div style="display:flex; flex-wrap:wrap; gap:16px 18px; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#009DE4; color:#fff;">Save</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">default</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:pointer; background:#009DE4; color:#fff;"><span style="font-size:16px; line-height:0;">↻</span>Refresh</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">with icon</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" disabled style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:not-allowed; background:#009DE4; color:#fff; opacity:.5;">Save</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">disabled</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button type="button" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; white-space:nowrap; box-sizing:border-box; cursor:default; background:#009DE4; color:#fff;"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:bg-spin .6s linear infinite;"></span>Saving…</button>
+        <span style="margin-top:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3; letter-spacing:.02em;">loading</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 560, &quot;height&quot;: 360}}"></script>
+</body>
+</html>

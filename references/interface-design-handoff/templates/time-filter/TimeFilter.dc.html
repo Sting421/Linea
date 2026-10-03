@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TimeFilter" description="Net-new time-of-day window filter: trigger button + opened dropdown with quick TOU presets, an HH:MM range, and interval granularity. Brand-styled to sit beside DateFilter." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding:30px; display:flex; flex-direction:column; gap:22px; background:#fff;">
+
+  <div style="display:flex; flex-direction:column; gap:8px;">
+    <span style="font-size:10px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:#8A9199;">Trigger · closed</span>
+    <span style="display:inline-flex; align-items:center; gap:9px; border:1px solid #CFE0EA; border-radius:10px; padding:9px 13px; background:#fff; width:max-content; box-shadow:0 1px 2px rgba(16,40,56,.04);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#03587F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 1.8"></path></svg>
+      <span style="font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:500; color:#20262B; white-space:nowrap;">14:00 – 18:00</span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A9199" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;"><path d="m6 9 6 6 6-6"></path></svg>
+    </span>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:8px;">
+    <span style="font-size:10px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:#8A9199;">Opened · dropdown</span>
+    <div style="width:max-content;">
+      <span style="display:flex; align-items:center; gap:9px; width:344px; box-sizing:border-box; border:1px solid #03587F; border-radius:10px 10px 0 0; border-bottom-color:transparent; padding:9px 13px; background:#fff; position:relative; z-index:1;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#03587F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 1.8"></path></svg>
+        <span style="font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:500; color:#20262B; white-space:nowrap;">14:00 – 18:00</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#03587F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;"><path d="m6 15 6-6 6 6"></path></svg>
+      </span>
+      <div style="width:344px; box-sizing:border-box; border:1px solid #03587F; border-radius:0 0 12px 12px; background:#fff; box-shadow:0 12px 30px rgba(3,88,127,.14); padding:14px; display:flex; flex-direction:column; gap:14px; margin-top:-1px;">
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <span style="font-size:10.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#8A9199;">Quick range</span>
+          <div style="display:flex; flex-wrap:nowrap; gap:7px;">
+            <span style="font-size:12px; font-weight:500; color:#46505A; background:#F2F5F7; border-radius:999px; padding:4px 12px; font-family:'Space Grotesk',sans-serif; white-space:nowrap;">All day</span>
+            <span style="font-size:12px; font-weight:600; color:#03587F; background:#E6F7FF; border:1px solid #B7E4FA; border-radius:999px; padding:3px 11px; font-family:'Space Grotesk',sans-serif; white-space:nowrap;">Peak</span>
+            <span style="font-size:12px; font-weight:500; color:#46505A; background:#F2F5F7; border-radius:999px; padding:4px 12px; font-family:'Space Grotesk',sans-serif; white-space:nowrap;">Off-peak</span>
+            <span style="font-size:12px; font-weight:500; color:#46505A; background:#F2F5F7; border-radius:999px; padding:4px 12px; font-family:'Space Grotesk',sans-serif; white-space:nowrap;">Shoulder</span>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <span style="font-size:10.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#8A9199;">Window</span>
+          <div style="display:flex; align-items:center; gap:9px;">
+            <span style="display:inline-flex; align-items:center; gap:7px; border:1px solid #CFE0EA; border-radius:9px; padding:7px 11px; background:#fff; flex:1;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#03587F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 1.8"></path></svg>
+              <span style="font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:500; color:#20262B;">14:00</span>
+            </span>
+            <span style="color:#8A9199;">→</span>
+            <span style="display:inline-flex; align-items:center; gap:7px; border:1px solid #CFE0EA; border-radius:9px; padding:7px 11px; background:#fff; flex:1;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#03587F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 1.8"></path></svg>
+              <span style="font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:500; color:#20262B;">18:00</span>
+            </span>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <span style="font-size:10.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#8A9199;">Interval</span>
+          <div style="display:inline-flex; background:#F2F5F7; border-radius:9px; padding:3px; gap:2px; width:max-content;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:500; color:#46505A; padding:5px 13px; border-radius:6px;">15m</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#03587F; background:#fff; padding:5px 13px; border-radius:6px; box-shadow:0 1px 2px rgba(16,40,56,.12);">1h</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:500; color:#46505A; padding:5px 13px; border-radius:6px;">1d</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid #EEF2F5; padding-top:12px;">
+          <span style="font-size:12.5px; font-weight:500; color:#8A9199; font-family:'Space Grotesk',sans-serif;">Reset</span>
+          <span style="font-size:12.5px; font-weight:600; color:#fff; background:#03587F; border-radius:8px; padding:7px 16px; font-family:'Space Grotesk',sans-serif;">Apply</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:12.5px; color:#8A9199; max-width:52ch; border-top:1px solid #EEF2F5; padding-top:14px; line-height:1.6;"><b style="color:#03587F; font-family:'Space Grotesk',sans-serif;">Net-new:</b> time-of-day window filter — quick TOU presets, an HH:MM range and interval granularity. The intraday complement to DateFilter.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 520, &quot;height&quot;: 560}}"></script>
+</body>
+</html>
