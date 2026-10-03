@@ -23,12 +23,18 @@ groups = {
         "LINEA_CUSTOM_LLM_BEARER",
         "LINEA_PROVIDER_WEBHOOK_SECRET",
     ],
-    "Semantic service": [
-        "LINEA_SEMANTIC_CLASSIFIER_URL",
-        "LINEA_SEMANTIC_CLASSIFIER_TOKEN",
+    "Semantic interpretation (planned backend model)": [
+        "OPENAI_API_KEY",
+        "LINEA_SEMANTIC_MODEL",
     ],
     "Web push": ["WEB_PUSH_PUBLIC_KEY", "WEB_PUSH_PRIVATE_KEY", "WEB_PUSH_SUBJECT"],
 }
+if os.getenv("LINEA_SEMANTIC_CLASSIFIER_URL") or os.getenv("LINEA_SEMANTIC_CLASSIFIER_TOKEN"):
+    groups.pop("Semantic interpretation (planned backend model)")
+    groups["Semantic interpretation (external service alternative)"] = [
+        "LINEA_SEMANTIC_CLASSIFIER_URL",
+        "LINEA_SEMANTIC_CLASSIFIER_TOKEN",
+    ]
 for group, keys in groups.items():
     missing = [k for k in keys if not os.getenv(k)]
     print(

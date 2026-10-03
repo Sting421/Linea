@@ -85,6 +85,16 @@ changes state.
 
 **AI interprets. FastAPI decides.**
 
+**Cost boundary agreed 4 October 2026:** Target one backend model interpretation
+request per new elder turn. FastAPI then applies the existing thresholds and
+selects the scripted response. Do not add a separate conversational model call
+after classification for the MVP. Configure Agora to use the backend completion
+bridge rather than leaving its independent conversational LLM active alongside
+the interpreter. This is a target architecture; the provider envelope, silence,
+authentication, actual request count, latency, and billing still need live
+verification. Measure total call cost, including recognition, synthesis,
+telephony, RTC/agent runtime, retrieval, and retries, before judging margins.
+
 The model must never be the authority for: - consent - safety tier -
 medicine instructions - diagnosis - emergency policy - listen mode -
 call lifecycle - calendar state

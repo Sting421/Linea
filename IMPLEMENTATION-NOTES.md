@@ -1,5 +1,56 @@
 # Implementation Notes
 
+## Integration preparation — 4 October 2026
+
+Work is on `codex/integration-preparation`, based on `ui-ux-first-pass`.
+The existing scaffold/UI branches remain unchanged. The agreed target is one
+backend model interpretation request per new elder turn, followed by
+deterministic policy and scripted responses. The interpreter and verified Agora
+completion adapter still need implementation; no live connection was enabled.
+
+### Credential and deployment checklist
+
+| Item | Status | Next action |
+| --- | --- | --- |
+| Agora App ID/certificate, REST customer pair, published pipeline ID | Stored in ignored backend environment; project and REST access previously verified | Verify the actual custom completion and provider event contracts, then configure the published agent |
+| Twilio account and API key credentials | Stored locally; trunk reads previously verified | Keep the working SIP trunk; do not reset its password |
+| Supabase URL, public key, service key | Stored locally; Auth settings and zero-row Data API access previously verified | Implement backend identity/repository bindings and test owner isolation |
+| OpenAI API key | **Needed from user** | Send the path to a local file containing the key; keep it server-side |
+| Interpreter model | Planned `gpt-4.1-mini-2025-04-14` snapshot | Implement fact extraction, evaluate fixtures, and measure tokens/latency; configuration alone does not run a model |
+| Backend completion bearer | Generated in ignored `services/api/.env` | Install the same value in the backend deployment and Agora custom endpoint configuration |
+| Provider webhook secret | Candidate generated locally | Verify Agora's signing contract and install the matching provider configuration; this is not yet an authenticated webhook |
+| Web-push VAPID pair | Generated and mathematically matched | Deploy private key on backend and public key on web; wire the outbox sender and test actual delivery |
+| Web-push contact subject | Prepared with the supplied API HTTPS URL | Replace with an operator contact URL or email before production |
+| Deployment access / instructions | **Needed from user or teammate** | Supply the server repository, deployment command or access method, and environment configuration method |
+| Remote API health | `/health` returned **502** on 4 October | Restore the upstream API before remote integration tests |
+| Twilio Auth Token | Conditional; not supplied | Needed only if directly verifying Twilio callbacks; the API key secret is not a webhook Auth Token |
+| Existing SIP credential password | Conditional; not supplied | Needed only if upstream trunk authentication must be configured again; Twilio cannot return the original password |
+
+`scripts/prepare-integration-env.mjs` (Node 24+) creates missing completion and
+candidate webhook secrets plus a P-256 VAPID pair, validates existing push keys,
+and copies only the public push key to the web environment. It refuses tracked
+credential files, incomplete/mismatched key pairs, and conflicting browser keys.
+It preserves existing credentials and prints names/status only. To prepare a new
+checkout, supply an operator contact URI:
+
+```powershell
+node scripts/prepare-integration-env.mjs --push-subject https://lineaapi.aldrinvitorillo.dev
+python scripts/check-config.py
+```
+
+The example HTTPS URI is the user's server endpoint; choose a contact URI for a
+real deployment. Neither command connects providers or enables live mode.
+`check-config.py` now checks the planned backend model credentials by default;
+if either external classifier setting is supplied, it instead requires both
+external URL and bearer token. An external service is an alternative interpreter,
+not an additional model to run alongside it.
+
+Local verification: the generated VAPID public key derives from its private
+scalar, the browser key matches, both credential files are ignored/untracked,
+and a second preparation run leaves both files byte-for-byte unchanged. Backend
+identity verification, provider event authentication, model extraction accuracy,
+phone calls, and push delivery remain unverified. The demo/live gate stays intact.
+
 ## Scaffold delivery — 3 October 2026
 
 The workspace now contains a Next.js family web app and FastAPI MVP backend,
