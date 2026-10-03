@@ -2,7 +2,8 @@
 
 ## Integration preparation — 4 October 2026
 
-Work is on `codex/integration-preparation`, based on `ui-ux-first-pass`.
+Handoff is on `keith-branch`, including the preparation commit from
+`codex/integration-preparation`, based on `ui-ux-first-pass`.
 The existing scaffold/UI branches remain unchanged. The agreed target is one
 backend model interpretation request per new elder turn, followed by
 deterministic policy and scripted responses. The interpreter and verified Agora
@@ -15,7 +16,7 @@ completion adapter still need implementation; no live connection was enabled.
 | Agora App ID/certificate, REST customer pair, published pipeline ID | Stored in ignored backend environment; project and REST access previously verified | Verify the actual custom completion and provider event contracts, then configure the published agent |
 | Twilio account and API key credentials | Stored locally; trunk reads previously verified | Keep the working SIP trunk; do not reset its password |
 | Supabase URL, public key, service key | Stored locally; Auth settings and zero-row Data API access previously verified | Implement backend identity/repository bindings and test owner isolation |
-| OpenAI API key | **Needed from user** | Send the path to a local file containing the key; keep it server-side |
+| OpenAI API key | Stored in ignored local backend environment; read-only model access returned HTTP 200 | Install `OPENAI_API_KEY` separately in the server environment; the key is not included in Git |
 | Interpreter model | Planned `gpt-4.1-mini-2025-04-14` snapshot | Implement fact extraction, evaluate fixtures, and measure tokens/latency; configuration alone does not run a model |
 | Backend completion bearer | Generated in ignored `services/api/.env` | Install the same value in the backend deployment and Agora custom endpoint configuration |
 | Provider webhook secret | Candidate generated locally | Verify Agora's signing contract and install the matching provider configuration; this is not yet an authenticated webhook |
@@ -50,6 +51,40 @@ scalar, the browser key matches, both credential files are ignored/untracked,
 and a second preparation run leaves both files byte-for-byte unchanged. Backend
 identity verification, provider event authentication, model extraction accuracy,
 phone calls, and push delivery remain unverified. The demo/live gate stays intact.
+
+### Teammate server handoff
+
+Pull `keith-branch`. No credentials are committed: the local backend `.env` and
+web `.env.local` are ignored and do not travel with the branch. Install the
+backend credentials through the server's private environment configuration,
+including `OPENAI_API_KEY`. Share existing internal/VAPID credentials securely
+when connecting web, API, and Agora; generating different credentials on each
+component will not connect them. Never place the OpenAI key, push private key,
+service-role key, or provider secrets in `NEXT_PUBLIC_*` variables.
+
+To restore the API process first, install the pinned requirements and run the
+existing factory under Python 3.12. From `services/api`:
+
+```sh
+python -m pip install -r requirements.lock.txt
+uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
+```
+
+Alternatively, the repository includes `services/api/Dockerfile`; build from
+that directory as the Docker context and inject environment variables at run
+time. Keep `LINEA_MODE=demo` while restoring the server: `live` intentionally
+refuses startup until the repository, runtime, and notification adapters are
+implemented. Use a strong matching `LINEA_DEMO_API_TOKEN` in the backend and
+Next.js server environment if exposing the demo API. Persist `.local` if demo
+records must survive container replacement.
+
+Point the existing reverse proxy at the actual listening port and verify
+`https://lineaapi.aldrinvitorillo.dev/health` and `/openapi.json` return HTTP 200.
+The health response will still truthfully identify `sqlite-demo`,
+`voice_connected=false`, and `push_connected=false`. Do not switch the family
+app to this remote API until its health, authentication, and required routes
+are verified. The model-access HTTP 200 proves key access to the planned
+snapshot; no inference was billed or extraction accuracy evaluated.
 
 ## Scaffold delivery — 3 October 2026
 
