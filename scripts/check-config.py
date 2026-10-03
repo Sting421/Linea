@@ -19,18 +19,20 @@ groups = {
         "AGORA_APP_CERTIFICATE",
         "AGORA_CUSTOMER_ID",
         "AGORA_CUSTOMER_SECRET",
-        "AGORA_PIPELINE_ID",
+        "AGORA_FROM_NUMBER",
+        "LINEA_PUBLIC_API_URL",
+        "LINEA_AGORA_PROPERTIES_FILE",
         "LINEA_CUSTOM_LLM_BEARER",
         "LINEA_PROVIDER_WEBHOOK_SECRET",
     ],
-    "Semantic interpretation (planned backend model)": [
+    "Semantic interpretation (backend model)": [
         "OPENAI_API_KEY",
         "LINEA_SEMANTIC_MODEL",
     ],
     "Web push": ["WEB_PUSH_PUBLIC_KEY", "WEB_PUSH_PRIVATE_KEY", "WEB_PUSH_SUBJECT"],
 }
 if os.getenv("LINEA_SEMANTIC_CLASSIFIER_URL") or os.getenv("LINEA_SEMANTIC_CLASSIFIER_TOKEN"):
-    groups.pop("Semantic interpretation (planned backend model)")
+    groups.pop("Semantic interpretation (backend model)")
     groups["Semantic interpretation (external service alternative)"] = [
         "LINEA_SEMANTIC_CLASSIFIER_URL",
         "LINEA_SEMANTIC_CLASSIFIER_TOKEN",

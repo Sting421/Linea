@@ -98,6 +98,7 @@ def test_connected_verifies_session_and_never_accepts_demo_token(connected):
         "checkins": [],
         "alerts": [],
         "mode": "connected",
+        "voice_connected": False,
     }
     assert client.get("/health").json()["repository"] == "supabase"
 

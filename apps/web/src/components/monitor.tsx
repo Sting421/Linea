@@ -42,6 +42,7 @@ export function Monitoring({
   busy: boolean;
 }) {
   const p = data.profile!;
+  const calling = data.mode === 'demo' || data.voice_connected === true;
   const calls = data.checkins.filter((c) => c.local_date.startsWith(month));
   const metrics = monthMetrics(calls);
   const active = data.checkins.find((c) => c.state !== 'ended');
@@ -96,27 +97,29 @@ export function Monitoring({
         <div className="connection-action">
           {active ? (
             <Link className="button primary" href={`/call/${active.id}`}>
-              {data.mode === 'demo' && active.state === 'connected' ? 'Join call' : 'View call'}
+              {calling && active.state === 'connected' ? 'Join call' : 'View call'}
               <ArrowUpRight size={17} />
             </Link>
           ) : (
             <button
               className="button primary"
-              disabled={busy || p.consent === 'declined' || data.mode !== 'demo'}
+              disabled={busy || p.consent === 'declined' || !calling}
               onClick={onCall}
             >
               <Phone size={17} />
-              {data.mode !== 'demo' ? 'Calling unavailable' : busy ? 'Starting…' : 'Call now'}
+              {!calling ? 'Calling unavailable' : busy ? 'Starting…' : 'Call now'}
             </button>
           )}
           <small>
-            {data.mode !== 'demo'
+            {!calling
               ? 'Profile saved · phone service not connected'
               : p.consent === 'pending'
                 ? 'Consent is asked on the first call'
                 : p.consent === 'declined'
                   ? 'Calling stopped · consent declined'
-                  : 'Simulated call'}
+                  : data.mode === 'demo'
+                    ? 'Simulated call'
+                    : 'Phone check-in'}
           </small>
         </div>
       </Panel>

@@ -16,10 +16,11 @@ controls. Settings → Review setup can reopen configuration. The elder uses a r
 phone. Current design is native dark, purple/yellow, with soft raised/inset
 surfaces and explicit status meanings.
 
-Read `IMPLEMENTATION-NOTES.md` for the build report, local startup commands,
-verification limits, and the remaining connection work. Provider calls, push,
-semantic interpretation, production Auth/database isolation, and live acceptance
-are still integration tasks. The backend refuses live mode while unconnected.
+Read [IMPLEMENTATION-NOTES.md](IMPLEMENTATION-NOTES.md) for the current release
+instructions and verification limits. The web and API default to the connected
+Supabase workspace. Agora voice, semantic interpretation, workers, and browser
+audio are implemented; provider setup and real phone/push acceptance remain.
+Live mode requires acceptance evidence for the deployed build.
 
 When integrations are ready, follow [the MVP verification guide](testing/README.md).
 It includes ordered test steps, observable pass conditions, all 41 conversation
@@ -38,7 +39,7 @@ cd services/api
 
 `pnpm dev` starts the family web app after the API is started separately.
 Repository: [Sting421/Linea](https://github.com/Sting421/Linea).
-Provider integration and live publishing remain follow-up work.
+The teammate will manually deploy the reviewed repository changes.
 
 `scaffold` contains the original runnable foundation. `ui-ux-first-pass`
 builds on it with first-use setup, interface refinements, dashboard charts,
@@ -100,7 +101,8 @@ purpose-built for older adults.
 -   Business rules are code, not prompts.
 -   The five concern thresholds and non-linear conversation rules are
     specified in `linea/02-business-rules.md` S-01 through S-09, with examples
-    in `linea/policy-fixtures.yaml`. They are not implemented or live-tested yet.
+    in `linea/policy-fixtures.yaml`. Deterministic policy is implemented and tested;
+    live acceptance has not been run.
 -   The product decision pass is complete. The current acceptance matrix is
     at the top of `01-test-day-checklist.md`; its cases remain NOT RUN.
 

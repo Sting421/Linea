@@ -141,7 +141,7 @@ export function Shell({
   profile,
   children,
   setup = false,
-  mode = process.env.NEXT_PUBLIC_LINEA_MODE ?? 'demo',
+  mode = process.env.NEXT_PUBLIC_LINEA_MODE ?? 'connected',
 }: {
   section: string;
   profile: Profile | null;

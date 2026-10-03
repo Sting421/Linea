@@ -68,6 +68,7 @@ export type CheckIn = {
 };
 export type Dashboard = {
   mode: string;
+  voice_connected?: boolean;
   profile: Profile | null;
   profiles: Profile[];
   checkins: CheckIn[];

@@ -18,28 +18,76 @@ import { callLabel, formatTime, titleCase } from '@/lib/semantics';
 import { post } from '@/lib/api';
 import { Panel, TierBadge, Avatar, MetricHelp } from './ui';
 import { BotAvatar } from 'bot-avatars';
+import { AgoraFamilyRTC, type RTCCredentials } from '@/lib/rtc';
 type Result = { call: CheckIn; reply?: string; briefing?: string };
 export function LiveCall({
   call,
   profile,
   refresh,
+  demo = true,
 }: {
   call: CheckIn;
   profile: Profile;
   refresh: () => Promise<void>;
+  demo?: boolean;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [reply, setReply] = useState(''),
     [muted, setMuted] = useState(false),
     [confirmEnd, setConfirmEnd] = useState(false);
-  const joined = call.family.length > 0,
+  const rtc = useRef<AgoraFamilyRTC | null>(null);
+  const [audioJoined, setAudioJoined] = useState(false);
+  const joined = demo ? call.family.length > 0 : audioJoined,
     leg = call.legs.at(-1);
+  useEffect(
+    () => () => {
+      void rtc.current?.leave();
+    },
+    [],
+  );
+  useEffect(() => {
+    if (call.state !== 'connected' && !demo) {
+      void rtc.current?.leave();
+      setAudioJoined(false);
+    }
+  }, [call.state, demo]);
   async function action(path: string, body?: unknown) {
     setBusy(true);
     setError('');
     try {
+      if (!demo && path.endsWith('/join')) {
+        const r = await post<{ rtc: RTCCredentials }>(path);
+        if (!rtc.current) {
+          rtc.current = new AgoraFamilyRTC();
+          rtc.current.onConnectionChange((state) => {
+            if (state === 'disconnected') setAudioJoined(false);
+          });
+        }
+        rtc.current.onTokenExpiring(
+          async () => (await post<{ rtc: RTCCredentials }>(`checkins/${call.id}/join`)).rtc,
+        );
+        await rtc.current.join(r.rtc);
+        try {
+          const confirmed = await post<Result>(`checkins/${call.id}/confirm-join`);
+          setReply(confirmed.briefing ?? '');
+          setAudioJoined(true);
+        } catch (error) {
+          await rtc.current.leave();
+          throw error;
+        }
+        await refresh();
+        return;
+      }
+      if (!demo && path.endsWith('/leave')) {
+        await rtc.current?.leave();
+        setAudioJoined(false);
+      }
       const r = await post<Result>(path, body);
+      if (!demo && path.endsWith('/end')) {
+        await rtc.current?.leave();
+        setAudioJoined(false);
+      }
       setReply(r.reply ?? r.briefing ?? '');
       await refresh();
     } catch (e) {
@@ -91,7 +139,11 @@ export function LiveCall({
           <h1>
             {call.state === 'ended' ? 'The call has ended.' : `Call · ${profile.preferred_name}`}
           </h1>
-          <p>Demo call · no microphone or phone connection is active.</p>
+          <p>
+            {demo
+              ? 'Demo call · no microphone or phone connection is active.'
+              : 'Phone check-in · join to talk with your elder.'}
+          </p>
         </div>
         <span className={`badge ${call.state === 'connected' ? 'status-green' : 'status-neutral'}`}>
           {titleCase(callLabel(call.state))}
@@ -127,7 +179,7 @@ export function LiveCall({
             {joined && (
               <span className="participant">
                 <span className="key-dot green" />
-                Ana · family participant
+                You · family participant
               </span>
             )}
           </div>
@@ -146,7 +198,7 @@ export function LiveCall({
                 disabled={busy}
                 onClick={() => action(`checkins/${call.id}/join`)}
               >
-                <Phone size={18} /> Join simulated call
+                <Phone size={18} /> {demo ? 'Join simulated call' : 'Join call'}
               </button>
             )}
             {joined && (
@@ -155,7 +207,14 @@ export function LiveCall({
                   className="call-control"
                   aria-pressed={muted}
                   disabled={busy}
-                  onClick={() => setMuted(!muted)}
+                  onClick={async () => {
+                    try {
+                      if (!demo) await rtc.current?.setMuted(!muted);
+                      setMuted(!muted);
+                    } catch (error) {
+                      setError((error as Error).message);
+                    }
+                  }}
                 >
                   {muted ? <MicOff size={21} /> : <Mic size={21} />}
                   <span>{muted ? 'Unmute' : 'Mute'}</span>
@@ -196,207 +255,209 @@ export function LiveCall({
             </p>
           )}
         </Panel>
-        <Panel className="simulation-panel">
-          <div className="panel-heading">
-            <div>
-              <h2>Call simulator</h2>
+        {demo && (
+          <Panel className="simulation-panel">
+            <div className="panel-heading">
+              <div>
+                <h2>Call simulator</h2>
+              </div>
+              <Play size={18} />
             </div>
-            <Play size={18} />
-          </div>
-          <MetricHelp label="About the simulator">
-            <p>
-              These scripted examples feed structured facts into the real policy. They do not test
-              speech recognition or semantic classification.
-            </p>
-          </MetricHelp>
-          {call.state === 'ringing' ||
-          (call.state === 'reconnecting' && leg?.state === 'ringing') ? (
-            <div className="simulation-actions">
-              <button
-                className="button primary"
-                disabled={busy}
-                onClick={() =>
-                  action(`demo/checkins/${call.id}/event`, {
-                    event_id: crypto.randomUUID(),
-                    kind: 'connected',
-                    leg_id: leg!.id,
-                  })
-                }
-              >
-                Simulate answer <Check size={16} />
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() =>
-                  action(`demo/checkins/${call.id}/event`, {
-                    event_id: crypto.randomUUID(),
-                    kind: 'no_answer',
-                    leg_id: leg!.id,
-                  })
-                }
-              >
-                Simulate no answer
-              </button>
-            </div>
-          ) : null}
-          {(call.state === 'retry_scheduled' ||
-            (call.state === 'reconnecting' && leg?.state !== 'ringing')) && (
-            <>
-              <p className="notice">
-                {call.retry_at
-                  ? `Eligible after ${formatTime(call.retry_at, profile.timezone)}`
-                  : 'No automatic attempt pending'}
+            <MetricHelp label="About the simulator">
+              <p>
+                These scripted examples feed structured facts into the real policy. They do not test
+                speech recognition or semantic classification.
               </p>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() => action(`demo/checkins/${call.id}/automatic-attempt`)}
-              >
-                <RotateCcw size={16} /> Run eligible automatic attempt
-              </button>
-            </>
-          )}
-          {call.state === 'connected' && (
-            <div className="simulation-actions">
-              {profile.consent !== 'granted' && (
-                <>
-                  <button
-                    className="button secondary"
-                    disabled={busy}
-                    onClick={() => send('Yes, that is okay.', { consent: 'yes' })}
-                  >
-                    Consent: clear yes
-                  </button>
-                  <button
-                    className="button secondary"
-                    disabled={busy}
-                    onClick={() => send('No, please do not call.', { consent: 'no' })}
-                  >
-                    Consent: clear no
-                  </button>
-                </>
-              )}
-              <button
-                className="button secondary"
-                disabled={
-                  busy || !['sleep', 'medicine', 'feeling', 'anything'].includes(nextBeat ?? '')
-                }
-                onClick={normal}
-              >
-                Answer current routine question
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() => {
-                  const q =
-                    'I almost fell, but I caught myself. I am fully recovered, not hurt, moving normally, and this happened only once.';
-                  return send(q, {
-                    concerns: [
-                      facts(
-                        'FALL',
-                        {
-                          context: 'near_event',
-                          resolved: true,
-                          current: false,
-                          injury: false,
-                          ongoing_pain: false,
-                          functional_difficulty: false,
-                          repeated: false,
-                          ...noRed,
-                        },
-                        q,
-                      ),
-                    ],
-                  });
-                }}
-              >
-                Recovered near-fall · Routine
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() => {
-                  const q = 'I fell and my lower leg still aches.';
-                  return send(q, {
-                    concerns: [facts('FALL', { ongoing_pain: true, current: true, ...noRed }, q)],
-                  });
-                }}
-              >
-                Fall with ongoing pain · Significant
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() => {
-                  const q = 'My chest hurts right now.';
-                  return send(q, { concerns: [facts('CHEST_PAIN', { current: true }, q)] });
-                }}
-              >
-                <ShieldAlert size={16} /> Current chest pain · Emergency
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() => {
-                  const q = "I haven't taken my Losartan yet.";
-                  return send(q, {
-                    medicine_result: 'not_taken',
-                    answers: { medicine: 'Not yet taken' },
-                    concerns: [facts('MEDICINE_NOT_TAKEN', { medicine_result: 'not_taken' }, q)],
-                  });
-                }}
-              >
-                Medicine not taken
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() =>
-                  action(`demo/checkins/${call.id}/event`, {
-                    event_id: crypto.randomUUID(),
-                    kind: 'dropped',
-                    leg_id: leg!.id,
-                  })
-                }
-              >
-                Simulate unexpected drop
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() => send('Please stop calling me.', { stop: true })}
-              >
-                Elder requests stop
-              </button>
-              <button
-                className="button secondary"
-                disabled={busy}
-                onClick={() =>
-                  action(`demo/checkins/${call.id}/event`, {
-                    event_id: crypto.randomUUID(),
-                    kind: 'ended',
-                    leg_id: leg!.id,
-                  })
-                }
-              >
-                Simulate intentional phone ending
-              </button>
-            </div>
-          )}
-          {call.alerts.length > 0 && (
-            <div className="live-alerts">
-              <h3>Recorded concerns</h3>
-              {call.alerts.map((a) => (
-                <div key={a.id}>
-                  <strong>{a.concern.replaceAll('_', ' ')}</strong>
-                  <TierBadge tier={a.tier} />
-                </div>
-              ))}
-            </div>
-          )}
-        </Panel>
+            </MetricHelp>
+            {call.state === 'ringing' ||
+            (call.state === 'reconnecting' && leg?.state === 'ringing') ? (
+              <div className="simulation-actions">
+                <button
+                  className="button primary"
+                  disabled={busy}
+                  onClick={() =>
+                    action(`demo/checkins/${call.id}/event`, {
+                      event_id: crypto.randomUUID(),
+                      kind: 'connected',
+                      leg_id: leg!.id,
+                    })
+                  }
+                >
+                  Simulate answer <Check size={16} />
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() =>
+                    action(`demo/checkins/${call.id}/event`, {
+                      event_id: crypto.randomUUID(),
+                      kind: 'no_answer',
+                      leg_id: leg!.id,
+                    })
+                  }
+                >
+                  Simulate no answer
+                </button>
+              </div>
+            ) : null}
+            {(call.state === 'retry_scheduled' ||
+              (call.state === 'reconnecting' && leg?.state !== 'ringing')) && (
+              <>
+                <p className="notice">
+                  {call.retry_at
+                    ? `Eligible after ${formatTime(call.retry_at, profile.timezone)}`
+                    : 'No automatic attempt pending'}
+                </p>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() => action(`demo/checkins/${call.id}/automatic-attempt`)}
+                >
+                  <RotateCcw size={16} /> Run eligible automatic attempt
+                </button>
+              </>
+            )}
+            {call.state === 'connected' && (
+              <div className="simulation-actions">
+                {profile.consent !== 'granted' && (
+                  <>
+                    <button
+                      className="button secondary"
+                      disabled={busy}
+                      onClick={() => send('Yes, that is okay.', { consent: 'yes' })}
+                    >
+                      Consent: clear yes
+                    </button>
+                    <button
+                      className="button secondary"
+                      disabled={busy}
+                      onClick={() => send('No, please do not call.', { consent: 'no' })}
+                    >
+                      Consent: clear no
+                    </button>
+                  </>
+                )}
+                <button
+                  className="button secondary"
+                  disabled={
+                    busy || !['sleep', 'medicine', 'feeling', 'anything'].includes(nextBeat ?? '')
+                  }
+                  onClick={normal}
+                >
+                  Answer current routine question
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    const q =
+                      'I almost fell, but I caught myself. I am fully recovered, not hurt, moving normally, and this happened only once.';
+                    return send(q, {
+                      concerns: [
+                        facts(
+                          'FALL',
+                          {
+                            context: 'near_event',
+                            resolved: true,
+                            current: false,
+                            injury: false,
+                            ongoing_pain: false,
+                            functional_difficulty: false,
+                            repeated: false,
+                            ...noRed,
+                          },
+                          q,
+                        ),
+                      ],
+                    });
+                  }}
+                >
+                  Recovered near-fall · Routine
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    const q = 'I fell and my lower leg still aches.';
+                    return send(q, {
+                      concerns: [facts('FALL', { ongoing_pain: true, current: true, ...noRed }, q)],
+                    });
+                  }}
+                >
+                  Fall with ongoing pain · Significant
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    const q = 'My chest hurts right now.';
+                    return send(q, { concerns: [facts('CHEST_PAIN', { current: true }, q)] });
+                  }}
+                >
+                  <ShieldAlert size={16} /> Current chest pain · Emergency
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    const q = "I haven't taken my Losartan yet.";
+                    return send(q, {
+                      medicine_result: 'not_taken',
+                      answers: { medicine: 'Not yet taken' },
+                      concerns: [facts('MEDICINE_NOT_TAKEN', { medicine_result: 'not_taken' }, q)],
+                    });
+                  }}
+                >
+                  Medicine not taken
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() =>
+                    action(`demo/checkins/${call.id}/event`, {
+                      event_id: crypto.randomUUID(),
+                      kind: 'dropped',
+                      leg_id: leg!.id,
+                    })
+                  }
+                >
+                  Simulate unexpected drop
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() => send('Please stop calling me.', { stop: true })}
+                >
+                  Elder requests stop
+                </button>
+                <button
+                  className="button secondary"
+                  disabled={busy}
+                  onClick={() =>
+                    action(`demo/checkins/${call.id}/event`, {
+                      event_id: crypto.randomUUID(),
+                      kind: 'ended',
+                      leg_id: leg!.id,
+                    })
+                  }
+                >
+                  Simulate intentional phone ending
+                </button>
+              </div>
+            )}
+            {call.alerts.length > 0 && (
+              <div className="live-alerts">
+                <h3>Recorded concerns</h3>
+                {call.alerts.map((a) => (
+                  <div key={a.id}>
+                    <strong>{a.concern.replaceAll('_', ' ')}</strong>
+                    <TierBadge tier={a.tier} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </Panel>
+        )}
       </div>
       {confirmEnd && (
         <ConfirmEnd onClose={() => setConfirmEnd(false)}>

@@ -10,7 +10,7 @@ async function proxy(req: NextRequest, ctx: { params: Promise<{ path: string[] }
   if (req.method !== 'GET' && !hasSameOrigin(req))
     return NextResponse.json({ detail: 'Origin not allowed' }, { status: 403 });
   let token: string | undefined;
-  if ((process.env.LINEA_MODE ?? 'demo') === 'demo') {
+  if ((process.env.LINEA_MODE ?? 'connected') === 'demo') {
     if ((await cookies()).get('linea-demo')?.value !== 'active')
       return NextResponse.json({ detail: 'Sign in required' }, { status: 401 });
     token = process.env.LINEA_DEMO_API_TOKEN ?? 'local-demo-only-change-me';
@@ -36,7 +36,13 @@ async function proxy(req: NextRequest, ctx: { params: Promise<{ path: string[] }
       `${process.env.LINEA_API_URL ?? 'http://127.0.0.1:8000'}/${path}${req.nextUrl.search}`,
       {
         method: req.method,
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          ...(req.headers.get('Idempotency-Key')
+            ? { 'Idempotency-Key': req.headers.get('Idempotency-Key')! }
+            : {}),
+        },
         body: ['GET', 'HEAD'].includes(req.method) ? undefined : await req.text(),
         cache: 'no-store',
         signal: AbortSignal.timeout(15000),
@@ -55,4 +61,5 @@ async function proxy(req: NextRequest, ctx: { params: Promise<{ path: string[] }
 }
 export const GET = proxy,
   POST = proxy,
+  DELETE = proxy,
   PUT = proxy;

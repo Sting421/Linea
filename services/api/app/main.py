@@ -13,21 +13,26 @@ from .conversation import turn
 from .interpretation import prepare
 from .lifecycle import event, finalize, join, leave, place
 from .models import CheckIn, Profile, ProfileInput, StrictModel, Turn, day_status, now
+from .provider_routes import install_provider_routes
 from .repository import Repository
+from .runtime_config import accepted, build_runtime
 from .seed import DEMO_OWNER, seed
 from .supabase_repository import SupabaseRepository, verify_user
 
 
-def create_app(path=None, clock=None):
+def create_app(path=None, clock=None, runtime=None):
     load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
     call_clock = clock or now
-    mode = os.getenv("LINEA_MODE", "demo")
+    mode = os.getenv("LINEA_MODE", "connected")
     if mode not in ("demo", "connected", "live"):
         raise RuntimeError("LINEA_MODE must be demo, connected, or live")
-    if mode == "live":
+    if mode == "live" and not accepted():
         raise RuntimeError(
-            "Live mode is gated: connect the Supabase repository, verified Agora runtime, and notification delivery before enabling it. See IMPLEMENTATION-NOTES.md."
+            "Live mode is gated: record all MVP acceptance checks before enabling it. See IMPLEMENTATION-NOTES.md."
         )
+    if runtime is None and (mode == "live" or os.getenv("LINEA_VOICE_ENABLED") == "1"):
+        runtime = build_runtime(call_clock)
+    voice_ready = bool(runtime and (mode == "live" or accepted()))
     repo = (
         Repository(path or os.getenv("LINEA_DATABASE_PATH", ".local/linea.db"))
         if mode == "demo"
@@ -38,7 +43,7 @@ def create_app(path=None, clock=None):
     token = os.getenv("LINEA_DEMO_API_TOKEN", "local-demo-only-change-me")
     supabase_url = os.getenv("SUPABASE_URL", "").rstrip("/")
     supabase_key = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
-    if mode == "connected" and (not supabase_url.startswith("https://") or not supabase_key):
+    if mode != "demo" and (not supabase_url.startswith("https://") or not supabase_key):
         raise RuntimeError("Connected mode requires SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY")
 
     @asynccontextmanager
@@ -51,9 +56,11 @@ def create_app(path=None, clock=None):
         title="Linea MVP API",
         version="0.1.0",
         lifespan=lifespan,
-        description="Family workspace API. Connected mode stores real records; voice and push delivery are not connected.",
+        description="Supabase family workspace and authenticated Agora runtime. Voice capability requires configured workers and verified acceptance.",
     )
     app.state.repo = repo
+    app.state.runtime = runtime
+    install_provider_routes(app, runtime)
 
     def user_client(authorization: str | None = Header(default=None)):
         if mode == "demo":
@@ -69,7 +76,7 @@ def create_app(path=None, clock=None):
             yield client
 
     def owner(authorization: str | None = Header(default=None), client=Depends(user_client)):
-        if mode == "connected":
+        if mode != "demo":
             return verify_user(client)
         if not authorization or not secrets.compare_digest(authorization, f"Bearer {token}"):
             raise HTTPException(401, "Authentication required")
@@ -82,8 +89,22 @@ def create_app(path=None, clock=None):
         if mode != "demo":
             raise HTTPException(404, "Demo actions are unavailable in this workspace")
 
-    def voice_available():
-        if mode != "demo":
+    def can_call(user):
+        return bool(
+            runtime
+            and runtime.worker_ready("voice")
+            and (voice_ready or (runtime.test_scope and runtime.test_scope[1] == user))
+        )
+
+    def push_ready():
+        return bool(
+            runtime
+            and os.getenv("LINEA_PUSH_ENABLED") == "1"
+            and runtime.worker_ready("notifications")
+        )
+
+    def voice_available(user=Depends(owner)):
+        if mode != "demo" and not can_call(user):
             raise HTTPException(
                 503, "Calling is not connected yet. Your saved records are available."
             )
@@ -103,7 +124,14 @@ def create_app(path=None, clock=None):
     def view(c):
         payload = c.model_dump(mode="json")
         # Semantic/state-machine internals and idempotency replies are not a family API.
-        for key in ("facts", "processed_events", "processed_turns", "active_prompt"):
+        for key in (
+            "facts",
+            "processed_events",
+            "processed_turns",
+            "turn_hashes",
+            "active_prompt",
+            "rtc_members",
+        ):
             payload.pop(key)
         payload["day_status"] = day_status(c)
         return payload
@@ -113,8 +141,8 @@ def create_app(path=None, clock=None):
         return {
             "status": "ok",
             "mode": mode,
-            "voice_connected": False,
-            "push_connected": False,
+            "voice_connected": bool(voice_ready and runtime.worker_ready("voice")),
+            "push_connected": push_ready(),
             "repository": "sqlite-demo" if mode == "demo" else "supabase",
         }
 
@@ -135,7 +163,7 @@ def create_app(path=None, clock=None):
     def update_profile(
         pid: str, body: ProfileInput, user=Depends(owner), repo=Depends(request_repo)
     ):
-        if mode == "connected":
+        if mode != "demo":
             p = profile_for(pid, user, repo)
             p = Profile.model_validate({**p.model_dump(), **body.model_dump()})
             repo.save_profile(p, create=False)
@@ -169,6 +197,7 @@ def create_app(path=None, clock=None):
                 "checkins": [],
                 "alerts": [],
                 "mode": mode,
+                "voice_connected": can_call(user),
             }
         cs = sorted(
             [c for c in repo.calls() if c.elder_id == p.id and c.owner_id == user],
@@ -190,6 +219,7 @@ def create_app(path=None, clock=None):
                 for a in c.alerts
             ],
             "mode": mode,
+            "voice_connected": can_call(user),
         }
 
     @app.get("/checkins/{cid}")
@@ -199,7 +229,11 @@ def create_app(path=None, clock=None):
         return view(call_for(cid, user, repo))
 
     @app.post("/profiles/{pid}/call", status_code=201, dependencies=[Depends(voice_available)])
-    def call_now(pid: str, user=Depends(owner)):
+    def call_now(pid: str, user=Depends(owner), idempotency_key: str | None = Header(default=None)):
+        if mode != "demo":
+            if not idempotency_key or len(idempotency_key) > 120:
+                raise HTTPException(400, "A call placement idempotency key is required")
+            return view(runtime.place(pid, user, request_id=idempotency_key))
         with repo.lock:
             p = profile_for(pid, user, repo)
             if p.consent == "declined":
@@ -309,6 +343,8 @@ def create_app(path=None, clock=None):
 
     @app.post("/checkins/{cid}/join", dependencies=[Depends(voice_available)])
     def family_join(cid: str, user=Depends(owner)):
+        if mode != "demo":
+            return {"simulation": False, "rtc": runtime.family_token(cid, user)}
         with repo.lock:
             c = call_for(cid, user, repo)
             try:
@@ -325,6 +361,9 @@ def create_app(path=None, clock=None):
 
     @app.post("/checkins/{cid}/leave", dependencies=[Depends(voice_available)])
     def family_leave(cid: str, user=Depends(owner)):
+        if mode != "demo":
+            c, reply = runtime.family_control(cid, user, "leave")
+            return {"call": view(c), "reply": reply}
         with repo.lock:
             c = call_for(cid, user, repo)
             reply = leave(c, profile_for(c.elder_id, user, repo), user)
@@ -338,6 +377,9 @@ def create_app(path=None, clock=None):
 
     @app.post("/checkins/{cid}/end", dependencies=[Depends(voice_available)])
     def end_everyone(cid: str, user=Depends(owner)):
+        if mode != "demo":
+            c, _ = runtime.family_control(cid, user, "end")
+            return view(c)
         with repo.lock:
             c = call_for(cid, user, repo)
             if user not in c.family:
@@ -349,7 +391,7 @@ def create_app(path=None, clock=None):
 
     @app.post("/checkins/{cid}/alerts/{aid}/handle")
     def handle(cid: str, aid: str, user=Depends(owner), repo=Depends(request_repo)):
-        if mode == "connected":
+        if mode != "demo":
             c = call_for(cid, user, repo)
             if not any(a.id == aid for a in c.alerts):
                 raise HTTPException(404, "Alert not found")
@@ -376,11 +418,11 @@ def create_app(path=None, clock=None):
     @app.post("/push/subscriptions")
     def subscribe(body: PushSubscription, user=Depends(owner), repo=Depends(request_repo)):
         repo.subscribe(user, body.model_dump(mode="json"))
-        return {"status": "saved", "delivery_connected": False}
+        return {"status": "saved", "delivery_connected": push_ready()}
 
     @app.get("/configuration")
     def configuration(user=Depends(owner), repo=Depends(request_repo)):
-        if mode == "connected":
+        if mode != "demo":
             repo.profiles()  # Readiness must include an authenticated database read.
         return {
             "mode": mode,
@@ -389,13 +431,37 @@ def create_app(path=None, clock=None):
                 {"name": "Profile and contact storage", "state": "ready"},
                 {
                     "name": "Supabase Auth / Postgres / RLS",
-                    "state": "ready" if mode == "connected" else "not_connected",
+                    "state": "ready" if mode != "demo" else "not_connected",
                 },
-                {"name": "Semantic retrieval + classifier", "state": "not_connected"},
-                {"name": "Agora voice / Twilio SIP", "state": "not_connected"},
-                {"name": "Web push delivery", "state": "not_connected"},
+                {
+                    "name": "Semantic fact extraction",
+                    "state": "ready" if voice_ready else "not_connected",
+                },
+                {
+                    "name": "Agora voice / Twilio SIP",
+                    "state": "ready" if voice_ready else "not_connected",
+                },
+                {
+                    "name": "Web push delivery",
+                    "state": "ready" if push_ready() else "not_connected",
+                },
                 {"name": "Provider recording and retention", "state": "not_verified"},
             ],
         }
+
+    @app.post("/checkins/{cid}/confirm-join", dependencies=[Depends(voice_available)])
+    def confirm_join(cid: str, user=Depends(owner)):
+        if mode == "demo":
+            raise HTTPException(404, "Provider membership is unavailable in demo")
+        c, reply = runtime.family_control(cid, user, "confirm")
+        return {"call": view(c), "briefing": reply}
+
+    @app.delete("/profiles/{pid}")
+    def unenroll_profile(pid: str, user=Depends(owner), scoped_repo=Depends(request_repo)):
+        profile_for(pid, user, scoped_repo)
+        if not runtime:
+            raise HTTPException(503, "Runtime teardown is required before unenrollment")
+        runtime.unenroll(pid, user)
+        return {"status": "unenrolled"}
 
     return app

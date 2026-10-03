@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== 'object')
     return NextResponse.json({ detail: 'Invalid sign-in request.' }, { status: 400 });
-  if (body.action === 'demo' && (process.env.LINEA_MODE ?? 'demo') === 'demo') {
+  if (body.action === 'demo' && (process.env.LINEA_MODE ?? 'connected') === 'demo') {
     (await cookies()).set('linea-demo', 'active', {
       httpOnly: true,
       sameSite: 'strict',
@@ -21,13 +21,13 @@ export async function POST(req: NextRequest) {
   }
   if (body.action === 'signout') {
     (await cookies()).delete('linea-demo');
-    if (['connected', 'live'].includes(process.env.LINEA_MODE ?? ''))
+    if (['connected', 'live'].includes(process.env.LINEA_MODE ?? 'connected'))
       await (await supabaseServer()).auth.signOut();
     return NextResponse.json({ ok: true });
   }
   if (
     ['signin', 'signup'].includes(body.action) &&
-    ['connected', 'live'].includes(process.env.LINEA_MODE ?? '')
+    ['connected', 'live'].includes(process.env.LINEA_MODE ?? 'connected')
   ) {
     try {
       const client = await supabaseServer();

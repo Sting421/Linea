@@ -1,8 +1,8 @@
 """User-scoped Supabase persistence for the connected family workspace.
 
-Every request uses a verified user's JWT, including database RPCs. No service-role
-key is needed by the running API; RLS remains a second authorization boundary.
-Voice state writes are deliberately absent until the provider adapter exists.
+Every family request uses a verified user's JWT, including database RPCs. RLS
+remains a second authorization boundary. Provider/worker writes use the separate
+private RuntimeRepository, never the family request's database client.
 """
 
 from datetime import timedelta
@@ -53,6 +53,10 @@ class SupabaseRepository:
                 "order": "created_at.asc,id.asc",
             },
         )
+        return self.map_profiles(rows)
+
+    @staticmethod
+    def map_profiles(rows):
         profiles = []
         for row in rows:
             values = {k: row[k] for k in Profile.model_fields if k in row}
@@ -104,7 +108,11 @@ class SupabaseRepository:
             details = {} if call.text_expired else (row.get("checkin_details") or {})
             call.transcript = details.get("transcript", [])
             call.summary = details.get("summary")
-            call.answers = details.get("runtime_context", {}).get("answers", {})
+            context = details.get("runtime_context", {})
+            call.answers = context.get("answers", {})
+            for key in ("active_question", "family_joined_at", "farewell_asked"):
+                if key in context:
+                    setattr(call, key, context[key])
             call.legs = [
                 Leg.model_validate({k: leg[k] for k in Leg.model_fields if k in leg})
                 for leg in sorted(row.get("phone_legs", []), key=lambda leg: leg["started_at"])
@@ -121,7 +129,7 @@ class SupabaseRepository:
                 alert_values.update(
                     reason=alert["reason_code"],
                     quote=detail.get("quotation"),
-                    notification_status="not_connected",
+                    notification_status=alert.get("notification_status", "not_connected"),
                 )
                 call.alerts.append(Alert.model_validate(alert_values))
             calls.append(CheckIn.model_validate(call.model_dump()))

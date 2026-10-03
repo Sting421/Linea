@@ -13,7 +13,7 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [confirmationRequired, setConfirmationRequired] = useState(false);
-  const demo = (process.env.NEXT_PUBLIC_LINEA_MODE ?? 'demo') === 'demo';
+  const demo = (process.env.NEXT_PUBLIC_LINEA_MODE ?? 'connected') === 'demo';
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has('error'))
       setError(

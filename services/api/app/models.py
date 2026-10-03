@@ -177,6 +177,8 @@ class Leg(StrictModel):
     state: Literal["ringing", "connected", "no_answer", "failed", "dropped", "ended"] = "ringing"
     started_at: datetime = Field(default_factory=now)
     ended_at: datetime | None = None
+    provider_agent_id: str | None = None
+    channel: str | None = None
 
 
 class CheckIn(StrictModel):
@@ -213,6 +215,8 @@ class CheckIn(StrictModel):
     text_expired: bool = False
     processed_events: list[str] = Field(default_factory=list)
     processed_turns: dict[str, str] = Field(default_factory=dict)
+    turn_hashes: dict[str, str] = Field(default_factory=dict)
+    rtc_members: dict[str, int] = Field(default_factory=dict)
 
 
 def day_status(call: CheckIn) -> str:

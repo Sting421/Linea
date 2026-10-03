@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.2",
+    "agora-rtc-sdk-ng": "4.24.8",
     "bot-avatars": "0.2.1",
     "lucide-react": "1.49.0",
     "next": "16.3.8",

@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Bell, RefreshCw, ShieldCheck, Check } from 'lucide-react';
@@ -21,6 +21,7 @@ export function FamilyApp({
   callId?: string;
 }) {
   const router = useRouter();
+  const placementKey = useRef<string | null>(null);
   const [data, setData] = useState<Dashboard | null>(null),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
@@ -68,7 +69,11 @@ export function FamilyApp({
   async function callNow() {
     setBusy(true);
     try {
-      const c = await post<CheckIn>(`profiles/${data!.profile!.id}/call`);
+      placementKey.current ??= crypto.randomUUID();
+      const c = await post<CheckIn>(`profiles/${data!.profile!.id}/call`, undefined, {
+        'Idempotency-Key': placementKey.current,
+      });
+      placementKey.current = null;
       router.push(`/call/${c.id}`);
     } catch (e) {
       setError((e as Error).message);
@@ -136,7 +141,9 @@ export function FamilyApp({
       ) : date ? (
         <DayView date={date} data={data} onHandle={(a) => void handle(a)} />
       ) : callId ? (
-        data.mode !== 'demo' && data.checkins.find((c) => c.id === callId) ? (
+        data.mode !== 'demo' &&
+        !data.voice_connected &&
+        data.checkins.find((c) => c.id === callId) ? (
           <DayView
             date={data.checkins.find((c) => c.id === callId)!.local_date}
             data={data}
@@ -147,6 +154,7 @@ export function FamilyApp({
             call={data.checkins.find((c) => c.id === callId)!}
             profile={data.profile}
             refresh={refresh}
+            demo={data.mode === 'demo'}
           />
         ) : (
           <Panel>

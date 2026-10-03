@@ -2,6 +2,8 @@
 
 Prepared 4 October 2026 for the teammate restoring the server and the team
 testing the family app. Follow this guide in order to verify the connected MVP.
+Use the current provider/worker setup and scoped test mode documented at the top
+of [IMPLEMENTATION-NOTES.md](../IMPLEMENTATION-NOTES.md) before phone testing.
 It turns the [22 acceptance requirements](../01-test-day-checklist.md) into
 repeatable checks with observable pass conditions. **These live tests have not
 been run.** A working demo, saved credentials, or HTTP 200 does not establish

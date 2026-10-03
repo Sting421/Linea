@@ -15,5 +15,9 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
     );
   return data;
 }
-export const post = <T>(path: string, body?: unknown) =>
-  api<T>(path, { method: 'POST', body: body === undefined ? undefined : JSON.stringify(body) });
+export const post = <T>(path: string, body?: unknown, headers?: Record<string, string>) =>
+  api<T>(path, {
+    method: 'POST',
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });

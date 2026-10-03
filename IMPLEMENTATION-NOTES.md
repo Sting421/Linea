@@ -1,5 +1,145 @@
 # Implementation Notes
 
+## Supabase voice runtime implementation — 4 October 2026
+
+This entry supersedes the calling-readiness and scaffold status below. The user
+confirmed that their teammate will pull the repository and update the hosted
+server manually. Source changes are in the current `keith-branch` working tree;
+this session has not committed, pushed, or deployed them.
+
+On 4 October 2026, Supabase MCP applied the voice-runtime migration to the
+configured project `yerrtkosxksacqxznrhk`. The database records it as
+`20261003193503_voice_runtime` (MCP-generated version). The source file remains
+`supabase/migrations/202610040002_voice_runtime.sql`; do not apply it again to
+this project. The application server update is still the teammate's manual step.
+
+Implemented the Agora outbound call/speech/teardown adapter, short-lived family
+RTC credentials and browser audio, the strict OpenAI fact interpreter, authenticated
+custom completion responses, signed telephony callbacks, and durable Supabase
+runtime state and queues. Per-elder leases serialize changes, placement requests
+are idempotent, and uncertain placements are reconciled by their unique provider
+channel instead of automatically placing a second billed call. Token issuance
+does not mark family present: the API confirms membership with Agora first.
+Family audio controls currently authorize the profile owner; telephone contacts
+are not additional authenticated app members.
+
+Scheduling, retries, callback processing, provider reconciliation, notification
+delivery, and retention now have executable workers. Notification revisions are
+claimed with leases; delivery status is stored honestly and expired subscriptions
+are removed. Emergency speech precedes persistence, with encrypted recovery on a
+shared private volume. A known emergency latch continues its fixed response during
+a database outage. Recovery files expire with detailed text after 90 days.
+
+### Verified state and limits
+
+| Component | Latest observation |
+| --- | --- |
+| Current checkout API, `http://127.0.0.1:8002/health` | HTTP 200; `mode=connected`, `repository=supabase`, voice and push disabled |
+| Current checkout web configuration | Both mode variables are `connected`; server API URL points to port 8002 |
+| Other local APIs on ports 8000/8001 | Existing processes were left alone; they are not evidence about this checkout |
+| Hosted API, `https://lineaapi.aldrinvitorillo.dev/health` | Latest check returned HTTP 502; manual server release remains pending |
+| Runtime migration | Applied successfully through Supabase MCP to the configured project; remote migration record verified |
+| Automated verification | 101 backend tests (including 5 PostgreSQL integration tests) and 33 browser tests pass; type checking, Ruff, formatting, SQL parsing, and production web build pass |
+| Interpreter | Two synthetic requests to the pinned OpenAI model passed; this is not a voice latency or full conversation-fixture acceptance run |
+| Real phone/audio/push acceptance | NOT RUN; no telephone called and no provider configuration changed in this session |
+
+Post-migration checks confirmed five new private tables with RLS enabled, seven
+new columns, and eight runtime/retention functions with fixed empty search paths.
+Anonymous and authenticated browser roles cannot read/write the private tables
+or execute these functions; the service role has the required access. The
+runtime's actual Supabase Data API read succeeded, including its relational
+check-in join. Existing profile/contact/consent counts were unchanged.
+
+The security advisor's
+[RLS-without-policy notices](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy)
+are expected for service-only queues. Existing baseline advisories remain for
+[anonymous-callable definer helpers](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable),
+[authenticated-callable definer functions](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable),
+and [disabled leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+These were not introduced by the runtime migration; its functions are all
+service-role-only. No Auth settings or existing family-access policies were
+changed during migration application.
+
+### Manual release: keep both environments on Supabase
+
+1. Review and commit/push this working tree through the team's normal release
+   process, then pull that commit on the server. Record the deployed commit.
+2. The voice-runtime migration is already applied to the existing Supabase
+   project; verify its `voice_runtime` migration record instead of reapplying it.
+   For a fresh project, apply all three migrations in filename order.
+   The new private tables and RPCs are service-role-only; family profile
+   and history requests continue to use the authenticated user's JWT and RLS.
+3. Install `services/api/requirements.lock.txt` with Python 3.12. Install web
+   dependencies with `pnpm install --frozen-lockfile`, then build the web app.
+4. Configure the private backend environment with `LINEA_MODE=connected`, the
+   existing `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. Leave
+   `LINEA_VOICE_ENABLED=0` and `LINEA_PUSH_ENABLED=0` for the records-only release.
+   Start/restart the API from `services/api` behind the existing HTTPS proxy:
+
+   ```sh
+   python -m pip install -r requirements.lock.txt
+   uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
+   ```
+
+5. Configure the Next.js server with `LINEA_MODE=connected`,
+   `NEXT_PUBLIC_LINEA_MODE=connected`, and
+   `LINEA_API_URL=https://lineaapi.aldrinvitorillo.dev`. Supply only the public
+   Supabase URL/key to `NEXT_PUBLIC_SUPABASE_*`. Restart the web server.
+6. Check both local and hosted `/health`: each must report `mode=connected` and
+   `repository=supabase`. Resolve the hosted 502 before provider testing. Verify
+   authenticated save/reload and account isolation. Disabled voice/push are
+   expected until the following setup and acceptance work is completed.
+
+### Provider setup and authorized acceptance testing
+
+Provision the backend's private service-role key, Agora app/certificate/REST
+credentials, owned SIP `AGORA_FROM_NUMBER`, OpenAI key, shared completion bearer,
+and Agora's **actual** project notification signing secret. A locally generated
+candidate webhook secret is insufficient. Set `LINEA_PUBLIC_API_URL` to the
+public HTTPS API and configure the project's telephony notifications to POST to
+`/provider/agora/events`. The per-leg completion URL/bearer is installed in each
+outbound call by the adapter. Supply verified English ASR/TTS properties in an
+ignored JSON file referenced by `LINEA_AGORA_PROPERTIES_FILE`; a pipeline ID alone
+is insufficient. The adapter requests `parameters.opt_out=true`; confirm provider
+retention behavior during acceptance. Never put these secrets in browser values.
+
+Mount one persistent private `LINEA_RUNTIME_JOURNAL_PATH` into the API and voice
+worker, using the same completion bearer for encryption. Keep it writable by the
+service user, restrict access, and retain the key while pending recovery exists.
+For explicitly authorized test calls only, set `LINEA_VOICE_ENABLED=1`,
+`LINEA_VOICE_TEST_MODE=1`, and the exact synthetic `LINEA_TEST_ELDER_ID` and
+`LINEA_TEST_OWNER_ID`. Keep `LINEA_MODE=connected`: this confines voice execution
+to that profile and owner while acceptance remains incomplete.
+
+Run separate supervised worker processes from `services/api`:
+
+```sh
+python -m app.worker --execute --role voice
+python -m app.worker --execute --role notifications
+python -m app.worker --execute --role retention
+```
+
+The retention worker can run in connected mode without voice acceptance. For push
+testing, install matching public/private VAPID keys and subject, enable
+`LINEA_PUSH_ENABLED=1`, and verify actual browser delivery. The public key alone
+does not establish delivery. Voice/push readiness also requires a recent worker
+heartbeat; the API does not launch workers itself. Execution without `--execute`
+only plans calls and never contacts the phone provider.
+
+Follow [testing/README.md](testing/README.md) and record all 22 MVP acceptance
+cases against the deployed build. An acceptance JSON file must contain `tester`,
+`tested_at`, `build`, and a `cases` object mapping every `MVP-01` through `MVP-22`
+to `passed`, backed by the test-run evidence. Set `LINEA_BUILD_ID` to the same
+build and `LINEA_LIVE_ACCEPTANCE_FILE` to its private file path. Only after that
+run passes, disable scoped test mode and enable `LINEA_MODE=live`. No acceptance
+record was fabricated or enabled by this implementation.
+
+Provider contracts were checked against the primary
+[Agora REST specification](https://github.com/AgoraIO/docs-portal/blob/main/content/openapi/conversational-ai/rest-api.en.yaml),
+[telephony SDK](https://github.com/AgoraIO/agora-agents-go/blob/main/telephony.go),
+[runtime webhook guide](https://github.com/AgoraIO/docs-portal/blob/main/content/docs/en/ai/build/handle-runtime-events/webhooks.mdx),
+and [OpenAI Structured Outputs documentation](https://developers.openai.com/api/docs/guides/structured-outputs).
+
 ## Calling readiness and teammate deployment — 4 October 2026
 
 The user confirmed that their teammate deploys `lineaapi.aldrinvitorillo.dev`.
@@ -8,7 +148,7 @@ Read-only checks during the calling investigation found:
 | Component | Observed result |
 | --- | --- |
 | Local API, `http://127.0.0.1:8000/health` | HTTP 200; `mode=connected`, `repository=supabase`, `voice_connected=false` |
-| Hosted API, `https://lineaapi.aldrinvitorillo.dev/health` | HTTP 200; `mode=demo`, `repository=sqlite-demo`, `voice_connected=false` |
+| Hosted API, `https://lineaapi.aldrinvitorillo.dev/health` | HTTP 200; `mode=demo`, `repository=supabase`, `voice_connected=false` |
 | Hosted `/openapi.json` | HTTP 200; demo call routes exist, but no provider callback or custom completion routes |
 | Twilio account using the local API credentials | Read access works; one voice-capable number and one SIP trunk exist |
 | Agora and interpretation configuration | Credentials and a pipeline ID are present locally; this does not verify the published pipeline or a live call |
