@@ -209,8 +209,10 @@ class RuntimeService:
             at = self.clock()
             if profile.consent == "declined" or (kind != "manual" and profile.consent != "granted"):
                 raise HTTPException(409, "Consent does not allow this call")
-            if not 6 <= at.astimezone(ZoneInfo(profile.timezone)).hour < 21:
-                raise HTTPException(409, "Calls are allowed from 06:00 to 21:00 elder local time")
+            if kind != "manual" and not 6 <= at.astimezone(ZoneInfo(profile.timezone)).hour < 21:
+                raise HTTPException(
+                    409, "Automatic calls are allowed from 06:00 to 21:00 elder local time"
+                )
             calls = [c for c in self.repo.calls() if c.elder_id == eid]
             key = f"placement:{request_id}" if request_id else None
             previous = next((c for c in calls if key and key in c.processed_events), None)

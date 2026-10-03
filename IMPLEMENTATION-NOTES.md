@@ -1,5 +1,33 @@
 # Implementation Notes
 
+## Manual calls at any time — 4 October 2026
+
+The user explicitly requested that manual calls work at any hour for immediate
+verification and recording. `Call now` no longer has a 06:00–21:00 restriction.
+This is normal authenticated product behavior, not a hardcoded account, alternate
+clock, seeded record, or expiring demo bypass. Consent refusal, ownership/scope,
+worker readiness, idempotency and active-call protections remain enforced.
+Automatic initial calls, retries and reconnections retain the existing hours.
+
+The migration `supabase/migrations/202610040003_manual_call_hours.sql` is already
+applied to the configured Supabase project through the Management API; do not
+reapply it there. Deploy the API/worker changes. Both layers previously
+enforced hours; updating only Python leaves the SQL placement check blocking
+manual calls. The migration preserves the service-only RPC signature and grants.
+Replace the separately installed `/opt/linea/ops/preflight-calling.py` with the
+updated script too. It reports the true local time but does not block manual
+verification solely because the clock is outside automatic calling hours.
+Earlier statements in these notes requiring manual tests to wait until 06:00
+are superseded by this explicit product change.
+
+Verification: 54 targeted API/runtime/lifecycle/preflight tests passed, Ruff and
+SQL parsing passed, and a rollback-only transaction against the configured
+database accepted a manual placement while rejecting an automatic placement
+outside normal hours. All transaction writes were rolled back: no phone call,
+retained test call, or consent change was produced. The RPC remains executable
+only by the service role, not anonymous or authenticated browser roles. The
+hosted Python release and inactive worker still require the teammate's deployment.
+
 ## Calling rejection recovery and worker diagnostics — 4 October 2026
 
 Agora placement responses with HTTP 401, 403, 404 or 422 now explicitly fail the

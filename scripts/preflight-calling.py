@@ -51,8 +51,7 @@ def audit(repo, settings, at, recovery_files=0):
             "daily_call_time": p.call_time,
             "inside_calling_hours": 6 <= local.hour < 21,
         }
-        if not profile_status["inside_calling_hours"]:
-            blockers.append("Outside actual elder calling hours (06:00 to 21:00)")
+        profile_status["manual_call_hours"] = "Any time; automatic calls remain 06:00 to 21:00"
         if p.consent == "declined":
             blockers.append("Existing consent does not allow calling")
     for present, message in (
@@ -95,6 +94,7 @@ def audit(repo, settings, at, recovery_files=0):
             "Actual Agora Secret/callback and speech must be verified separately",
             "No acceptance, phone audio, browser microphone or push result is established",
             "A scoped worker still performs normal scheduled calling; stop it after the session",
+            "Manual calls are allowed any time; automatic calls/retries retain normal hours",
         ],
     }
 

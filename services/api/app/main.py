@@ -249,8 +249,6 @@ def create_app(path=None, clock=None, runtime=None):
             ):
                 raise HTTPException(409, "A call is already active for this elder")
             at = call_clock()
-            if not 6 <= at.astimezone(ZoneInfo(p.timezone)).hour < 21:
-                raise HTTPException(409, "Calls are allowed from 06:00 to 21:00 elder local time")
             pending = next((c for c in cs if c.state in ("retry_scheduled", "reconnecting")), None)
             if pending:
                 c = pending

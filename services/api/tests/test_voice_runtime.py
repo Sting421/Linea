@@ -123,6 +123,33 @@ def test_placement_idempotency_consent_hours_and_foreign_owner(runtime):
     assert error.value.status_code == 404
 
 
+@pytest.mark.parametrize("hour", [5, 21])
+def test_manual_calls_work_outside_hours_while_automatic_calls_remain_blocked(runtime, hour):
+    from zoneinfo import ZoneInfo
+
+    p = runtime.repo.profile
+    runtime.clock = lambda: datetime(2026, 10, 4, hour, 15, tzinfo=ZoneInfo(p.timezone))
+    p.consent = "pending"
+    call = runtime.place(p.id, p.owner_id, request_id="manual-anytime")
+    assert call.state == "ringing" and call.mode == "CONSENT"
+    assert call.created_at == runtime.clock()
+    assert call.legs[-1].kind == "manual"
+    assert p.consent == "pending"
+    with pytest.raises(HTTPException) as conflict:
+        runtime.place(p.id, p.owner_id, request_id="second-call")
+    assert conflict.value.status_code == 409
+    runtime.repo.saved.clear()
+    runtime.repo.profile.consent = "granted"
+    for kind in ("initial", "retry", "reconnect"):
+        with pytest.raises(HTTPException) as blocked:
+            runtime.place(p.id, p.owner_id, kind=kind)
+        assert "Automatic calls" in blocked.value.detail
+    runtime.repo.profile.consent = "declined"
+    with pytest.raises(HTTPException) as blocked:
+        runtime.place(p.id, p.owner_id, request_id="declined")
+    assert "Consent" in blocked.value.detail
+
+
 def test_streaming_reply_precedes_storage_and_duplicate_turn_skips_model(runtime):
     call = connected_call(runtime)
     runtime.repo.fail = True

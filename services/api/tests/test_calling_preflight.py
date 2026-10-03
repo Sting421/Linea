@@ -63,9 +63,11 @@ def test_pending_consent_snapshot_is_read_only_and_contains_no_identities_or_sec
     assert "require human confirmation" in text
 
 
-def test_actual_clock_and_owner_mismatch_block_startup():
+def test_actual_clock_is_reported_but_only_owner_mismatch_blocks_manual_startup():
     repo, settings, at = setup(hour=4)
-    assert any("calling hours" in b for b in preflight.audit(repo, settings, at)["blockers"])
+    result = preflight.audit(repo, settings, at)
+    assert not result["scoped_profile"]["inside_calling_hours"]
+    assert not result["blockers"]
     settings["LINEA_TEST_OWNER_ID"] = "unrelated-owner"
     result = preflight.audit(repo, settings, at)
     assert result["scope_matches"] == 0
@@ -102,3 +104,12 @@ def test_scope_does_not_hide_an_immediately_due_daily_call():
     result = preflight.audit(repo, settings, at)
     assert result["scoped_due_scheduler_proposal_kinds"] == {"initial": 1}
     assert any("immediately place" in b for b in result["blockers"])
+
+
+def test_manual_call_hours_do_not_change_consent_or_clock():
+    repo, settings, at = setup(hour=4)
+    result = preflight.audit(repo, settings, at)
+    assert not result["blockers"]
+    assert not result["scoped_profile"]["inside_calling_hours"]
+    assert result["scoped_profile"]["manual_call_hours"].startswith("Any time")
+    assert result["scoped_profile"]["consent"] == "pending"

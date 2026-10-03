@@ -82,12 +82,12 @@ def test_emergency_response_survives_storage_failure(monkeypatch):
         assert result.json()["persistence_status"] == "failed"
 
 
-def test_calling_hours_are_enforced():
+def test_manual_call_is_allowed_outside_automatic_calling_hours():
     def late():
         return datetime(2026, 10, 3, 15, 0, tzinfo=timezone.utc)
 
     with TestClient(create_app(":memory:", clock=late)) as client:
-        assert client.post("/profiles/rosa/call", headers=AUTH).status_code == 409
+        assert client.post("/profiles/rosa/call", headers=AUTH).status_code == 201
 
 
 def test_subscription_metadata_cannot_hide_call_text():

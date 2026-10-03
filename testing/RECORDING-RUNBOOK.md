@@ -7,10 +7,10 @@ App: https://linea.aldrinvitorillo.dev. Frontend and API source commit:
 `098e52a8a6e2ef44169f8446c200c82fbcc0c020`. Deployment/HTTP checks passed;
 actual phone/browser features and both rehearsals remain NOT RUN.
 English speech properties are staged but not tested on a phone. Agora Console
-notification configuration/signing Secret still needs verification. At the
-04:33 Manila/Singapore clock check, the profile was outside calling hours;
-the earliest permitted call is 06:00 on 4 October, subject to fresh session
-readiness and queue checks. Authorization includes policy retries/reconnection.
+notification configuration/signing Secret still needs verification. Manual
+Call now requests are allowed at any hour after deploying the manual-hours
+update and its database migration. Automatic calls/retries/reconnections retain
+06:00–21:00 elder-local hours. Authorization includes policy retries/reconnection.
 
 ## Prerequisites
 
@@ -27,9 +27,9 @@ readiness and queue checks. Authorization includes policy retries/reconnection.
   plus verified English ASR/TTS properties. Preserve the existing SIP trunk.
 - Inspect pending/inflight/uncertain commands, callbacks, active calls, journal
   recovery, and scheduler proposals immediately before worker start. Scope alone
-  does not prevent scheduled calls to that profile. Schedule the session during
-  the profile's true 06:00–21:00 local calling hours. Do not alter clocks/timezones
-  or calling-hours checks to make a take possible.
+  does not prevent scheduled calls to that profile. Manual verification can run
+  at any time; automatic attempts retain their normal hours. Keep the true
+  profile timezone and clock, and preserve all consent and ownership checks.
   Run the read-only `scripts/preflight-calling.py` with the private backend
   environment and `--check-provider`; see `deploy/README.md`. A clean audit
   neither authorizes calls nor verifies the provider Secret or actual audio.
