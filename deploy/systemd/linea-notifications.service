@@ -1,0 +1,25 @@
+[Unit]
+Description=Linea web push delivery worker
+Wants=network-online.target
+After=network-online.target linea-api.service
+
+[Service]
+Type=simple
+User=linea
+Group=linea
+WorkingDirectory=/opt/linea/current/services/api
+EnvironmentFile=/etc/linea/backend.env
+Environment=PYTHONUNBUFFERED=1
+ExecCondition=/opt/linea/venv/bin/python -c "import os,sys; sys.exit(0 if os.getenv('LINEA_PUSH_ENABLED') == '1' else 1)"
+ExecStart=/opt/linea/venv/bin/python -m app.worker --execute --role notifications
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/linea
+
+[Install]
+WantedBy=multi-user.target

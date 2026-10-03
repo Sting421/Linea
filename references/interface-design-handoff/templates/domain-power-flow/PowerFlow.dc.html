@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Domain · Power Flow" description="Area 2 power-flow hero: iconographic energy scene (sun · ground-mount PV · lattice grid pylon · house · wall inverter · battery pack w/ SOC) on a shared ground line, curved bent conduits with prominent directional flow particles and live kW. Shared by single-device and plant-overview. Visual target for the repo's ReactFlow build (provisional). Status colors from the keystone palette." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @keyframes pfPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  @media (prefers-reduced-motion: reduce) { .pf-orb { display: none; } .pf-live { animation: none !important; } }
+</style>
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background:#F4F7F9; padding:22px; color:#20262B;">
+  <div style="width:100%; max-width:940px; margin:0 auto;">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; color:#1F4173;">Power flow <span style="font-weight:500; font-size:14px; color:#8A9199;">· Maple Grove</span></div>
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#12842F; font-weight:600; font-family:'Space Grotesk',sans-serif;"><span class="pf-live" style="width:7px; height:7px; border-radius:50%; background:#1FA845; animation:pfPulse 1.8s ease-in-out infinite;"></span>Live</span>
+    </div>
+
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:18px; padding:8px 12px 4px; box-shadow:0 18px 44px rgba(31,65,115,.08);">
+      <svg viewBox="0 0 1120 720" role="img" aria-label="Plant power flow" style="width:100%; height:auto; display:block; overflow:visible;">
+        <defs>
+          <filter id="pfGlow" x="-300%" y="-300%" width="700%" height="700%"><feGaussianBlur stdDeviation="3.2"></feGaussianBlur></filter>
+          <linearGradient id="pfInv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"></stop><stop offset="1" stop-color="#F1F7FC"></stop></linearGradient>
+          <radialGradient id="pfBg" cx="46%" cy="30%" r="70%"><stop offset="0" stop-color="#FCFDFE"></stop><stop offset="1" stop-color="#EEF3F7"></stop></radialGradient>
+        </defs>
+
+        <rect x="0" y="0" width="1120" height="720" rx="14" fill="url(#pfBg)"></rect>
+        <path d="M40 620 H1080" stroke="#E5EBF0" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"></path>
+
+        <!-- conduits: faint base -->
+        <g fill="none" stroke="#D5DEE5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M200 556 H286 Q306 556 306 576 V582 Q306 598 322 596 H353"></path>
+          <path d="M505 362 V424 Q505 444 526 448 H668 Q690 448 690 470 V506"></path>
+          <path d="M662 572 H548 Q532 572 532 584 V590 H517"></path>
+          <path d="M738 562 H774 Q790 562 790 554 H812"></path>
+        </g>
+        <!-- colored overlay -->
+        <g fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.45">
+          <path d="M200 556 H286 Q306 556 306 576 V582 Q306 598 322 596 H353" stroke="#1F4173"></path>
+          <path d="M505 362 V424 Q505 444 526 448 H668 Q690 448 690 470 V506" stroke="#009DE4"></path>
+          <path d="M662 572 H548 Q532 572 532 584 V590 H517" stroke="#46505A"></path>
+          <path d="M738 562 H774 Q790 562 790 554 H812" stroke="#1FA845"></path>
+        </g>
+
+        <!-- flow particles -->
+        <!-- Grid -> Home -->
+        <g class="pf-orb" fill="#1F4173"><circle r="9" opacity="0.24" filter="url(#pfGlow)"></circle><circle r="4.6"></circle><circle r="1.9" fill="#CFE6F4"></circle><animateMotion dur="2.4s" repeatCount="indefinite" path="M200 556 H286 Q306 556 306 576 V582 Q306 598 322 596 H353"></animateMotion></g>
+        <g class="pf-orb" fill="#1F4173"><circle r="9" opacity="0.24" filter="url(#pfGlow)"></circle><circle r="4.6"></circle><circle r="1.9" fill="#CFE6F4"></circle><animateMotion dur="2.4s" begin="-1.2s" repeatCount="indefinite" path="M200 556 H286 Q306 556 306 576 V582 Q306 598 322 596 H353"></animateMotion></g>
+
+        <!-- Solar -> Inverter -->
+        <g class="pf-orb" fill="#009DE4"><circle r="9" opacity="0.28" filter="url(#pfGlow)"></circle><circle r="4.6"></circle><circle r="1.9" fill="#EAF7FE"></circle><animateMotion dur="2.2s" repeatCount="indefinite" path="M505 362 V424 Q505 444 526 448 H668 Q690 448 690 470 V506"></animateMotion></g>
+        <g class="pf-orb" fill="#009DE4"><circle r="9" opacity="0.28" filter="url(#pfGlow)"></circle><circle r="4.6"></circle><circle r="1.9" fill="#EAF7FE"></circle><animateMotion dur="2.2s" begin="-0.73s" repeatCount="indefinite" path="M505 362 V424 Q505 444 526 448 H668 Q690 448 690 470 V506"></animateMotion></g>
+        <g class="pf-orb" fill="#009DE4"><circle r="9" opacity="0.28" filter="url(#pfGlow)"></circle><circle r="4.6"></circle><circle r="1.9" fill="#EAF7FE"></circle><animateMotion dur="2.2s" begin="-1.46s" repeatCount="indefinite" path="M505 362 V424 Q505 444 526 448 H668 Q690 448 690 470 V506"></animateMotion></g>
+
+        <!-- Inverter -> Home -->
+        <g class="pf-orb" fill="#46505A"><circle r="8" opacity="0.22" filter="url(#pfGlow)"></circle><circle r="4.2"></circle><circle r="1.7" fill="#EEF1F3"></circle><animateMotion dur="2.2s" repeatCount="indefinite" path="M662 572 H548 Q532 572 532 584 V590 H517"></animateMotion></g>
+        <g class="pf-orb" fill="#46505A"><circle r="8" opacity="0.22" filter="url(#pfGlow)"></circle><circle r="4.2"></circle><circle r="1.7" fill="#EEF1F3"></circle><animateMotion dur="2.2s" begin="-1.1s" repeatCount="indefinite" path="M662 572 H548 Q532 572 532 584 V590 H517"></animateMotion></g>
+
+        <!-- Inverter -> Battery -->
+        <g class="pf-orb" fill="#1FA845"><circle r="8" opacity="0.26" filter="url(#pfGlow)"></circle><circle r="4.2"></circle><circle r="1.7" fill="#E7F8EC"></circle><animateMotion dur="1.7s" repeatCount="indefinite" path="M738 562 H774 Q790 562 790 554 H812"></animateMotion></g>
+
+        <!-- SUN -->
+        <g stroke="#009DE4" stroke-width="3" fill="none" stroke-linecap="round" transform="translate(356,104)">
+          <circle cx="430" cy="128" r="26" fill="#E6F7FF"></circle>
+          <path d="M430 84 V68 M430 172 V188 M386 128 H370 M474 128 H490 M400 98 L388 86 M460 158 L472 170 M460 98 L472 86 M400 158 L388 170"></path>
+        </g>
+
+        <!-- SOLAR ARRAY (ground-mount) -->
+        <g stroke="#9AB0C0" stroke-width="2.2" stroke-linecap="round">
+          <path d="M400 314 V392 M452 302 V388"></path>
+        </g>
+        <g stroke="#0378B0" stroke-width="2.2" fill="#CDEAFB" stroke-linejoin="round">
+          <path d="M330 250 L460 234 L490 298 L360 314 Z"></path>
+        </g>
+        <g stroke="#0378B0" stroke-width="1.1" opacity="0.6" fill="none">
+          <path d="M373 245 L403 309 M416 240 L446 304 M345 274 L475 258"></path>
+        </g>
+        <g stroke="#9AB0C0" stroke-width="2.2" stroke-linecap="round">
+          <path d="M492 366 V398 M544 352 V394"></path>
+        </g>
+        <g stroke="#0378B0" stroke-width="2.2" fill="#CDEAFB" stroke-linejoin="round">
+          <path d="M418 302 L548 286 L578 350 L448 366 Z"></path>
+        </g>
+        <g stroke="#0378B0" stroke-width="1.1" opacity="0.6" fill="none">
+          <path d="M461 297 L491 361 M504 292 L534 356 M433 326 L563 310"></path>
+        </g>
+
+        <!-- GRID PYLON (tallest) -->
+        <g stroke="#35507A" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M155 228 L120 620 M155 228 L190 620"></path>
+          <path d="M155 228 V214"></path>
+          <path d="M104 274 H206 M112 316 H198"></path>
+          <path d="M118 274 V290 M155 274 V290 M192 274 V290"></path>
+          <path d="M145 340 L170 400 M165 340 L140 400 M140 400 L176 460 M170 400 L134 460 M134 460 L181 520 M176 460 L129 520 M129 520 L186 580 M181 520 L124 580"></path>
+          <path d="M145 340 H165 M140 400 H170 M134 460 H176 M129 520 H181 M124 580 H186"></path>
+          <path d="M120 620 L108 632 M190 620 L202 632"></path>
+        </g>
+
+        <!-- HOUSE (anchor / largest building) -->
+        <g stroke="#586471" stroke-width="2.8" fill="#F1F4F7" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M335 498 L435 432 L535 498"></path>
+          <path d="M353 492 V620 H517 V492"></path>
+        </g>
+        <rect x="414" y="558" width="42" height="62" rx="3" fill="#DCE4EA" stroke="#586471" stroke-width="2"></rect>
+        <rect x="378" y="528" width="34" height="30" rx="2" fill="#CFE6F4" stroke="#586471" stroke-width="1.8"></rect>
+        <rect x="458" y="528" width="34" height="30" rx="2" fill="#CFE6F4" stroke="#586471" stroke-width="1.8"></rect>
+
+        <!-- INVERTER (small wall box) -->
+        <rect x="662" y="508" width="76" height="112" rx="12" fill="url(#pfInv)" stroke="#1F4173" stroke-width="2.6"></rect>
+        <path d="M662 534 H738" stroke="#E2E7EB" stroke-width="1.8"></path>
+        <circle cx="725" cy="521" r="3.6" fill="#1FA845"></circle>
+        <path d="M676 566 q9 -15 18 0 t18 0 t18 0" stroke="#009DE4" stroke-width="2.8" fill="none" stroke-linecap="round"></path>
+        <g stroke="#C4D0DA" stroke-width="2.6" stroke-linecap="round"><path d="M676 590 H724 M676 601 H712"></path></g>
+
+        <!-- BATTERY PACK (two units, SOC fill) -->
+        <rect x="812" y="500" width="54" height="120" rx="9" fill="#F3FAF5" stroke="#1FA845" stroke-width="2.6"></rect>
+        <rect x="828" y="492" width="22" height="9" rx="3" fill="#1FA845"></rect>
+        <rect x="819" y="530" width="40" height="84" rx="5" fill="#7FCF97"></rect>
+        <rect x="819" y="530" width="40" height="11" fill="#9BDBAE"></rect>
+        <path d="M840 522 L830 550 H842 L832 576" stroke="#12842F" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        <rect x="876" y="484" width="58" height="136" rx="9" fill="#F3FAF5" stroke="#1FA845" stroke-width="2.6"></rect>
+        <rect x="894" y="476" width="24" height="9" rx="3" fill="#1FA845"></rect>
+        <rect x="883" y="517" width="46" height="97" rx="5" fill="#7FCF97"></rect>
+        <rect x="883" y="517" width="46" height="11" fill="#9BDBAE"></rect>
+
+        <!-- labels -->
+        <g font-family="'Space Grotesk', sans-serif">
+          <text text-anchor="end"><tspan x="312" y="270" font-size="12" font-weight="700" fill="#9AA6B0" letter-spacing="1.4">SOLAR</tspan></text>
+          <text text-anchor="end"><tspan x="312" y="296" font-size="24" font-weight="700" fill="#17222E">6.4</tspan><tspan font-size="12" font-weight="600" fill="#9AA6B0"> kW</tspan></text>
+          <text text-anchor="end"><tspan x="312" y="315" font-size="12.5" font-weight="600" fill="#0378B0">Producing</tspan></text>
+
+          <text text-anchor="middle"><tspan x="155" y="654" font-size="12" font-weight="700" fill="#9AA6B0" letter-spacing="1.4">GRID</tspan></text>
+          <text text-anchor="middle"><tspan x="155" y="680" font-size="24" font-weight="700" fill="#17222E">1.1</tspan><tspan font-size="12" font-weight="600" fill="#9AA6B0"> kW</tspan></text>
+          <text text-anchor="middle"><tspan x="155" y="699" font-size="12.5" font-weight="600" fill="#1F4173">Drawing in</tspan></text>
+
+          <text text-anchor="middle"><tspan x="435" y="654" font-size="12" font-weight="700" fill="#9AA6B0" letter-spacing="1.4">HOME</tspan></text>
+          <text text-anchor="middle"><tspan x="435" y="680" font-size="24" font-weight="700" fill="#17222E">3.5</tspan><tspan font-size="12" font-weight="600" fill="#9AA6B0"> kW</tspan></text>
+          <text text-anchor="middle"><tspan x="435" y="699" font-size="12.5" font-weight="600" fill="#46505A">In use</tspan></text>
+
+          <text text-anchor="middle"><tspan x="700" y="654" font-size="12" font-weight="700" fill="#9AA6B0" letter-spacing="1.4">INVERTER</tspan></text>
+          <text text-anchor="middle"><tspan x="700" y="680" font-size="13" font-weight="600" fill="#1F4173">3-phase · 50 Hz</tspan></text>
+
+          <text text-anchor="middle"><tspan x="873" y="654" font-size="12" font-weight="700" fill="#9AA6B0" letter-spacing="1.4">BATTERY</tspan></text>
+          <text text-anchor="middle"><tspan x="873" y="680" font-size="24" font-weight="700" fill="#17222E">78</tspan><tspan font-size="12" font-weight="600" fill="#9AA6B0"> %</tspan></text>
+          <text text-anchor="middle"><tspan x="873" y="699" font-size="12.5" font-weight="600" fill="#15702F">Charging 1.8 kW</tspan></text>
+        </g>
+      </svg>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+      <div style="display:flex; gap:16px; font-size:12px; color:#46505A; flex-wrap:wrap;">
+        <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:14px; height:3px; background:#009DE4; border-radius:2px;"></span>Solar</span>
+        <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:14px; height:3px; background:#1FA845; border-radius:2px;"></span>Battery</span>
+        <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:14px; height:3px; background:#1F4173; border-radius:2px;"></span>Grid</span>
+        <span style="display:inline-flex; align-items:center; gap:6px;"><span style="width:14px; height:3px; background:#46505A; border-radius:2px;"></span>Load</span>
+      </div>
+      <span style="font-size:11.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#8F5500; background:#FFF4E2; border-radius:999px; padding:3px 11px;">Provisional · ReactFlow on port</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1000, &quot;height&quot;: 720}}"></script>
+</body>
+</html>

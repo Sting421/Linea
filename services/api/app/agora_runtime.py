@@ -1,0 +1,299 @@
+"""Agora REST and RTC adapter. Policy and ownership are enforced by RuntimeService."""
+
+import copy
+import hashlib
+import hmac
+import json
+import os
+import re
+from datetime import timedelta
+from pathlib import Path
+from urllib.parse import quote
+
+import httpx
+from agora_token_builder.AccessToken import AccessToken, kJoinChannel, kPublishAudioStream
+
+from .conversation import opening
+from .models import now
+
+
+def placement_diagnostic(response):
+    """Extract only known public vocabulary; never log arbitrary provider text."""
+    reasons = {
+        "ServiceNotEnabled",
+        "AccountSuspended",
+        "InternalError",
+        "InvalidPermission",
+        "InvalidRequestBody",
+        "MissingRequiredField",
+        "InvalidFieldValue",
+        "ResourceQuotaLimitExceeded",
+        "ConcurrencyLimitExceeded",
+        "ServiceUnavailable",
+        "ResourceAllocationFailed",
+        "TaskConflict",
+        "TaskNotFound",
+        "TaskOperationTimeout",
+        "NotImplemented",
+    }
+    fields = {
+        "name",
+        "properties",
+        "channel",
+        "token",
+        "agent_rtc_uid",
+        "remote_rtc_uids",
+        "enable_string_uid",
+        "asr",
+        "tts",
+        "llm",
+        "vendor",
+        "credential_mode",
+        "params",
+        "model",
+        "voice",
+        "language",
+        "url",
+        "api_key",
+        "style",
+        "greeting_message",
+        "failure_message",
+        "max_history",
+        "parameters",
+        "opt_out",
+        "sip",
+        "to_number",
+        "from_number",
+        "rtc_uid",
+        "rtc_token",
+        "pipeline_id",
+    }
+    try:
+        body = response.json()
+    except ValueError:
+        body = {}
+    if not isinstance(body, dict):
+        body = {}
+    reason = body.get("reason")
+    detail = body.get("detail")
+    return {
+        "reason": reason if isinstance(reason, str) and reason in reasons else "unrecognized",
+        "fields_mentioned": sorted(fields.intersection(re.findall(r"[A-Za-z_]+", detail)))
+        if isinstance(detail, str)
+        else [],
+    }
+
+
+class PlacementRejected(RuntimeError):
+    """Provider explicitly refused a placement before creating a call."""
+
+    def __init__(self, status_code, diagnostic=None):
+        self.status_code = status_code
+        self.provider_diagnostic = diagnostic
+        super().__init__(f"Phone provider rejected placement (HTTP {status_code})")
+
+
+class AgoraRuntime:
+    def __init__(self, client=None, properties=None):
+        self.app_id = os.environ["AGORA_APP_ID"]
+        self.certificate = os.environ["AGORA_APP_CERTIFICATE"]
+        self.from_number = os.environ["AGORA_FROM_NUMBER"]
+        self.callback_origin = os.environ["LINEA_PUBLIC_API_URL"].rstrip("/")
+        self.bearer = os.environ["LINEA_CUSTOM_LLM_BEARER"]
+        self.properties = (
+            properties
+            if properties is not None
+            else json.loads(
+                Path(os.environ["LINEA_AGORA_PROPERTIES_FILE"]).read_text(encoding="utf-8")
+            )
+        )
+        if not self.callback_origin.startswith("https://"):
+            raise RuntimeError("Agora requires a public HTTPS completion URL")
+        if not re.fullmatch(r"\+[1-9]\d{7,14}", self.from_number):
+            raise RuntimeError("AGORA_FROM_NUMBER must be an owned E.164 SIP number")
+        if not self.properties.get("asr") or not self.properties.get("tts"):
+            raise RuntimeError("Supply verified English ASR/TTS properties from Agora Console")
+        self.client = client or httpx.Client(
+            base_url="https://api.agora.io",
+            timeout=15,
+            auth=(os.environ["AGORA_CUSTOMER_ID"], os.environ["AGORA_CUSTOMER_SECRET"]),
+        )
+        self.base = f"/api/conversational-ai-agent/v2/projects/{self.app_id}"
+
+    def token(self, channel, uid, ttl=900):
+        expires = now() + timedelta(seconds=ttl)
+        token = AccessToken(self.app_id, self.certificate, channel, uid)
+        token.addPrivilege(kJoinChannel, int(expires.timestamp()))
+        token.addPrivilege(kPublishAudioStream, int(expires.timestamp()))
+        return token.build(), expires
+
+    def place(self, call, profile):
+        leg = call.legs[-1]
+        properties = copy.deepcopy(self.properties)
+        token, _ = self.token(leg.channel, 2001, 3600)
+        sip_token, _ = self.token(leg.channel, 2000, 3600)
+        # A complete configuration avoids depending on undocumented pipeline overrides.
+        properties.update(
+            channel=leg.channel,
+            token=token,
+            agent_rtc_uid="2001",
+            remote_rtc_uids=["2000"],
+            enable_string_uid=False,
+        )
+        properties.setdefault("asr", {})["language"] = "en-US"
+        properties["llm"] = {
+            "vendor": "custom",
+            "style": "openai",
+            "api_key": self.bearer,
+            "url": f"{self.callback_origin}/provider/checkins/{call.id}/legs/{leg.id}/chat/completions",
+            "greeting_message": opening(call, profile, leg.kind == "reconnect"),
+            "failure_message": "",
+            "max_history": 16,
+        }
+        properties.setdefault("parameters", {})["opt_out"] = True
+        response = self.client.post(
+            f"{self.base}/call",
+            json={
+                "name": f"linea-{leg.id}",
+                "properties": properties,
+                "sip": {
+                    "to_number": profile.phone,
+                    "from_number": self.from_number,
+                    "rtc_uid": "2000",
+                    "rtc_token": sip_token,
+                },
+            },
+        )
+        # Authentication, missing endpoint, and schema rejection cannot create a call.
+        # Keep conflicts, timeouts, throttling and server errors ambiguous: an agent
+        # may exist even when the caller did not receive its identity.
+        if response.status_code in (401, 403, 404, 422):
+            raise PlacementRejected(response.status_code, placement_diagnostic(response))
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            exc.provider_diagnostic = placement_diagnostic(response)
+            raise
+        agent = response.json().get("agent_id")
+        if not isinstance(agent, str) or not agent:
+            raise ValueError("Agora did not return a session identity")
+        return agent
+
+    def speak(self, call, text):
+        agent = call.legs[-1].provider_agent_id
+        # Respect the documented 512-byte limit without splitting UTF-8 codepoints.
+        pieces, current = [], ""
+        for word in text.split():
+            # Unbroken quoted text can also exceed the limit. Split it only at
+            # Unicode character boundaries so it cannot block an entire briefing.
+            if len(word.encode()) > 512:
+                if current:
+                    pieces.append(current)
+                    current = ""
+                for char in word:
+                    if len((current + char).encode()) > 512:
+                        pieces.append(current)
+                        current = ""
+                    current += char
+                continue
+            candidate = f"{current} {word}".strip()
+            if len(candidate.encode()) > 512:
+                pieces.append(current)
+                current = word
+            else:
+                current = candidate
+        if current:
+            pieces.append(current)
+        for index, piece in enumerate(pieces):
+            self.client.post(
+                f"{self.base}/agents/{quote(agent, safe='')}/speak",
+                json={
+                    "text": piece,
+                    "priority": "INTERRUPT" if index == 0 else "APPEND",
+                    "interruptable": not call.emergency_latched,
+                },
+            ).raise_for_status()
+
+    def end_everyone(self, call):
+        agent = quote(call.legs[-1].provider_agent_id, safe="")
+        failures = []
+        for path in (f"calls/{agent}/hangup", f"agents/{agent}/leave"):
+            try:
+                response = self.client.post(f"{self.base}/{path}")
+                if response.status_code != 404:
+                    response.raise_for_status()
+            except httpx.HTTPError as exc:
+                failures.append(exc)
+        if failures:
+            # Both resources need cleanup; preserve uncertainty so the worker retries.
+            raise failures[0]
+
+    def call_status(self, call):
+        agent = quote(call.legs[-1].provider_agent_id, safe="")
+        response = self.client.get(f"{self.base}/calls/{agent}")
+        response.raise_for_status()
+        status = response.json()
+        # The live telephony endpoint returns uppercase states, while published
+        # SDK schemas also describe lowercase values. Normalize at the boundary.
+        if isinstance(status.get("state"), str):
+            status["state"] = status["state"].lower()
+        if status.get("reason") == "user_hangup":
+            status["reason"] = "hangup"
+        return status
+
+    def find_agent(self, leg):
+        response = self.client.get(
+            f"{self.base}/agents",
+            params={
+                "channel": leg.channel,
+                "state": "0,1,2,3,4,6",
+                "limit": 2,
+                "from_time": int(leg.started_at.timestamp()) - 60,
+            },
+        )
+        response.raise_for_status()
+        matches = response.json()["data"]["list"]
+        if len(matches) != 1:
+            return None
+        return matches[0]["agent_id"]
+
+    def family_token(self, call, member):
+        uid = call.rtc_members[member]
+        token, expires = self.token(call.legs[-1].channel, uid)
+        return {
+            "appId": self.app_id,
+            "channel": call.legs[-1].channel,
+            "uid": uid,
+            "token": token,
+            "expiresAt": expires.isoformat(),
+        }
+
+    def members(self, call):
+        channel = quote(call.legs[-1].channel, safe="")
+        response = self.client.get(
+            f"https://api.sd-rtn.com/dev/v1/channel/user/{self.app_id}/{channel}"
+        )
+        response.raise_for_status()
+        body = response.json()
+        if not body.get("success"):
+            raise ValueError("Provider membership lookup failed")
+        data = body["data"]
+        return {
+            int(uid)
+            for uid in data.get("users", [])
+            + data.get("broadcasters", [])
+            + data.get("audience", [])
+        }
+
+
+def verify_signature(raw, headers, secret):
+    if not secret:
+        return False
+    signature = headers.get("Agora-Signature-V2")
+    algorithm = hashlib.sha256
+    if signature is None:
+        signature, algorithm = headers.get("Agora-Signature"), hashlib.sha1
+    return bool(signature) and hmac.compare_digest(
+        hmac.new(secret.encode(), raw, algorithm).hexdigest(),
+        signature,
+    )

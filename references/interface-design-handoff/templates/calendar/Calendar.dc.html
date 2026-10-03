@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Calendar" description="Month calendar with header navigation, weekday row, range selection (start/end + filled span), a today marker and muted adjacent-month days. Net-new, powers date-range pickers for Area 1/2 chart windows and Area 3 event filtering." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #20262B; background: #fff; padding: 26px; display: flex; justify-content: center;">
+  <div style="width: 312px; border: 1px solid #E2E7EB; border-radius: 14px; padding: 16px; box-shadow: 0 4px 18px rgba(31,65,115,0.07);">
+
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid #E2E7EB; background: #fff; cursor: pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46505A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></span>
+      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; color: #1F4173;">June 2025</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid #E2E7EB; background: #fff; cursor: pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46505A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px;">
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">Su</span>
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">Mo</span>
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">Tu</span>
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">We</span>
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">Th</span>
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">Fr</span>
+      <span style="text-align: center; font-size: 10.5px; font-weight: 600; color: #9AA3AB; text-transform: uppercase; letter-spacing: 0.03em;">Sa</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px;">
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">1</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">2</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">3</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">4</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">5</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">6</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">7</div>
+
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">8</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; background: #EAF6FD; border-radius: 10px 0 0 10px;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: #009DE4; color: #fff; font-weight: 600;">9</span></div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #03587F; background: #EAF6FD;">10</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #03587F; background: #EAF6FD;">11</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #03587F; background: #EAF6FD;">12</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #03587F; background: #EAF6FD;">13</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #03587F; background: #EAF6FD;">14</div>
+
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; background: #EAF6FD; border-radius: 0 10px 10px 0;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: #009DE4; color: #fff; font-weight: 600;">15</span></div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">16</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">17</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px;"><span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #009DE4; color: #03587F; font-weight: 600;">18</span></div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">19</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">20</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">21</div>
+
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">22</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">23</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">24</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">25</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">26</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">27</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">28</div>
+
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">29</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #20262B;">30</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #C2CAD1;">1</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #C2CAD1;">2</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #C2CAD1;">3</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #C2CAD1;">4</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 38px; font-size: 13px; color: #C2CAD1;">5</div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 13px; border-top: 1px solid #EEF2F5;">
+      <span style="font-size: 12.5px; color: #46505A;"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: #03587F;">Jun 9 – Jun 15</span> · 7 days</span>
+      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; color: #fff; background: #009DE4; border-radius: 8px; padding: 6px 14px; cursor: pointer;">Apply</span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 380, &quot;height&quot;: 480}}"></script>
+</body>
+</html>

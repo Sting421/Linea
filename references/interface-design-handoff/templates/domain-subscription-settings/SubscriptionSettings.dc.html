@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Domain · Subscription & Routing" description="Area 3 subscription settings (aggregator / admin view). Per-severity subscription toggles (Fault / Warning / Anomaly / Offline / Normal), delivery-channel selection (In app / Email / Webhook), and per-role routing defaults. Opened from the notification-dropdown gear. Net-new; routing rules provisional." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background:#F4F7F9; padding:24px; color:#20262B;">
+  <div style="max-width:820px; margin:0 auto;">
+
+    <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#8A9199; margin-bottom:20px;">
+      <span style="font-weight:500; cursor:pointer;" style-hover="color:#03587F">Alerts &amp; Events Center</span><span style="color:#9AA6AF; font-weight:600; user-select:none;">›</span><span style="color:#1F4173; font-weight:600;">Subscription &amp; Routing</span>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
+      <sc-for list="{{ sevs }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex; align-items:center; gap:14px; background:#fff; border:1px solid #E2E7EB; border-radius:11px; padding:12px 16px;">
+          <sc-if value="{{ s.isFault }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; width:82px; justify-content:center; font-family:'Space Grotesk', sans-serif; font-size:12px; font-weight:600; color:#fff; background:#DC3A2C; border-radius:8px; padding:5px 0;">{{ s.label }}</span></sc-if>
+          <sc-if value="{{ s.isWarning }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; width:82px; justify-content:center; font-family:'Space Grotesk', sans-serif; font-size:12px; font-weight:600; color:#fff; background:#E08600; border-radius:8px; padding:5px 0;">{{ s.label }}</span></sc-if>
+          <sc-if value="{{ s.isAnomaly }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; width:82px; justify-content:center; font-family:'Space Grotesk', sans-serif; font-size:12px; font-weight:600; color:#fff; background:#8B5CF6; border-radius:8px; padding:5px 0;">{{ s.label }}</span></sc-if>
+          <sc-if value="{{ s.isOffline }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; width:82px; justify-content:center; font-family:'Space Grotesk', sans-serif; font-size:12px; font-weight:600; color:#fff; background:#7C8286; border-radius:8px; padding:5px 0;">{{ s.label }}</span></sc-if>
+          <sc-if value="{{ s.isNormal }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; width:82px; justify-content:center; font-family:'Space Grotesk', sans-serif; font-size:12px; font-weight:600; color:#fff; background:#0089C7; border-radius:8px; padding:5px 0;">{{ s.label }}</span></sc-if>
+          <span style="flex:1 1 auto; font-size:12.5px; color:#8A9199;">{{ s.hint }}</span>
+          <sc-if value="{{ s.on }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ s.onToggle }}" style="position:relative; flex:0 0 auto; width:62px; height:28px; border-radius:999px; border:none; cursor:pointer; background:#009DE4; transition:background .15s;"><span style="position:absolute; top:3px; left:37px; width:22px; height:22px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span></button></sc-if>
+          <sc-if value="{{ s.off }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ s.onToggle }}" style="position:relative; flex:0 0 auto; width:62px; height:28px; border-radius:999px; border:none; cursor:pointer; background:#CBD3D9; transition:background .15s;"><span style="position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span></button></sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- channels -->
+    <div style="font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#8A9199; margin-bottom:12px;">Channels</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px;">
+      <sc-for list="{{ channels }}" as="c" hint-placeholder-count="3">
+        <sc-if value="{{ c.on }}" hint-placeholder-val="{{ true }}">
+          <button type="button" onClick="{{ c.onToggle }}" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; border-radius:11px; padding:16px 18px; border:1.5px solid #1F4173; background:#1F4173; color:#fff;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px;">{{ c.label }}</span>
+            <span style="display:inline-flex; color:#7FE0A0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+          </button>
+        </sc-if>
+        <sc-if value="{{ c.off }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ c.onToggle }}" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; border-radius:11px; padding:16px 18px; border:1px solid #E2E7EB; background:#fff; color:#46505A;">
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px;">{{ c.label }}</span>
+          </button>
+        </sc-if>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 860, &quot;height&quot;: 660}}">
+class Component extends DCLogic {
+  state = {
+    sev: { fault: true, warning: true, anomaly: true, offline: false, normal: false },
+    chan: { inapp: true, email: true, webhook: false },
+  };
+  pal() {
+    return {
+      fault:   { label: "Fault",   solid: "#DC3A2C", hint: "Critical faults, dispatched immediately" },
+      warning: { label: "Warning", solid: "#E08600", hint: "Degraded or at-risk conditions" },
+      anomaly: { label: "Anomaly", solid: "#8B5CF6", hint: "Derived anomalies from performance patterns" },
+      offline: { label: "Offline", solid: "#7C8286", hint: "Devices that stopped reporting" },
+      normal:  { label: "Normal",  solid: "#0089C7", hint: "Informational state changes" },
+    };
+  }
+  renderVals() {
+    const NAME = { fault: "Fault", warning: "Warning", anomaly: "Anomaly", offline: "Offline", normal: "Normal" };
+    const HINT = { fault: "Critical faults, dispatched immediately", warning: "Degraded or at-risk conditions", anomaly: "Derived anomalies from performance patterns", offline: "Devices that stopped reporting", normal: "Informational state changes" };
+    const order = ["fault", "warning", "anomaly", "offline", "normal"];
+    const sevs = order.map((k) => {
+      const on = this.state.sev[k];
+      return {
+        label: NAME[k], hint: HINT[k],
+        isFault: k === "fault", isWarning: k === "warning", isAnomaly: k === "anomaly", isOffline: k === "offline", isNormal: k === "normal",
+        on, off: !on,
+        onToggle: () => this.setState((s) => ({ sev: Object.assign({}, s.sev, { [k]: !s.sev[k] }) })),
+      };
+    });
+    const chanDefs = [["inapp", "In-app notifications"], ["email", "Email"], ["webhook", "Webhook"]];
+    const channels = chanDefs.map(([k, label]) => {
+      const on = this.state.chan[k];
+      return {
+        label, on, off: !on,
+        onToggle: () => this.setState((s) => ({ chan: Object.assign({}, s.chan, { [k]: !s.chan[k] }) })),
+      };
+    });
+    return { sevs, channels };
+  }
+}
+</script>
+</body>
+</html>

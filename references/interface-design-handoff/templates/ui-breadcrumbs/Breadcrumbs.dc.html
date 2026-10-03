@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Breadcrumbs" description="Canonical page trail: muted ancestor links with hover, chevron separators, bold current page, optional home-icon root. One pattern for every breadcrumb in the platform." -->
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #20262B; background: #fff; padding: 24px 26px; display: flex; flex-direction: column; align-items: center; gap: 22px;">
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 9px;">
+    <div style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600; color: #8A9199;">Standard</div>
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #8A9199;">
+      <span style="font-weight: 500; cursor: pointer;" style-hover="color:#03587F">Alerts &amp; Events Center</span>
+      <span style="color: #9AA6AF; font-weight: 600; user-select: none;">›</span>
+      <span style="color: #1F4173; font-weight: 600;">Subscription &amp; Routing</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 9px;">
+    <div style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600; color: #8A9199;">With home root, used by shells</div>
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #8A9199;">
+      <span style="display: inline-flex; color: #B4BEC7; cursor: pointer;" style-hover="color:#03587F"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Home" size="14" hint-size="14px,14px"></x-import></span>
+      <span style="font-weight: 500; cursor: pointer;" style-hover="color:#03587F">Fleet</span>
+      <span style="color: #9AA6AF; font-weight: 600; user-select: none;">›</span>
+      <span style="font-weight: 500; cursor: pointer;" style-hover="color:#03587F">Maple Grove</span>
+      <span style="color: #9AA6AF; font-weight: 600; user-select: none;">›</span>
+      <span style="color: #1F4173; font-weight: 600;">Equipment</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 9px;">
+    <div style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600; color: #8A9199;">Deep trail, middle collapsed</div>
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #8A9199;">
+      <span style="display: inline-flex; color: #B4BEC7; cursor: pointer;" style-hover="color:#03587F"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Home" size="14" hint-size="14px,14px"></x-import></span>
+      <span style="font-weight: 500; cursor: pointer;" style-hover="color:#03587F">Fleet</span>
+      <span style="color: #9AA6AF; font-weight: 600; user-select: none;">›</span>
+      <span style="font-weight: 500; cursor: pointer; letter-spacing: 0.08em;" style-hover="color:#03587F">…</span>
+      <span style="color: #9AA6AF; font-weight: 600; user-select: none;">›</span>
+      <span style="font-weight: 500; cursor: pointer;" style-hover="color:#03587F">Inverter B</span>
+      <span style="color: #9AA6AF; font-weight: 600; user-select: none;">›</span>
+      <span style="color: #1F4173; font-weight: 600;">Diagnostics</span>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid #EEF1F4; padding-top: 14px; font-size: 12px; color: #8A9199; line-height: 1.6; align-self: stretch; text-align: center;">
+    Spec: 12.5px body type, 8px gap. Ancestors <span style="font-family: ui-monospace, monospace;">#8A9199</span> w500, hover <span style="font-family: ui-monospace, monospace;">#03587F</span>. Separator › <span style="font-family: ui-monospace, monospace;">#9AA6AF</span> w600. Current page <span style="font-family: ui-monospace, monospace;">#1F4173</span> w600.
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

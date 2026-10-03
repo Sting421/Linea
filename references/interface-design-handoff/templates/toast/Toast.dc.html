@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Toast" description="Transient notification, one corner (bottom-right). Enter translateY(100%) 200ms cubic-bezier(0.23,1,0.32,1) as a CSS transition, exit reverses at 150ms, stack reflows on cubic-bezier(0.77,0,0.175,1). Dwell by severity, Normal 4s, Warning/Offline/Anomaly 8s, Fault never. Pause on hover and focus-within. Swipe dismiss on velocity. Max three visible, then +N more. Keyboard dismiss is immediate. Severity icon, hairline divider, severity-coloured title, one-sentence body with bold values and an inline deep link. Normal / Warning / Offline / Fault / Anomaly off the shared states palette, a stack of three newest-first, and a coalesced state that folds repeats of one event key into a counted toast. Net-new, used by Area 2 command acknowledgements and Area 3 incident pushes." -->
+<helmet>
+<style>body{margin:0;background:#fff}*{box-sizing:border-box}[data-close]:focus-visible{outline:2px solid #009DE4;outline-offset:3px;color:#009DE4}@media (prefers-reduced-motion:reduce){[data-close]:hover,[data-close]:active{transform:none !important}[data-toast]{transition-duration:0ms !important}}</style>
+</helmet>
+<div style="font-family:'Opening Hours Sans',ui-sans-serif,system-ui,sans-serif;font-weight:400;color:#20262B;background:#fff;padding:28px 30px 34px;display:flex;flex-direction:column;gap:30px;">
+<div style="display:flex;flex-direction:column;gap:6px;margin:-4px 0 -6px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5B6A78;">Toast</span>
+<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.7;color:#8A97A3;padding-bottom:10px;border-bottom:1px solid #EAEFF3;">Faces render in a fallback here, read the numbers. Display + numerals: Overused Grotesk, variable 300–900. Prose: Opening Hours Sans, single cut 400, never bolded.<br>Surface: elev-5 = 0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04) (above the layout). Older stack members elev-4, elev-3. Radius 14 (container band). Ghost count pill 999 (label).<br>Close button: rest ink-600 #6B7177 (ink token, not status-offline) · hover hue-sky-500 #009DE4 + 1px outline offset 2 + rotate 90° · 120ms ease · press scale(0.97) · focus-visible 2px outline offset 3, same hue · reduced motion keeps colour + outline, drops rotation.<br>Motion: one corner, bottom-right. Enter translateY(100%) → 0, 200ms cubic-bezier(0.23, 1, 0.32, 1), CSS transition not keyframes so rapid arrivals retarget. Exit reverses the path at 150ms. Stack reflow 240ms cubic-bezier(0.77, 0, 0.175, 1). Swipe right to dismiss when Math.abs(dx)/elapsedMs > 0.11, leftward drag rubber-bands at 0.3. Dwell: Normal 4s · Warning, Offline, Anomaly 8s · Fault never. Hover or focus-within pauses. Max 3 visible, newest nearest the corner, rest fold into +N more. Escape removes immediately with no exit animation.</div>
+</div>
+
+<section style="display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Severities</span><span style="font-size:11px;color:#9AA3AB;">400 wide · pad 14/16 · gap 14 · icon 22 · divider 1px #E2E7EB · title Overused Grotesk 600 14px lh 1.3 in the severity text tone · body Opening Hours 400 13px lh 1.5, values Overused 600 · link 600 · radius 14 (container) · elev-5</span></div>
+<div style="display:grid;grid-template-columns:repeat(2,400px);gap:14px;">
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#009DE4;color:#fff;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#03587F;">Command acknowledged</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;">Inverter 3 at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Maple Grove</strong> confirmed the new export limit of <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">4.5 kW</strong>. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#03587F;font-weight:600;cursor:pointer;">View details</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#E08600;color:#fff;font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:700;font-size:13px;">!</span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#8F5500;">Communication fault</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;">Gateway at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">FLAME PET 01</strong> missed <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">3 heartbeats</strong>, last seen 4 min ago. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#8F5500;font-weight:600;cursor:pointer;">View details</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#6B7177;color:#fff;"><span style="display:block;width:8px;height:2px;background:#fff;border-radius:1px;"></span></span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#474C51;">AC charger offline</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;"><strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">AC-770</strong> at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">LoveShack</strong> stopped reporting. Site output unaffected. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#474C51;font-weight:600;cursor:pointer;">View details</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#DC3A2C;color:#fff;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#9E1B12;">Leakage current high</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;"><strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Inverter B</strong> at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Maple Grove</strong> tripped at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">312 mA</strong>. Output has dropped to 0 kW. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#9E1B12;font-weight:600;cursor:pointer;">Open incident</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#8B5CF6;color:#fff;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-7 4 14 3-7h4"></path></svg></span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#5B21B6;">Generation below forecast</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;"><strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Dune Field</strong> is producing <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">38% under</strong> the irradiance model for 2 h. No fault reported. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#5B21B6;font-weight:600;cursor:pointer;">View details</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+</div>
+<span style="font-size:12px;color:#8A9199;line-height:1.6;max-width:814px;">Title and inline link take the severity text tone from the states palette (#03587F · #8F5500 · #474C51 · #9E1B12 · #5B21B6). Normal, Warning, Offline and Anomaly dismiss after 6 s, hover pauses. Fault stays until closed or followed. The × dismisses the toast only, the event still lands in the inbox.</span>
+</section>
+
+<div style="display:grid;grid-template-columns:repeat(2,400px);gap:14px;align-items:start;">
+
+<section style="display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Stack of three</span><span style="font-size:11px;color:#9AA3AB;">newest nearest the corner · gap 8 · elevation steps elev-5 → elev-4 → elev-3 with age · fourth arrival coalesces into +N more</span></div>
+<div style="position:relative;background:#F4F7F9;border:1px solid #E2E7EB;border-radius:14px;height:330px;overflow:hidden;">
+<div style="position:absolute;right:16px;bottom:16px;width:352px;display:flex;flex-direction:column;gap:8px;">
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#DC3A2C;color:#fff;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#9E1B12;">Leakage current high</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;"><strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Inverter B</strong> at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Maple Grove</strong> tripped at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">312 mA</strong>. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#9E1B12;font-weight:600;cursor:pointer;">Open incident</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 10px 15px -3px rgb(15 15 16 / 0.10), 0 4px 6px -2px rgb(15 15 16 / 0.05);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#E08600;color:#fff;font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:700;font-size:13px;">!</span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#8F5500;">Communication fault</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;">Gateway at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">FLAME PET 01</strong> missed <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">3 heartbeats</strong>. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#8F5500;font-weight:600;cursor:pointer;">View details</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 4px 6px -1px rgb(15 15 16 / 0.08), 0 2px 4px -1px rgb(15 15 16 / 0.06);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#009DE4;color:#fff;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#03587F;">Command acknowledged</span>
+<span style="font-size:13px;line-height:1.5;color:#586068;">Inverter 3 at <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Maple Grove</strong> confirmed <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">4.5 kW</strong>. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#03587F;font-weight:600;cursor:pointer;">View details</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+</div>
+</div>
+<span style="font-size:12px;color:#8A9199;line-height:1.6;">Elevation steps down with age. Stack order is arrival order, not severity.</span>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Coalesced</span><span style="font-size:11px;color:#9AA3AB;">same event key inside the dwell window · count pill Overused 600 11px radius 999 · ghosts offset 10 and 20 down, inset 24 and 48 left, elev-4 and elev-3</span></div>
+<div style="position:relative;background:#F4F7F9;border:1px solid #E2E7EB;border-radius:14px;height:330px;overflow:hidden;">
+<div style="position:absolute;right:16px;bottom:40px;width:352px;">
+<div style="position:absolute;left:48px;right:0;bottom:-20px;height:100%;border-radius:14px;background:#fff;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 4px 6px -1px rgb(15 15 16 / 0.08), 0 2px 4px -1px rgb(15 15 16 / 0.06);"></div>
+<div style="position:absolute;left:24px;right:0;bottom:-10px;height:100%;border-radius:14px;background:#fff;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 10px 15px -3px rgb(15 15 16 / 0.10), 0 4px 6px -2px rgb(15 15 16 / 0.05);"></div>
+<div style="position:relative;display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#E08600;color:#fff;font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:700;font-size:13px;">!</span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="display:flex;align-items:center;gap:8px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;color:#8F5500;">Battery SoC below 15%</span><span style="display:inline-flex;align-items:center;font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:600;color:#8F5500;background:#FFF4E2;border-radius:999px;padding:2px 8px;">×5</span></span>
+<span style="font-size:13px;line-height:1.5;color:#586068;"><strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">5 packs</strong> across <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Dune Field</strong> and <strong style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#20262B;font-weight:600;">Maple Grove</strong> in the last 4 min. <span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;color:#8F5500;font-weight:600;cursor:pointer;">Show all 5</span></span>
+</span>
+<button type="button" data-close aria-label="Dismiss" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+</div>
+</div>
+<span style="font-size:12px;color:#8A9199;line-height:1.6;">Count and body update in place, the dwell timer resets on each fold. Ghost cards behind hint at the folded repeats.</span>
+</section>
+
+</div>
+
+
+<section style="display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:13px;color:#1F4173;">Live</span><span style="font-size:11px;color:#9AA3AB;">push toasts, hover to pause, drag right to dismiss, Escape on a focused toast removes it instantly · stack pitch 84 = 76 card + 8 gap</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;">
+<button type="button" onClick="{{ pushNormal }}" style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:12.5px;font-weight:600;color:#fff;background:#009DE4;border:0;border-radius:8px;padding:7px 13px;cursor:pointer;">Normal</button>
+<button type="button" onClick="{{ pushWarning }}" style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:12.5px;font-weight:600;color:#fff;background:#E08600;border:0;border-radius:8px;padding:7px 13px;cursor:pointer;">Warning</button>
+<button type="button" onClick="{{ pushOffline }}" style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:12.5px;font-weight:600;color:#fff;background:#6B7177;border:0;border-radius:8px;padding:7px 13px;cursor:pointer;">Offline</button>
+<button type="button" onClick="{{ pushFault }}" style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:12.5px;font-weight:600;color:#fff;background:#DC3A2C;border:0;border-radius:8px;padding:7px 13px;cursor:pointer;">Fault</button>
+<button type="button" onClick="{{ pushAnomaly }}" style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:12.5px;font-weight:600;color:#fff;background:#8B5CF6;border:0;border-radius:8px;padding:7px 13px;cursor:pointer;">Anomaly</button>
+<button type="button" onClick="{{ clearAll }}" style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:12.5px;font-weight:600;color:#1F4173;background:#fff;border:1px solid #CFE8F6;border-radius:8px;padding:7px 13px;cursor:pointer;">Clear</button>
+</div>
+<div onMouseEnter="{{ pause }}" onMouseLeave="{{ resume }}" onFocus="{{ pause }}" onBlur="{{ resume }}" style="position:relative;background:#F4F7F9;border:1px solid #E2E7EB;border-radius:14px;height:360px;overflow:hidden;">
+<sc-if value="{{ hasOverflow }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:16px;bottom:{{ overflowBottom }};font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:600;color:#46505A;background:#EEF2F5;border-radius:999px;padding:3px 10px;">+{{ overflowCount }} more</span></sc-if>
+<sc-for list="{{ live }}" as="t" hint-placeholder-count="0">
+<div data-toast tabIndex="0" onKeyDown="{{ t.key }}" onPointerDown="{{ t.down }}" onPointerMove="{{ t.move }}" onPointerUp="{{ t.up }}" onPointerCancel="{{ t.up }}" style="position:absolute;right:16px;width:352px;height:76px;bottom:{{ t.bottom }};transform:{{ t.transform }};opacity:{{ t.opacity }};transition:{{ t.transition }};display:flex;align-items:stretch;gap:14px;padding:14px 14px 14px 16px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px rgb(15 15 16 / 0.05), 0 20px 25px -5px rgb(15 15 16 / 0.10), 0 10px 10px -5px rgb(15 15 16 / 0.04);touch-action:pan-y;user-select:none;cursor:grab;outline:none;">
+<span style="flex:0 0 auto;display:flex;align-items:flex-start;padding-top:1px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:{{ t.solid }};color:#fff;font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:700;font-size:12px;line-height:1;">{{ t.glyph }}</span></span>
+<span style="flex:0 0 auto;width:1px;background:#E2E7EB;"></span>
+<span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<span style="display:flex;align-items:center;gap:8px;"><span style="font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-weight:600;font-size:14px;line-height:1.3;color:{{ t.text }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ t.title }}</span><sc-if value="{{ t.coalesced }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;font-family:'Overused Grotesk',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:600;color:{{ t.text }};background:{{ t.soft }};border-radius:999px;padding:2px 8px;">×{{ t.count }}</span></sc-if></span>
+<span style="font-size:13px;line-height:1.5;color:#586068;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ t.body }}</span>
+</span>
+<button type="button" data-close aria-label="Dismiss" onClick="{{ t.close }}" style="flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-6px -6px 0 0;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7177;cursor:pointer;outline:1px solid transparent;outline-offset:2px;transition:color 120ms ease,outline-color 120ms ease,transform 120ms ease;" style-hover="color:#009DE4;outline-color:#009DE4;transform:rotate(90deg)" style-active="transform:rotate(90deg) scale(0.97)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+</sc-for>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 880, &quot;height&quot;: 1320}}">
+class Component extends DCLogic {
+  state = { items: [], seq: 0 };
+  timers = {};
+  SEV = {
+    normal:  { solid: "#009DE4", text: "#03587F", soft: "#E6F7FF", glyph: "\u2713", dwell: 4000, title: "Command acknowledged",   body: "Inverter 3 at Maple Grove confirmed 4.5 kW." },
+    warning: { solid: "#E08600", text: "#8F5500", soft: "#FFF4E2", glyph: "!",      dwell: 8000, title: "Communication fault",     body: "Gateway at FLAME PET 01 missed 3 heartbeats." },
+    offline: { solid: "#6B7177", text: "#474C51", soft: "#EEF0F1", glyph: "\u2013", dwell: 8000, title: "AC charger offline",      body: "AC-770 at LoveShack stopped reporting." },
+    fault:   { solid: "#DC3A2C", text: "#9E1B12", soft: "#FDECEA", glyph: "\u2715", dwell: 0,    title: "Leakage current high",    body: "Inverter B at Maple Grove tripped at 312 mA." },
+    anomaly: { solid: "#8B5CF6", text: "#5B21B6", soft: "#F1EAFE", glyph: "~",      dwell: 8000, title: "Generation below forecast", body: "Dune Field is 38% under forecast for 2 h." },
+  };
+  ENTER = "cubic-bezier(0.23, 1, 0.32, 1)";
+  REFLOW = "cubic-bezier(0.77, 0, 0.175, 1)";
+  PITCH = 84; // 76 card + 8 gap
+  find(id) { return this.state.items.find((i) => i.id === id); }
+  patch(id, p) { this.setState((s) => ({ items: s.items.map((i) => i.id === id ? { ...i, ...p } : i) })); }
+  drop(id) { this.disarm(id); this.setState((s) => ({ items: s.items.filter((i) => i.id !== id) })); }
+  push(sev) {
+    // coalesce: same event key still on screen folds into it and resets its dwell
+    const dup = this.state.items.find((i) => i.sev === sev && i.phase !== "exit");
+    if (dup) { this.disarm(dup.id); this.patch(dup.id, { count: dup.count + 1, remaining: this.SEV[sev].dwell }); setTimeout(() => this.arm(dup.id), 0); return; }
+    const id = this.state.seq + 1;
+    const item = { id, sev, count: 1, phase: "enter", dx: 0, drag: false, remaining: this.SEV[sev].dwell };
+    this.setState((s) => ({ seq: id, items: [item, ...s.items] }), () => {
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (this.find(id)) { this.patch(id, { phase: "shown" }); if (!this.paused) this.arm(id); } }));
+    });
+  }
+  arm(id) { const it = this.find(id); if (!it || !it.remaining || this.timers[id]) return; this.timers[id] = { start: Date.now(), t: setTimeout(() => this.exit(id, "y"), it.remaining) }; }
+  disarm(id) { const tm = this.timers[id]; if (!tm) return; clearTimeout(tm.t); delete this.timers[id]; const it = this.find(id); if (it) this.patch(id, { remaining: Math.max(0, it.remaining - (Date.now() - tm.start)) }); }
+  exit(id, axis) { this.disarm(id); this.patch(id, { phase: "exit", axis }); setTimeout(() => this.drop(id), 150); }
+  paused = false;
+  pauseAll() { this.paused = true; this.state.items.forEach((i) => this.disarm(i.id)); }
+  resumeAll() { this.paused = false; this.state.items.forEach((i) => i.phase === "shown" && this.arm(i.id)); }
+  componentWillUnmount() { Object.values(this.timers).forEach((tm) => clearTimeout(tm.t)); }
+  renderVals() {
+    const visible = this.state.items.slice(0, 3);
+    const overflow = Math.max(0, this.state.items.length - 3);
+    const live = visible.map((it, idx) => {
+      const sev = this.SEV[it.sev];
+      let transform = "translateX(0)", opacity = 1, transition;
+      if (it.phase === "enter") { transform = "translateY(100%)"; opacity = 0; transition = "none"; }
+      else if (it.phase === "exit") { transform = it.axis === "x" ? "translateX(100%)" : "translateY(100%)"; opacity = 0; transition = "transform 150ms " + this.ENTER + ", opacity 150ms ease"; }
+      else if (it.drag) { transform = "translateX(" + it.dx + "px)"; transition = "bottom 240ms " + this.REFLOW; }
+      else transition = "transform 200ms " + this.ENTER + ", opacity 200ms ease, bottom 240ms " + this.REFLOW;
+      return {
+        id: it.id, solid: sev.solid, text: sev.text, soft: sev.soft, glyph: sev.glyph, title: sev.title,
+        body: it.count > 1 ? it.count + " events in the last few minutes. " + sev.body : sev.body,
+        coalesced: it.count > 1, count: it.count,
+        bottom: (16 + idx * this.PITCH) + "px", transform, opacity, transition,
+        close: () => this.exit(it.id, "y"),
+        key: (e) => { if (e.key === "Escape" || e.key === "Delete") { e.preventDefault(); this.drop(it.id); } },
+        down: (e) => { e.currentTarget.setPointerCapture(e.pointerId); this.patch(it.id, { drag: true, x0: e.clientX, t0: performance.now(), dx: 0 }); },
+        move: (e) => { const cur = this.find(it.id); if (!cur || !cur.drag) return; let d = e.clientX - cur.x0; if (d < 0) d = d * 0.3; this.patch(it.id, { dx: d }); },
+        up: (e) => { const cur = this.find(it.id); if (!cur || !cur.drag) return; const elapsed = Math.max(1, performance.now() - cur.t0); const v = Math.abs(cur.dx) / elapsed; if (cur.dx > 0 && v > 0.11) this.exit(it.id, "x"); else this.patch(it.id, { drag: false, dx: 0 }); },
+      };
+    });
+    const mk = (sev) => () => this.push(sev);
+    return {
+      live, hasOverflow: overflow > 0, overflowCount: overflow, overflowBottom: (16 + 3 * this.PITCH) + "px",
+      pushNormal: mk("normal"), pushWarning: mk("warning"), pushOffline: mk("offline"), pushFault: mk("fault"), pushAnomaly: mk("anomaly"),
+      clearAll: () => { Object.keys(this.timers).forEach((k) => this.disarm(Number(k))); this.setState({ items: [] }); },
+      pause: () => this.pauseAll(), resume: () => this.resumeAll(),
+    };
+  }
+}
+</script>
+</body>
+</html>

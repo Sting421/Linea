@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Evolved · StatBox" description="Brand-evolved KPI tile, Space Grotesk value with a status-colored up/down delta badge. Reskin target for the reap StatBox." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding:28px; display:flex; flex-direction:column; gap:18px; background:#fff;">
+  <div style="display:flex; gap:14px; flex-wrap:wrap;">
+    <div style="flex:1; min-width:172px; border:1px solid #E2E7EB; border-radius:12px; padding:16px 18px; background:#fff;">
+      <div style="font-size:12.5px; color:#8A9199;">Energy produced today</div>
+      <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#20262B; margin-top:4px; letter-spacing:-0.01em;">482 <span style="font-size:14px; color:#8A9199; font-weight:500;">kWh</span></div>
+      <div style="display:flex; align-items:center; gap:7px; margin-top:9px;"><span style="font-size:12px; font-weight:600; color:#15702F; background:#E7F8EC; border-radius:999px; padding:2px 8px;">▲ 12%</span><span style="font-size:11.5px; color:#8A9199;">vs 410</span></div>
+    </div>
+    <div style="flex:1; min-width:172px; border:1px solid #E2E7EB; border-radius:12px; padding:16px 18px; background:#fff;">
+      <div style="font-size:12.5px; color:#8A9199;">Grid import</div>
+      <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#20262B; margin-top:4px; letter-spacing:-0.01em;">38 <span style="font-size:14px; color:#8A9199; font-weight:500;">kWh</span></div>
+      <div style="display:flex; align-items:center; gap:7px; margin-top:9px;"><span style="font-size:12px; font-weight:600; color:#15702F; background:#E7F8EC; border-radius:999px; padding:2px 8px;">▼ 9%</span><span style="font-size:11.5px; color:#8A9199;">vs 64</span></div>
+    </div>
+    <div style="flex:1; min-width:172px; border:1px solid #E2E7EB; border-radius:12px; padding:16px 18px; background:#fff;">
+      <div style="font-size:12.5px; color:#8A9199;">Active inverters</div>
+      <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#20262B; margin-top:4px; letter-spacing:-0.01em;">12</div>
+      <div style="display:flex; align-items:center; gap:7px; margin-top:9px;"><span style="font-size:11.5px; color:#8A9199;">all reporting</span></div>
+    </div>
+  </div>
+  <div style="font-size:12.5px; color:#8A9199; max-width:60ch; border-top:1px solid #EEF2F5; padding-top:14px; line-height:1.6;"><b style="color:#03587F; font-family:'Space Grotesk',sans-serif;">Evolved:</b> Space Grotesk value, tighter card, status-colored delta badge (<code style="font-family:'Space Grotesk',monospace;">--status-online</code>), replacing the legacy generic KPI tile.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 760, &quot;height&quot;: 200}}"></script>
+</body>
+</html>

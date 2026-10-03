@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative; display:flex; flex-direction:column; gap:6px; width:100%; font-family:ui-sans-serif, system-ui, -apple-system, sans-serif;">
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}">
+    <label style="font-size:13px; font-weight:600; color:#3A434B;">{{ label }}</label>
+  </sc-if>
+  <button type="button" onClick="{{ toggle }}" disabled="{{ disabled }}" style="display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; height:40px; padding:0 12px; background:#fff; border:1px solid #CDD5DB; border-radius:9px; cursor:pointer; box-shadow:0 0 0 3px transparent; transition:border-color .15s, box-shadow .15s; font-family:inherit;">
+    <sc-if value="{{ hasValue }}" hint-placeholder-val="{{ false }}">
+      <span style="font-size:14px; color:#20262B; flex:1 1 auto; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ valueText }}</span>
+    </sc-if>
+    <sc-if value="{{ noValue }}" hint-placeholder-val="{{ true }}">
+      <span style="font-size:14px; color:#9AA3AB; flex:1 1 auto; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ valueText }}</span>
+    </sc-if>
+    <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}"><span style="flex:0 0 auto; width:8px; height:8px; border-right:2px solid #6B7177; border-bottom:2px solid #6B7177; transform:rotate(-135deg); margin-top:3px; transition:transform .15s;"></span></sc-if>
+    <sc-if value="{{ closed }}" hint-placeholder-val="{{ true }}"><span style="flex:0 0 auto; width:8px; height:8px; border-right:2px solid #6B7177; border-bottom:2px solid #6B7177; transform:rotate(45deg); margin-top:-3px; transition:transform .15s;"></span></sc-if>
+  </button>
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; top:66px; left:0; right:0; z-index:30; background:#fff; border:1px solid #E2E7EB; border-radius:9px; box-shadow:0 10px 30px rgba(31,65,115,0.16); padding:5px; overflow:hidden;">
+      <sc-for list="{{ options }}" as="o" hint-placeholder-count="3">
+        <sc-if value="{{ o.selected }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ o.onClick }}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; border:none; background:#F2F8FB; cursor:pointer; text-align:left; padding:9px 12px; font-size:14px; color:#20262B; font-family:inherit;">
+            <span>{{ o.label }}</span>
+            <span style="width:9px; height:5px; border-left:2px solid #009DE4; border-bottom:2px solid #009DE4; transform:rotate(-45deg); flex:0 0 auto;"></span>
+          </button>
+        </sc-if>
+        <sc-if value="{{ o.unselected }}" hint-placeholder-val="{{ true }}">
+          <button type="button" onClick="{{ o.onClick }}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; border:none; background:transparent; cursor:pointer; text-align:left; padding:9px 12px; font-size:14px; color:#20262B; font-family:inherit;">
+            <span>{{ o.label }}</span>
+          </button>
+        </sc-if>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ hasHint }}" hint-placeholder-val="{{ false }}">
+    <span style="font-size:12.5px; color:#8A9199;">{{ hint }}</span>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 280, &quot;height&quot;: 90}, &quot;label&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Plant&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;placeholder&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Select a plant…&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;selectedIndex&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: -1, &quot;tsType&quot;: &quot;number&quot;}, &quot;hint&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;size&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;sm&quot;, &quot;md&quot;, &quot;lg&quot;], &quot;default&quot;: &quot;md&quot;, &quot;tsType&quot;: &quot;'sm'|'md'|'lg'&quot;}, &quot;invalid&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;disabled&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;items&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;Array&lt;string | { label: string }&gt;&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { open: false, sel: props.selectedIndex != null ? Number(props.selectedIndex) : -1 }; }
+  renderVals() {
+    const items = Array.isArray(this.props.items) && this.props.items.length ? this.props.items : ["Maple Grove", "FLAME PET 01", "Love Shack", "Riverside Array"];
+    const sel = this.state.sel;
+    const disabled = !!this.props.disabled;
+    const open = this.state.open && !disabled;
+    const label = this.props.label;
+    const hasLabel = label != null && label !== "";
+    const hint = this.props.hint;
+    const hasHint = hint != null && hint !== "";
+    const placeholder = this.props.placeholder ?? "Select…";
+    const hasValue = sel >= 0;
+    const options = items.map((it, i) => {
+      const lab = typeof it === "string" ? it : it.label;
+      const selected = i === sel;
+      return {
+        label: lab, selected, unselected: !selected,
+        onClick: () => this.setState({ sel: i, open: false }),
+      };
+    });
+    return {
+      hasLabel, label,
+      toggle: () => { if (!disabled) this.setState((st) => ({ open: !st.open })); },
+      disabled, open, closed: !open,
+      hasValue, noValue: !hasValue,
+      valueText: hasValue ? (typeof items[sel] === "string" ? items[sel] : items[sel].label) : placeholder,
+      options,
+      hasHint, hint,
+    };
+  }
+}
+</script>
+</body>
+</html>

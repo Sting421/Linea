@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Domain · Incident Console" description="Area 3 incident console. Current tab: fleet status summary tiles, filter row, incident table (severity · plant · state · row actions). History tab: closed incidents (closed-by · recovered). Row opens the incident Detail (cause/suggestion/affiliated system/owner/device SN/alert-recovery/timeline + lifecycle actions). Aggregator + Utility land here (read-only for Utility); not available to End-user. Provisional: lifecycle states pending lock. Status colors from the keystone palette." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background:#F4F7F9; padding:24px; color:#20262B;">
+  <div style="max-width:880px; margin:0 auto;">
+
+    <!-- breadcrumb -->
+    <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#8A9199; margin-bottom:16px;">
+      <span style="font-weight:500; cursor:pointer;" style-hover="color:#03587F">Alerts &amp; Events Center</span>
+      <span style="color:#9AA6AF; font-weight:600; user-select:none;">›</span>
+      <span style="color:#1F4173; font-weight:600;">{{ crumb }}</span>
+    </div>
+
+    <!-- ============ DETAIL VIEW ============ -->
+    <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px;">
+          <div style="display:flex; flex-direction:column; gap:9px;">
+            <button type="button" onClick="{{ onBack }}" style="align-self:flex-start; border:none; background:none; padding:0; font-size:12.5px; font-weight:600; color:#009DE4; font-family:'Space Grotesk',sans-serif; cursor:pointer;">‹ Back to incidents</button>
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#17222E; line-height:1.1;">{{ dTitle }}</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-shrink:0; padding-top:24px;">
+            <sc-if value="{{ dIsFault }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#DC3A2C;">{{ dSevLabel }}</span></sc-if>
+            <sc-if value="{{ dIsWarning }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#E08600;">{{ dSevLabel }}</span></sc-if>
+            <sc-if value="{{ dIsOffline }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#7C8286;">{{ dSevLabel }}</span></sc-if>
+            <sc-if value="{{ dIsNormal }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#0089C7;">{{ dSevLabel }}</span></sc-if>
+            <sc-if value="{{ dIsNew }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; border-radius:7px; padding:3px 10px; color:#03587F; background:#E6F7FF;">{{ dState }}</span></sc-if>
+            <sc-if value="{{ dNotNew }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; border-radius:7px; padding:3px 10px; color:#8A9199; background:#EFF2F4;">{{ dState }}</span></sc-if>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <sc-for list="{{ dRows }}" as="row" hint-placeholder-count="7">
+            <div style="display:grid; grid-template-columns:230px 1fr; gap:16px; align-items:center; background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:14px 18px;">
+              <span style="font-size:12.5px; font-weight:600; color:#8A9199;">{{ row.label }}</span>
+              <span style="font-size:13.5px; color:#2C353D; line-height:1.5;">{{ row.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:22px;">
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#8A9199; margin-bottom:11px;">Lifecycle actions</div>
+          <div style="display:flex; gap:11px; flex-wrap:wrap;">
+            <button type="button" style="display:inline-flex; align-items:center; gap:10px; border:none; background:#03587F; color:#fff; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; border-radius:10px; padding:11px 16px; cursor:pointer;">Acknowledge <span style="opacity:0.7; font-size:10px;">▾</span></button>
+            <button type="button" style="display:inline-flex; align-items:center; gap:10px; border:1px solid #CFE0EA; background:#fff; color:#03587F; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; border-radius:10px; padding:11px 16px; cursor:pointer;">Assign <span style="opacity:0.6; font-size:10px;">▾</span></button>
+            <button type="button" style="display:inline-flex; align-items:center; gap:10px; border:1px solid #CFE0EA; background:#fff; color:#03587F; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; border-radius:10px; padding:11px 16px; cursor:pointer;">Resolve <span style="opacity:0.6; font-size:10px;">▾</span></button>
+            <button type="button" style="display:inline-flex; align-items:center; gap:10px; border:1px solid #E2E7EB; background:#fff; color:#6B7177; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; border-radius:10px; padding:11px 16px; cursor:pointer;">Mute / Snooze <span style="opacity:0.6; font-size:10px;">▾</span></button>
+          </div>
+        </div>
+
+        <div style="font-size:12px; color:#8A9199; margin-top:20px; line-height:1.5;">Every action is logged to the incident and the system-wide activity log. Lifecycle states are <b style="color:#8F5500; font-weight:600;">provisional</b> pending lock.</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ LIST VIEW ============ -->
+    <sc-if value="{{ listOpen }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <!-- tabs -->
+        <div style="display:inline-flex; gap:4px; background:#fff; border:1px solid #E2E7EB; border-radius:10px; padding:4px; margin-bottom:16px;">
+          <sc-if value="{{ isCurrent }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ onTabCurrent }}" style="border:none; font-family:'Space Grotesk', sans-serif; font-size:12.5px; font-weight:600; border-radius:7px; padding:6px 15px; cursor:pointer; color:#1F4173; background:#E6F7FF;">Current</button></sc-if>
+          <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onTabCurrent }}" style="border:none; font-family:'Space Grotesk', sans-serif; font-size:12.5px; font-weight:500; border-radius:7px; padding:6px 15px; cursor:pointer; color:#8A9199; background:transparent;">Current</button></sc-if>
+          <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onTabHistory }}" style="border:none; font-family:'Space Grotesk', sans-serif; font-size:12.5px; font-weight:600; border-radius:7px; padding:6px 15px; cursor:pointer; color:#1F4173; background:#E6F7FF;">History</button></sc-if>
+          <sc-if value="{{ isCurrent }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ onTabHistory }}" style="border:none; font-family:'Space Grotesk', sans-serif; font-size:12.5px; font-weight:500; border-radius:7px; padding:6px 15px; cursor:pointer; color:#8A9199; background:transparent;">History</button></sc-if>
+        </div>
+
+        <!-- CURRENT -->
+        <sc-if value="{{ isCurrent }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <!-- status summary tiles -->
+            <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:11px; margin-bottom:16px;">
+              <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="5">
+                <sc-if value="{{ t.isAll }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; cursor:pointer; border-radius:11px; padding:20px 14px; background:linear-gradient(135deg,#F1F5F9,#DFE8EF); border:1px solid #CFD9E1; box-shadow:0 1px 2px rgba(16,42,67,0.04);"><span style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:27px; line-height:1; color:#20262B;">{{ t.count }}</span><span style="font-family:'Space Grotesk', sans-serif; font-size:13px; font-weight:600; line-height:1; color:#54606A;">{{ t.label }}</span></button></sc-if>
+                <sc-if value="{{ t.isFault }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; cursor:pointer; border-radius:11px; padding:20px 14px; background:linear-gradient(135deg,#FBE4DE,#F3C3B7); border:1px solid #E7A99D; box-shadow:0 1px 2px rgba(16,42,67,0.04);"><span style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:27px; line-height:1; color:#B42417;">{{ t.count }}</span><span style="font-family:'Space Grotesk', sans-serif; font-size:13px; font-weight:600; line-height:1; color:#953526;">{{ t.label }}</span></button></sc-if>
+                <sc-if value="{{ t.isWarning }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; cursor:pointer; border-radius:11px; padding:20px 14px; background:linear-gradient(135deg,#FDEFC9,#F6DCA0); border:1px solid #E7C471; box-shadow:0 1px 2px rgba(16,42,67,0.04);"><span style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:27px; line-height:1; color:#9E5E00;">{{ t.count }}</span><span style="font-family:'Space Grotesk', sans-serif; font-size:13px; font-weight:600; line-height:1; color:#7E5A1B;">{{ t.label }}</span></button></sc-if>
+                <sc-if value="{{ t.isOffline }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; cursor:pointer; border-radius:11px; padding:20px 14px; background:linear-gradient(135deg,#EDF1F4,#DAE1E7); border:1px solid #C7D0D7; box-shadow:0 1px 2px rgba(16,42,67,0.04);"><span style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:27px; line-height:1; color:#525860;">{{ t.count }}</span><span style="font-family:'Space Grotesk', sans-serif; font-size:13px; font-weight:600; line-height:1; color:#646A71;">{{ t.label }}</span></button></sc-if>
+                <sc-if value="{{ t.isNormal }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; cursor:pointer; border-radius:11px; padding:20px 14px; background:linear-gradient(135deg,#DDF0FB,#BCDFF3); border:1px solid #A6D2EC; box-shadow:0 1px 2px rgba(16,42,67,0.04);"><span style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:27px; line-height:1; color:#036CA0;">{{ t.count }}</span><span style="font-family:'Space Grotesk', sans-serif; font-size:13px; font-weight:600; line-height:1; color:#356780;">{{ t.label }}</span></button></sc-if>
+              </sc-for>
+            </div>
+
+            <!-- filter row -->
+            <div style="display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:14px;">
+              <span style="font-size:11.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:#8A9199;">Filters</span>
+              <span style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E7EB; border-radius:8px; padding:6px 11px; font-size:12.5px; color:#46505A; cursor:pointer;">Severity <span style="opacity:0.5; font-size:9px;">▾</span></span>
+              <span style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E7EB; border-radius:8px; padding:6px 11px; font-size:12.5px; color:#46505A; cursor:pointer;">Plant <span style="opacity:0.5; font-size:9px;">▾</span></span>
+              <span style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E7EB; border-radius:8px; padding:6px 11px; font-size:12.5px; color:#46505A; cursor:pointer;">Device <span style="opacity:0.5; font-size:9px;">▾</span></span>
+              <span style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E7EB; border-radius:8px; padding:6px 11px; font-size:12.5px; color:#46505A; cursor:pointer;">Type <span style="opacity:0.5; font-size:9px;">▾</span></span>
+              <span style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #E2E7EB; border-radius:8px; padding:6px 11px; font-size:12.5px; color:#46505A; cursor:pointer;">Time <span style="opacity:0.5; font-size:9px;">▾</span></span>
+              <span style="margin-left:auto; display:inline-flex; align-items:center; gap:6px; background:#E6F7FF; border:1px solid #A9DEF7; border-radius:8px; padding:6px 11px; font-size:12.5px; color:#03587F; font-weight:600; cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>Map</span>
+            </div>
+
+            <!-- table -->
+            <div style="background:#fff; border:1px solid #E2E7EB; border-radius:13px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:1.9fr 1.1fr 0.7fr 1.1fr; gap:12px; padding:12px 18px; background:#F7FBFE; border-bottom:1px solid #EEF2F5; font-family:'Space Grotesk',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:#8A9199;">
+                <span>Severity · Incident</span><span>Plant</span><span>State</span><span style="text-align:right;">Action</span>
+              </div>
+              <sc-for list="{{ curRows }}" as="r" hint-placeholder-count="6">
+                <div onClick="{{ r.onOpen }}" style="display:grid; grid-template-columns:1.9fr 1.1fr 0.7fr 1.1fr; gap:12px; align-items:center; padding:13px 18px; border-bottom:1px solid #F2F5F7; cursor:pointer;" style-hover="background:#FAFCFE;">
+                  <span style="display:flex; align-items:center; gap:11px; min-width:0;">
+                    <sc-if value="{{ r.isFault }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#DC3A2C;">{{ r.sevLabel }}</span></sc-if>
+                    <sc-if value="{{ r.isWarning }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#E08600;">{{ r.sevLabel }}</span></sc-if>
+                    <sc-if value="{{ r.isOffline }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#7C8286;">{{ r.sevLabel }}</span></sc-if>
+                    <sc-if value="{{ r.isNormal }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#0089C7;">{{ r.sevLabel }}</span></sc-if>
+                    <span style="min-width:0;"><span style="font-size:13.5px; font-weight:500; color:#20262B;">{{ r.title }}</span> <span style="font-size:11.5px; color:#AEB6BD;">{{ r.occ }}</span></span>
+                  </span>
+                  <span style="font-size:12.5px; color:#5A636B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.plant }}</span>
+                  <sc-if value="{{ r.isNew }}" hint-placeholder-val="{{ true }}"><span style="justify-self:start; font-family:'Space Grotesk', sans-serif; font-size:11px; font-weight:600; border-radius:999px; padding:2px 10px; color:#03587F; background:#E6F7FF;">{{ r.state }}</span></sc-if>
+                  <sc-if value="{{ r.notNew }}" hint-placeholder-val="{{ false }}"><span style="justify-self:start; font-family:'Space Grotesk', sans-serif; font-size:11px; font-weight:600; border-radius:999px; padding:2px 10px; color:#8A9199; background:#EFF2F4;">{{ r.state }}</span></sc-if>
+                  <span style="display:inline-flex; justify-self:end; border:1px solid #DCE4EA; border-radius:8px; overflow:hidden; font-family:'Space Grotesk',sans-serif; font-size:11.5px; font-weight:600;">
+                    <span style="padding:5px 11px; color:#03587F; background:#F5FAFD;">Ack</span>
+                    <span style="padding:5px 11px; color:#5A636B; border-left:1px solid #E6ECF0;">Assign</span>
+                    <span style="padding:5px 11px; color:#5A636B; border-left:1px solid #E6ECF0;">Free</span>
+                  </span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ curEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:34px 18px; text-align:center; font-size:13px; color:#9AA3AB;">No incidents in this state right now.</div>
+              </sc-if>
+            </div>
+
+            <div style="font-size:12px; color:#8A9199; margin-top:14px; line-height:1.5;">Aggregator and Utility land here (Utility is read-only). Select any row to open the incident detail.</div>
+          </div>
+        </sc-if>
+
+        <!-- HISTORY -->
+        <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="background:#fff; border:1px solid #E2E7EB; border-radius:13px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:1.9fr 1fr 1.2fr 0.9fr; gap:12px; padding:12px 18px; background:#F7FBFE; border-bottom:1px solid #EEF2F5; font-family:'Space Grotesk',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:#8A9199;">
+                <span>Severity · Incident</span><span>Plant</span><span>Closed by</span><span style="text-align:right;">Recovered</span>
+              </div>
+              <sc-for list="{{ histRows }}" as="r" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:1.9fr 1fr 1.2fr 0.9fr; gap:12px; align-items:center; padding:13px 18px; border-bottom:1px solid #F2F5F7;">
+                  <span style="display:flex; align-items:center; gap:11px; min-width:0;">
+                    <sc-if value="{{ r.isFault }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#DC3A2C;">{{ r.sevLabel }}</span></sc-if>
+                    <sc-if value="{{ r.isWarning }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#E08600;">{{ r.sevLabel }}</span></sc-if>
+                    <sc-if value="{{ r.isOffline }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#7C8286;">{{ r.sevLabel }}</span></sc-if>
+                    <sc-if value="{{ r.isNormal }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; flex:0 0 auto; font-family:'Space Grotesk', sans-serif; font-size:11.5px; font-weight:600; color:#fff; border-radius:7px; padding:3px 10px; background:#0089C7;">{{ r.sevLabel }}</span></sc-if>
+                    <span style="font-size:13.5px; font-weight:500; color:#20262B;">{{ r.title }}</span>
+                  </span>
+                  <span style="font-size:12.5px; color:#5A636B;">{{ r.plant }}</span>
+                  <span style="font-size:12.5px; color:#5A636B;">{{ r.closedBy }}</span>
+                  <span style="font-size:12.5px; color:#9AA3AB; text-align:right;">{{ r.recovered }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size:12px; color:#8A9199; margin-top:14px;">History covers auto-recovered and resolved incidents.</div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 940, &quot;height&quot;: 640}}">
+class Component extends DCLogic {
+  state = { tab: "current", open: null, filter: "all" };
+  pal() {
+    return {
+      fault:   { label: "Fault",   solid: "#DC3A2C", soft: "#FDECEA", text: "#9E1B12", num: "#C5291B" },
+      warning: { label: "Warning", solid: "#E08600", soft: "#FFF4E2", text: "#8F5500", num: "#B26A00" },
+      offline: { label: "Offline", solid: "#7C8286", soft: "#EEF0F1", text: "#474C51", num: "#5A6066" },
+      normal:  { label: "Normal",  solid: "#0089C7", soft: "#E6F7FF", text: "#03587F", num: "#0378B0" },
+    };
+  }
+  current() {
+    return [
+      { sev: "fault", title: "Leakage current high", occ: "×142", plant: "Maple Grove", device: "Inverter B", state: "New",
+        cause: "DC cable damaged, poor string-connector contact (from API).", sugg: "Disconnect the PV DC switch, then check the connector (from API).",
+        owner: "johncareysw@gmail.com", sn: "110A22BJ0056", alert: "Alerted 13:58, recovery pending (active)", timeline: "142 occurrences, 13:58 to now (grouped)" },
+      { sev: "fault", title: "AFCI fault", occ: "×1", plant: "Dome", device: "Inverter A", state: "New",
+        cause: "Arc-fault circuit interrupter tripped on the DC side.", sugg: "Inspect the DC wiring and clear the fault before re-enabling.",
+        owner: "ops@ovanova.co", sn: "DOM14AF2201", alert: "Alerted 09:12, recovery pending (active)", timeline: "1 occurrence, 09:12 (single)" },
+      { sev: "warning", title: "Communication fault", occ: "×8", plant: "FLAME PET 01", device: "Gateway", state: "Ack'd",
+        cause: "Gateway missed three telemetry heartbeats.", sugg: "Check the site network. Auto-recovers if the drop is transient.",
+        owner: "site@flamepet.io", sn: "FP01GW0093", alert: "Alerted 12:04, last seen 12:40", timeline: "8 occurrences, 11:20 to 12:40 (grouped)" },
+      { sev: "warning", title: "Mode change", occ: "×3", plant: "Riverside", device: "Plant-wide", state: "Ack'd",
+        cause: "Operator switched the plant to peak-shaving.", sugg: "Informational only, no action required.",
+        owner: "grid@riverside.co", sn: "RVS-PLANT", alert: "Logged 06:30", timeline: "3 occurrences today (grouped)" },
+      { sev: "warning", title: "Voltage sag", occ: "×2", plant: "Cedar Point", device: "Meter", state: "New",
+        cause: "Grid voltage dipped below the configured band.", sugg: "Monitor. Escalate if it persists past 15 minutes.",
+        owner: "owner@cedarpoint.co", sn: "CP-MTR-77", alert: "Alerted 14:22, recovery pending (active)", timeline: "2 occurrences, 14:05 to 14:22 (grouped)" },
+      { sev: "offline", title: "AC charger offline", occ: "×1", plant: "Love Shack", device: "AC charger", state: "New",
+        cause: "The charger stopped reporting to the platform.", sugg: "Verify power and communications at the unit.",
+        owner: "hello@loveshack.co", sn: "LS-CHG-04", alert: "Last seen 07:41 (offline)", timeline: "1 occurrence, 07:41 (single)" },
+    ];
+  }
+  history() {
+    return [
+      { sev: "fault",   title: "AFCI fault", plant: "Dome",  closedBy: "Resolved (ops)",       recovered: "Yest 22:04" },
+      { sev: "warning", title: "Comm fault", plant: "FLAME", closedBy: "Resolved (J. Carey)",  recovered: "12:40" },
+      { sev: "offline", title: "Volt spike", plant: "Dome",  closedBy: "Auto-recovered",       recovered: "09:10" },
+    ];
+  }
+  tileDefs() {
+    return [
+      { key: "all", label: "Total", count: 12, num: "#20262B" },
+      { key: "fault", label: "Fault", count: 2, num: "#C5291B" },
+      { key: "warning", label: "Warning", count: 5, num: "#B26A00" },
+      { key: "offline", label: "Offline", count: 1, num: "#5A6066" },
+      { key: "normal", label: "Normal", count: 4, num: "#0378B0" },
+    ];
+  }
+  sevPill(p) {
+    return { display: "inline-flex", alignItems: "center", flex: "0 0 auto", fontFamily: "'Space Grotesk', sans-serif", fontSize: "11.5px", fontWeight: 600, color: "#fff", background: p.solid, borderRadius: "7px", padding: "3px 10px" };
+  }
+  statePill(isNew) {
+    return { justifySelf: "start", fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 600, borderRadius: "999px", padding: "2px 10px", color: isNew ? "#03587F" : "#8A9199", background: isNew ? "#E6F7FF" : "#EFF2F4" };
+  }
+  renderVals() {
+    const P = this.pal();
+    const detailOpen = this.state.open !== null;
+    const isCurrent = this.state.tab === "current";
+    const crumb = detailOpen ? "Incidents Detail" : (isCurrent ? "Incidents (Current)" : "Incidents (History)");
+    const sevFlags = (sev) => ({ isFault: sev === "fault", isWarning: sev === "warning", isOffline: sev === "offline", isNormal: sev === "normal" });
+
+    const tiles = this.tileDefs().map((t) => ({
+      label: t.label, count: t.count,
+      onClick: () => this.setState({ filter: t.key }),
+      isAll: t.key === "all", isFault: t.key === "fault", isWarning: t.key === "warning", isOffline: t.key === "offline", isNormal: t.key === "normal",
+    }));
+
+    const f = this.state.filter;
+    const all = this.current();
+    const filtered = all.filter((it) => f === "all" ? true : it.sev === f);
+    const curRows = filtered.map((it) => {
+      const idx = all.indexOf(it);
+      const isNew = it.state === "New";
+      return Object.assign({
+        onOpen: () => this.setState({ open: idx }),
+        sevLabel: P[it.sev].label,
+        title: it.title, occ: it.occ, plant: it.plant,
+        state: it.state, isNew, notNew: !isNew,
+      }, sevFlags(it.sev));
+    });
+
+    const histRows = this.history().map((it) => Object.assign({
+      sevLabel: P[it.sev].label, title: it.title, plant: it.plant, closedBy: it.closedBy, recovered: it.recovered,
+    }, sevFlags(it.sev)));
+
+    let dTitle = "", dSevLabel = "", dState = "", dRows = [], dFlags = { isFault: false, isWarning: false, isOffline: false, isNormal: false }, dIsNew = false;
+    if (detailOpen) {
+      const it = all[this.state.open];
+      dFlags = sevFlags(it.sev);
+      dTitle = it.title; dSevLabel = P[it.sev].label; dState = it.state; dIsNew = it.state === "New";
+      dRows = [
+        { label: "Cause", value: it.cause },
+        { label: "Suggestion", value: it.sugg },
+        { label: "Affiliated system", value: it.plant + " (view plant)" },
+        { label: "Owner", value: it.owner },
+        { label: "Device SN", value: it.sn },
+        { label: "Alert · Recovery", value: it.alert },
+        { label: "Event timeline", value: it.timeline },
+      ];
+    }
+
+    return {
+      crumb, detailOpen, listOpen: !detailOpen, isCurrent, isHistory: !isCurrent,
+      onTabCurrent: () => this.setState({ tab: "current", open: null }),
+      onTabHistory: () => this.setState({ tab: "history", open: null }),
+      tiles, curRows, curEmpty: curRows.length === 0, histRows,
+      onBack: () => this.setState({ open: null }),
+      dTitle, dSevLabel, dState, dRows,
+      dIsFault: dFlags.isFault, dIsWarning: dFlags.isWarning, dIsOffline: dFlags.isOffline, dIsNormal: dFlags.isNormal,
+      dIsNew, dNotNew: !dIsNew,
+    };
+  }
+}
+</script>
+</body>
+</html>

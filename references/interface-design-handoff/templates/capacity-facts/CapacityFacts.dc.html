@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Capacity facts" description="Area 2 header info card: split out of PowerPlantInformation. Nameplate identity (DC / AC / BESS) plus generation KPI tiles (today / month / lifetime) in one compact card." -->
+<helmet>
+<script src="./icons/icon-data.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;box-sizing:border-box;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px 0;">
+    <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;color:#1F4173;">Capacity &amp; generation</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:13px;color:#5A636B;font-weight:600;white-space:nowrap;">{{ plant }}</span>
+      <span style="font-size:11px;color:#5A636B;background:#F2F5F8;border:1px solid #E7ECF0;border-radius:999px;padding:4px 10px;font-weight:500;white-space:nowrap;">{{ commissioned }}</span>
+    </div>
+  </div>
+  <div style="padding:14px 18px 4px;">
+    <div style="font-size:10.5px;color:#B4BBC1;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:10px;">Nameplate</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <sc-for list="{{ nameplate }}" as="k" hint-placeholder-count="3">
+        <div style="background:#F7FAFC;border:1px solid #EEF2F5;border-radius:10px;padding:12px 14px;">
+          <div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-flex;color:#7C8894;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="{{ k.icon }}" size="15" hint-size="15px,15px"></x-import></span><span style="font-size:11px;color:#8A9199;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;">{{ k.label }}</span></div>
+          <div style="margin-top:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#20262B;">{{ k.value }}</span> <span style="font-size:12px;color:#8A9199;font-weight:500;">{{ k.unit }}</span></div>
+          <div style="font-size:11px;color:#8A9199;margin-top:4px;">{{ k.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="height:1px;background:#F0F3F5;margin:14px 18px 0;"></div>
+  <div style="padding:14px 18px 18px;">
+    <div style="font-size:10.5px;color:#B4BBC1;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:10px;">Generation</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <sc-for list="{{ generation }}" as="k" hint-placeholder-count="3">
+        <div style="background:#F4FAFE;border:1px solid #E1EFF9;border-radius:10px;padding:12px 14px;">
+          <div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-flex;color:#5A7A93;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="{{ k.icon }}" size="15" hint-size="15px,15px"></x-import></span><span style="font-size:11px;color:#5A7A93;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;">{{ k.label }}</span></div>
+          <div style="margin-top:6px;"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#1F4173;">{{ k.value }}</span> <span style="font-size:12px;color:#5A7A93;font-weight:500;">{{ k.unit }}</span></div>
+          <sc-if value="{{ k.delta }}"><div style="font-size:11px;color:#12855A;font-weight:600;margin-top:4px;">▲ {{ k.delta }}</div></sc-if>
+          <sc-if value="{{ k.sub }}"><div style="font-size:11px;color:#8A9199;margin-top:4px;">{{ k.sub }}</div></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:640,&quot;height&quot;:232},&quot;plant&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Riverside Solar&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;commissioned&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Commissioned 2021&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    return {
+      plant: p.plant ?? "Riverside Solar",
+      commissioned: p.commissioned ?? "Commissioned 2021",
+      nameplate: [
+        { label: "DC capacity", value: "480", unit: "kWp", sub: "PV array · 1,120 panels", icon: "SolarPanel" },
+        { label: "AC capacity", value: "400", unit: "kVA", sub: "3 inverters", icon: "Inverter" },
+        { label: "BESS", value: "215", unit: "kWh", sub: "2 packs · LFP", icon: "Battery" },
+      ],
+      generation: [
+        { label: "Today", value: "1.24", unit: "MWh", delta: "+8% vs avg", icon: "Sun" },
+        { label: "This month", value: "32.6", unit: "MWh", sub: "target 30.0", icon: "CalendarDays" },
+        { label: "Lifetime", value: "3.82", unit: "GWh", sub: "since Mar 2021", icon: "LineChart" },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

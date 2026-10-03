@@ -1,0 +1,23 @@
+{
+  "name": "linea",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter @linea/web dev",
+    "build": "pnpm --filter @linea/web build",
+    "start": "pnpm --filter @linea/web start",
+    "typecheck": "pnpm --filter @linea/web typecheck",
+    "test": "pnpm --filter @linea/web test",
+    "format:check": "prettier --check \"apps/web/src/**/*.{ts,tsx,css}\" \"apps/web/tests/*.ts\""
+  },
+  "engines": {
+    "node": ">=20.9"
+  },
+  "packageManager": "pnpm@11.19.0",
+  "devDependencies": {
+    "prettier": "3.9.9"
+  }
+}

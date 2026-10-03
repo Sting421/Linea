@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Linea history cleanup hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=linea-retention.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,71 @@
+# Synthetic semantic checks only. These are not accounts or live records.
+# Expected outcomes follow the existing S-08 poisoning/large-excess exception.
+cases:
+  - id: recovered_fall_with_explicit_episode_clarification
+    dialogue:
+      - [elder, "I fell yesterday, but I'm okay now."]
+      - [linea, "Were you injured when you fell?"]
+      - [elder, "No, I wasn't hurt. I'm moving normally, and it only happened once."]
+      - [linea, "Did anything else happen during or after this episode?"]
+      - [elder, "No, nothing else happened. I have no pain and I am completely back to normal."]
+    expected: {tier: routine, concerns: [FALL]}
+  - id: ordinary_consent_and_four_beat_completion
+    context: {mode: CONSENT, consent: pending}
+    dialogue:
+      - [linea, "Is it okay for Linea to call daily and share your check-in with your family?"]
+      - [elder, "Yes, I agree to daily calls and sharing with my family."]
+      - [elder, "I slept well last night."]
+      - [elder, "I took my prescribed tablet this morning."]
+      - [elder, "I feel well today."]
+      - [elder, "No, there is nothing else I want to share."]
+    expected: {tier: null, consent: granted, medicine_result: taken, complete: true, mode: ENDING}
+  - id: end_only_this_call_preserves_future_consent
+    dialogue:
+      - [elder, "Please end this call now, but keep my daily check-ins."]
+    expected: {consent: granted, intentional_end: true, complete: false, mode: ENDING}
+  - id: withdraw_future_call_permission
+    dialogue:
+      - [elder, "Stop calling me. I do not give permission for any more daily calls."]
+    expected: {consent: declined, intentional_end: true, complete: false, mode: ENDING}
+  - id: overdose_handful_with_reassurance
+    dialogue:
+      - [elder, "I accidentally swallowed a whole handful of my blood-pressure pills. I don't feel sick."]
+    expected: {tier: emergency, resume_checkin: false}
+  - id: overdose_large_excess_relative_to_prescription
+    dialogue:
+      - [elder, "I took far more medicine than I was prescribed, about twenty tablets just now."]
+    expected: {tier: emergency, resume_checkin: false}
+  - id: poisoning_cleaning_fluid
+    dialogue:
+      - [elder, "I drank some cleaning fluid, but I can still talk."]
+    expected: {tier: emergency, resume_checkin: false}
+  - id: possible_single_extra_dose
+    dialogue:
+      - [elder, "I took my normal tablet today and might have taken one more."]
+    expected: {tier: significant, medicine_result: taken, resume_checkin: false}
+  - id: uncertainty_about_first_dose
+    context: {unfinished_beat: medicine}
+    dialogue:
+      - [linea, "Have you taken your Losartan today?"]
+      - [elder, "I don't remember whether I took today's medicine."]
+    expected: {tier: null, medicine_result: unknown, resume_checkin: false}
+  - id: negated_handful_with_taken_dose
+    dialogue:
+      - [elder, "I didn't take a handful; I took just the one tablet prescribed for today."]
+    expected: {tier: null, medicine_result: taken, new_event: false}
+  - id: hypothetical_large_excess
+    dialogue:
+      - [elder, "What would happen if somebody swallowed a handful of tablets? That has not happened."]
+    expected: {tier: null, new_event: false}
+  - id: remote_treated_sister_overdose
+    dialogue:
+      - [elder, "Years ago my sister took too many tablets; doctors treated her then. Neither of us has taken too much today."]
+    expected: {tier: null, new_event: false}
+  - id: actual_other_person_poisoning
+    dialogue:
+      - [elder, "My sister is here with me and just drank cleaning fluid."]
+    expected: {tier: emergency, resume_checkin: false}
+  - id: label_warning_is_not_actual_overdose
+    dialogue:
+      - [elder, "The bottle says taking too much can be dangerous. I took only the prescribed tablet today."]
+    expected: {tier: null, medicine_result: taken, new_event: false}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Domain · Control Readout" description="Area 2 Control surface (aggregator view; utility read-only, end-user hidden). Live control readout (mode / grid state / cutoffs / reserve), gated write strip with audit, working-mode timeline and per-mode option setpoints. Dogfoods SeverityBadge (status) + Button (actions). Provisional — per-mode options pending sign-off." -->
+<helmet>
+<script src="./icons/icon-data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background:#F4F7F9; padding:22px; color:#20262B;">
+  <div style="max-width:880px; margin:0 auto; display:flex; flex-direction:column; gap:14px;">
+
+    <!-- context header: identity left, KPI cards right -->
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <div style="min-width:0; flex:1 1 auto;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#8A9199; margin-bottom:6px; white-space:nowrap; flex-wrap:nowrap;">
+          <span style="font-weight:500; cursor:pointer;" style-hover="color:#03587F">Fleet</span>
+          <span style="color:#9AA6AF; font-weight:600; user-select:none;">›</span>
+          <span style="font-weight:500; cursor:pointer;" style-hover="color:#03587F">Maple Grove</span>
+          <span style="color:#9AA6AF; font-weight:600; user-select:none;">›</span>
+          <span style="color:#1F4173; font-weight:600;">Control</span>
+        </div>
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; color:#17222E;">Maple Grove BESS-04 <span style="font-weight:500; font-size:13px; color:#8A9199;">· Fleet 1</span></div>
+      </div>
+      <div style="display:flex; align-items:stretch; gap:9px; flex-wrap:nowrap; justify-content:flex-end; flex:0 0 auto;">
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:5px; background:#fff; border:1px solid #E2E7EB; border-radius:10px; padding:8px 13px;">
+          <span style="font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8A9199;">Status</span>
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#03587F; line-height:1;">Normal</span>
+        </div>
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:5px; background:#fff; border:1px solid #E2E7EB; border-radius:10px; padding:8px 13px;">
+          <span style="font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8A9199;">PV</span>
+          <span style="display:flex; align-items:center; gap:6px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#17222E; line-height:1;"><span style="display:inline-flex; color:#F2A900; flex:0 0 auto;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Sun" size="14" hint-size="14px,14px"></x-import></span>142 kW</span>
+        </div>
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:5px; background:#fff; border:1px solid #E2E7EB; border-radius:10px; padding:8px 13px;">
+          <span style="font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8A9199;">SOC</span>
+          <span style="display:flex; align-items:center; gap:6px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#17222E; line-height:1;"><span style="display:inline-flex; color:#1F8A5B; flex:0 0 auto;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Battery" size="14" hint-size="14px,14px"></x-import></span>67%</span>
+        </div>
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:5px; background:#fff; border:1px solid #E2E7EB; border-radius:10px; padding:8px 13px;">
+          <span style="font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8A9199;">Updated</span>
+          <span style="display:flex; align-items:center; gap:6px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#17222E; line-height:1;"><span style="display:inline-flex; color:#8A9199; flex:0 0 auto;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="Clock" size="14" hint-size="14px,14px"></x-import></span>4s ago</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- readout bar -->
+    <div style="display:flex; align-items:center; gap:12px; background:#EFF6FD; border:1px solid #DCEBF6; border-radius:12px; padding:14px 18px; flex-wrap:wrap;">
+      <span style="font-family:'Space Grotesk',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#0378B0; flex:0 0 auto;">Readout</span>
+      <span style="display:inline-flex; align-items:center; gap:7px; background:#E6F7FF; border:1px solid #A9DEF7; border-radius:999px; padding:4px 12px 4px 10px; flex:0 0 auto;">
+        <span style="width:8px; height:8px; border-radius:50%; background:#009DE4; flex:0 0 auto;"></span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; color:#03587F; white-space:nowrap;">Self-Consumption</span>
+      </span>
+      <span style="display:inline-flex; align-items:center; gap:7px; flex-wrap:wrap;">
+        <dc-import name="Chip" label="On-grid" tone="neutral" dot="true" hint-size="92px,28px"></dc-import>
+        <dc-import name="Chip" label="Cut-off 95% / 10%" tone="neutral" hint-size="132px,28px"></dc-import>
+        <dc-import name="Chip" label="Reserve 30%" tone="neutral" hint-size="100px,28px"></dc-import>
+      </span>
+    </div>
+
+    <!-- gated write strip -->
+    <div style="background:#FFFBF2; border:1px solid #F0E2C0; border-radius:12px; padding:15px 18px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span style="font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#8F5500; background:#FBEFD3; border:1px solid #EAD199; border-radius:6px; padding:3px 9px;">WRITE</span>
+          <span style="font-family:'Space Grotesk',monospace; font-size:13px; color:#46505A; background:#FFFFFF; border:1px solid #EADFC6; border-radius:6px; padding:6px 11px;">EMS enable · 40029</span>
+          <span style="font-family:'Space Grotesk',monospace; font-size:13px; color:#46505A; background:#FFFFFF; border:1px solid #EADFC6; border-radius:6px; padding:6px 11px;">control mode · 40031</span>
+          <dc-import name="InfoTooltip" bare="true" label="" content="Preconditions must pass, then every register change is confirmed and appended to the per-incident audit trail." hint-size="22px,22px" style="margin-top:-2px;"></dc-import>
+        </div>
+        <dc-import name="Button" label="Confirm write" hierarchy="primary" hint-size="150px,40px"></dc-import>
+      </div>
+      <div style="margin-top:11px; display:flex; align-items:center; gap:6px;">
+        <span style="display:inline-flex; color:#1FA845; flex:0 0 auto;"><x-import component-from-global-scope="Icon" from="./icons/Icon.jsx" name="CheckCircle" size="14" hint-size="14px,14px"></x-import></span>
+        <span style="font-size:11.5px; font-weight:500; color:#6B5A2B;">Gated write · confirmed &amp; audited</span>
+      </div>
+    </div>
+
+    <!-- working-mode timeline (read-only summary) -->
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px 18px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px; color:#1F4173;">Working-mode schedule <span style="font-weight:400; font-size:12px; color:#8A9199;">· today</span></span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#009DE4; cursor:pointer;">Open scheduler →</span>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <span style="width:110px; flex:0 0 auto; font-size:12px; color:#46505A;">Self-Consumption</span>
+        <span style="flex:1 1 auto; position:relative; height:26px; background:#F2F5F7; border-radius:7px; overflow:hidden;">
+          <span style="position:absolute; left:0; top:0; bottom:0; width:100%; background:linear-gradient(90deg,#009DE4,#0378B0); border-radius:7px;"></span>
+        </span>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
+        <span style="width:110px; flex:0 0 auto; font-size:12px; color:#46505A;">Peak Shaving</span>
+        <span style="flex:1 1 auto; position:relative; height:26px; background:#F2F5F7; border-radius:7px; overflow:hidden;">
+          <span style="position:absolute; left:50%; top:0; bottom:0; width:25%; background:#1F4173; border-radius:7px;"></span>
+        </span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:7px; padding-left:120px; font-family:'Space Grotesk',monospace; font-size:10.5px; color:#9AA3AB;">
+        <span>00</span><span>06</span><span>12</span><span>18</span><span>24</span>
+      </div>
+    </div>
+
+    <!-- per-mode options -->
+    <div style="background:#fff; border:1px solid #E2E7EB; border-radius:12px; padding:16px 18px;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#8A9199; margin-bottom:12px;">Selected mode · options</div>
+      <div style="display:flex; gap:9px; flex-wrap:wrap; align-items:center;">
+        <span style="display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:#03587F; background:#E6F7FF; border:1px solid #A9DEF7; border-radius:8px; padding:5px 10px 5px 12px;">Enable <dc-import name="Switch" checked="true" size="sm" colorScheme="green" hint-size="32px,18px"></dc-import></span>
+        <span style="font-size:12.5px; color:#46505A; background:#F2F5F7; border:1px solid #E2E7EB; border-radius:8px; padding:7px 12px;">Power 30 kW</span>
+        <span style="font-size:12.5px; color:#46505A; background:#F2F5F7; border:1px solid #E2E7EB; border-radius:8px; padding:7px 12px;">Stop SOC / volt</span>
+        <span style="font-size:12.5px; color:#46505A; background:#F2F5F7; border:1px solid #E2E7EB; border-radius:8px; padding:7px 12px;">T1 / T2 / T3 windows</span>
+        <span style="flex:1 1 auto;"></span>
+        <dc-import name="Button" label="Set" hierarchy="outline" hint-size="72px,40px"></dc-import>
+        <dc-import name="Button" label="Confirm" hierarchy="primary" hint-size="96px,40px"></dc-import>
+      </div>
+    </div>
+
+    <div style="font-size:12px; color:#8A9199; line-height:1.5;">Aggregator can write; utility sees the same readout <b style="color:#46505A;">read-only</b>; end-user does not get the Control tab.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 920, &quot;height&quot;: 680}}">
+class Component extends DCLogic {
+  state = { tip: false };
+  renderVals() {
+    return {
+      tipOpen: this.state.tip,
+      showTip: () => this.setState({ tip: true }),
+      hideTip: () => this.setState({ tip: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>

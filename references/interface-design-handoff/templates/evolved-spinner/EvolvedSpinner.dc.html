@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Evolved · Spinner" description="Brand-evolved Spinner, Ovanova sky ring + Space Grotesk message, replacing the legacy indigo-900 text. Reskin target for the reap Spinner; repo drives the ring/text from --hue-sky tokens." -->
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>@keyframes evspin { to { transform: rotate(360deg); } }</style>
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; padding:30px; display:flex; flex-direction:column; gap:22px; align-items:center; background:#fff;">
+  <div style="display:flex; align-items:center; gap:12px; min-height:40px; padding:14px 18px; border:1px solid #E1EBEF; border-radius:10px; background:#F7FBFE;">
+    <span style="width:26px; height:26px; border:3px solid #E6F7FF; border-top-color:#009DE4; border-radius:50%; display:inline-block; animation:evspin .7s linear infinite;"></span>
+    <span style="font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14px; color:#03587F;">Loading plant data…</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <span style="width:18px; height:18px; border:2.5px solid #E6F7FF; border-top-color:#009DE4; border-radius:50%; display:inline-block; animation:evspin .7s linear infinite;"></span>
+    <span style="font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13px; color:#8A9199;">Inline (no message)</span>
+  </div>
+  <div style="font-size:12.5px; color:#8A9199; max-width:48ch; border-top:1px solid #EEF2F5; padding-top:14px; line-height:1.6;">
+    <b style="color:#03587F; font-family:'Space Grotesk',sans-serif;">Evolved:</b> Ovanova sky ring on a soft track + Space Grotesk message, replacing the legacy generic ring and <code style="font-family:'Space Grotesk',monospace;">text-indigo-900</code> label. Repo drives ring/text from <code style="font-family:'Space Grotesk',monospace;">--hue-sky-*</code>.
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 440, &quot;height&quot;: 240}}"></script>
+</body>
+</html>

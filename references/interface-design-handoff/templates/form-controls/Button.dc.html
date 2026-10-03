@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>@keyframes btn-spin { to { transform: rotate(360deg); } }</style>
+</helmet>
+<sc-if value="{{ primary }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ onClick }}" disabled="{{ isDisabled }}" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:0.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, color .15s, box-shadow .15s; box-sizing:border-box; outline:none; user-select:none; background:#009DE4; color:#fff;">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin .6s linear infinite;"></span></sc-if>
+  <sc-if value="{{ showLeading }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ leadingIcon }}</span></sc-if>
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span>{{ label }}</span></sc-if>
+  <sc-if value="{{ showTrailing }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ trailingIcon }}</span></sc-if>
+</button></sc-if>
+<sc-if value="{{ secondary }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onClick }}" disabled="{{ isDisabled }}" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:0.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, color .15s, box-shadow .15s; box-sizing:border-box; outline:none; user-select:none; background:#F1F4F6; color:#46505A;">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin .6s linear infinite;"></span></sc-if>
+  <sc-if value="{{ showLeading }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ leadingIcon }}</span></sc-if>
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span>{{ label }}</span></sc-if>
+  <sc-if value="{{ showTrailing }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ trailingIcon }}</span></sc-if>
+</button></sc-if>
+<sc-if value="{{ outline }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onClick }}" disabled="{{ isDisabled }}" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:0.005em; padding:9px 16px; border-radius:9px; border:1px solid #CFE8F6; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, color .15s, box-shadow .15s; box-sizing:border-box; outline:none; user-select:none; background:#fff; color:#1F4173;">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin .6s linear infinite;"></span></sc-if>
+  <sc-if value="{{ showLeading }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ leadingIcon }}</span></sc-if>
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span>{{ label }}</span></sc-if>
+  <sc-if value="{{ showTrailing }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ trailingIcon }}</span></sc-if>
+</button></sc-if>
+<sc-if value="{{ ghost }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onClick }}" disabled="{{ isDisabled }}" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:0.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, color .15s, box-shadow .15s; box-sizing:border-box; outline:none; user-select:none; background:transparent; color:#1F4173;">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin .6s linear infinite;"></span></sc-if>
+  <sc-if value="{{ showLeading }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ leadingIcon }}</span></sc-if>
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span>{{ label }}</span></sc-if>
+  <sc-if value="{{ showTrailing }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ trailingIcon }}</span></sc-if>
+</button></sc-if>
+<sc-if value="{{ dangerSolid }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onClick }}" disabled="{{ isDisabled }}" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:0.005em; padding:9px 16px; border-radius:9px; border:1px solid transparent; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, color .15s, box-shadow .15s; box-sizing:border-box; outline:none; user-select:none; background:#D92D20; color:#fff;">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin .6s linear infinite;"></span></sc-if>
+  <sc-if value="{{ showLeading }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ leadingIcon }}</span></sc-if>
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span>{{ label }}</span></sc-if>
+  <sc-if value="{{ showTrailing }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ trailingIcon }}</span></sc-if>
+</button></sc-if>
+<sc-if value="{{ dangerOutline }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onClick }}" disabled="{{ isDisabled }}" style="display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:600; font-size:14px; line-height:1.1; letter-spacing:0.005em; padding:9px 16px; border-radius:9px; border:1px solid #F2B7AF; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, color .15s, box-shadow .15s; box-sizing:border-box; outline:none; user-select:none; background:#fff; color:#D92D20;">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="width:14px; height:14px; border-radius:50%; border:2px solid currentColor; border-top-color:transparent; display:inline-block; animation:btn-spin .6s linear infinite;"></span></sc-if>
+  <sc-if value="{{ showLeading }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ leadingIcon }}</span></sc-if>
+  <sc-if value="{{ hasLabel }}" hint-placeholder-val="{{ true }}"><span>{{ label }}</span></sc-if>
+  <sc-if value="{{ showTrailing }}" hint-placeholder-val="{{ false }}"><span style="font-size:18px; line-height:0; display:inline-flex;">{{ trailingIcon }}</span></sc-if>
+</button></sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 200, &quot;height&quot;: 60}, &quot;label&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Export data&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;hierarchy&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;primary&quot;, &quot;secondary&quot;, &quot;tertiary&quot;, &quot;outline&quot;, &quot;ghost&quot;, &quot;link&quot;], &quot;default&quot;: &quot;primary&quot;, &quot;tsType&quot;: &quot;'primary'|'secondary'|'tertiary'|'outline'|'ghost'|'link'&quot;}, &quot;size&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;xs&quot;, &quot;sm&quot;, &quot;md&quot;, &quot;lg&quot;, &quot;xl&quot;], &quot;default&quot;: &quot;md&quot;, &quot;tsType&quot;: &quot;'xs'|'sm'|'md'|'lg'|'xl'&quot;}, &quot;destructive&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;disabled&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;loading&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;leadingIcon&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;trailingIcon&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const h = this.props.hierarchy || "primary";
+    const dest = !!this.props.destructive;
+    const isOutline = h === "outline";
+    const isSecondary = h === "secondary" || h === "tertiary";
+    const isGhost = h === "ghost" || h === "link";
+    const isDisabled = !!this.props.disabled || !!this.props.loading;
+    const loading = !!this.props.loading;
+    const leadingIcon = this.props.leadingIcon;
+    const trailingIcon = this.props.trailingIcon;
+    const label = this.props.label;
+    const hasLabel = label != null && label !== "";
+    return {
+      onClick: () => {},
+      isDisabled, loading,
+      showLeading: !!leadingIcon && !loading,
+      showTrailing: !!trailingIcon,
+      leadingIcon, trailingIcon,
+      hasLabel, label: label || "Button",
+      // exactly one variant flag is true
+      dangerSolid: dest && !isOutline,
+      dangerOutline: dest && isOutline,
+      outline: !dest && isOutline,
+      secondary: !dest && isSecondary,
+      ghost: !dest && isGhost,
+      primary: !dest && !isOutline && !isSecondary && !isGhost,
+    };
+  }
+}
+</script>
+</body>
+</html>

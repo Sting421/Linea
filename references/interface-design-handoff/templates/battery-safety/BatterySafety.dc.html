@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;box-sizing:border-box;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 18px 0;">
+    <div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#1F4173;">Battery safety</div>
+      <div style="font-size:12px;color:#8A9199;margin-top:2px;">{{ device }} · {{ sub }}</div>
+    </div>
+    {{ statusPill }}
+  </div>
+  <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:17px;">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;white-space:nowrap;">
+        <span style="font-size:12.5px;color:#5A636B;font-weight:500;">Cell temperature</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;color:#20262B;">{{ tempText }}</span>
+      </div>
+      {{ tempGauge }}
+      <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10.5px;color:#B4BBC1;">
+        <span>{{ tempLoLbl }}</span><span>{{ tempHiLbl }}</span>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;white-space:nowrap;">
+        <span style="font-size:12.5px;color:#5A636B;font-weight:500;">Cell voltage</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;color:#20262B;">{{ voltText }}</span>
+      </div>
+      {{ voltGauge }}
+      <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10.5px;color:#B4BBC1;">
+        <span>{{ voltLoLbl }}</span><span>{{ voltHiLbl }}</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding-top:14px;border-top:1px solid #F0F3F5;">
+      <span style="width:22px;height:8px;border-radius:999px;background:rgba(31,168,110,0.16);flex:none;"></span>
+      <span style="font-size:11px;color:#8A9199;">Safe operating band · bar shows cell min–max</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:300},&quot;device&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;ESS · Pack 1&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sub&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;16 cells · LFP&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;status&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;normal&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;warning&quot;,&quot;fault&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;tempMin&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:28,&quot;tsType&quot;:&quot;number&quot;},&quot;tempMax&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:34,&quot;tsType&quot;:&quot;number&quot;},&quot;voltMin&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:3.28,&quot;tsType&quot;:&quot;number&quot;},&quot;voltMax&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:3.34,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  num(v, d) { const x = parseFloat(v); return isNaN(x) ? d : x; }
+  cfg() {
+    const p = this.props;
+    return {
+      device: p.device ?? "ESS · Pack 1",
+      sub: p.sub ?? "16 cells · LFP",
+      status: (p.status ?? "normal").toLowerCase(),
+      tMin: this.num(p.tempMin, 28), tMax: this.num(p.tempMax, 34),
+      vMin: this.num(p.voltMin, 3.28), vMax: this.num(p.voltMax, 3.34),
+    };
+  }
+  gauge(dLo, dHi, sLo, sHi, vMin, vMax) {
+    const h = (...a) => React.createElement(...a);
+    const pct = v => Math.max(0, Math.min(100, ((v - dLo) / (dHi - dLo)) * 100));
+    const ok = vMin >= sLo && vMax <= sHi;
+    const col = ok ? "#1FA86E" : "#E8833A";
+    return h("div", { style: { position: "relative", height: "10px", borderRadius: "999px", background: "#EEF2F5" } },
+      h("div", { style: { position: "absolute", top: 0, bottom: 0, left: pct(sLo) + "%", width: (pct(sHi) - pct(sLo)) + "%", background: "rgba(31,168,110,0.16)" } }),
+      h("div", { style: { position: "absolute", top: "2px", bottom: "2px", left: pct(vMin) + "%", width: Math.max(3, pct(vMax) - pct(vMin)) + "%", background: col, borderRadius: "999px" } })
+    );
+  }
+  pill(status) {
+    const h = (...a) => React.createElement(...a);
+    const map = { normal: ["#E3F6EE", "#12855A", "#1FA86E", "Normal"], warning: ["#FBEEDD", "#B4670E", "#E8833A", "Warning"], fault: ["#FBE4E4", "#B4231F", "#DB4B45", "Fault"] };
+    const m = map[status] || map.normal;
+    return h("div", { style: { display: "inline-flex", alignItems: "center", gap: "6px", padding: "4px 10px", borderRadius: "999px", fontSize: "11px", fontWeight: 700, letterSpacing: "0.03em", background: m[0], color: m[1], flex: "none" } },
+      h("span", { style: { width: "7px", height: "7px", borderRadius: "999px", background: m[2] } }), m[3]);
+  }
+  renderVals() {
+    const c = this.cfg();
+    return {
+      device: c.device, sub: c.sub,
+      statusPill: this.pill(c.status),
+      tempText: c.tMin + "–" + c.tMax + " °C",
+      voltText: c.vMin.toFixed(2) + "–" + c.vMax.toFixed(2) + " V",
+      tempGauge: this.gauge(0, 60, 10, 45, c.tMin, c.tMax),
+      voltGauge: this.gauge(2.5, 3.65, 2.8, 3.6, c.vMin, c.vMax),
+      tempLoLbl: "0 °C", tempHiLbl: "60 °C",
+      voltLoLbl: "2.50 V", voltHiLbl: "3.65 V",
+    };
+  }
+}
+</script>
+</body>
+</html>

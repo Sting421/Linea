@@ -1,0 +1,501 @@
+{
+  "$defs": {
+    "Facts": {
+      "additionalProperties": false,
+      "properties": {
+        "incident_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Incident Id",
+          "type": "string"
+        },
+        "concern": {
+          "enum": [
+            "FALL",
+            "BREATHING",
+            "CHEST_PAIN",
+            "DIZZINESS",
+            "MEDICINE_NOT_TAKEN"
+          ],
+          "title": "Concern",
+          "type": "string"
+        },
+        "subject": {
+          "default": "elder",
+          "enum": [
+            "elder",
+            "other"
+          ],
+          "title": "Subject",
+          "type": "string"
+        },
+        "context": {
+          "default": "actual",
+          "enum": [
+            "actual",
+            "near_event",
+            "negated",
+            "hypothetical",
+            "remote_assessed"
+          ],
+          "title": "Context",
+          "type": "string"
+        },
+        "quote": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        },
+        "current": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current"
+        },
+        "resolved": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolved"
+        },
+        "mild": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mild"
+        },
+        "brief": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brief"
+        },
+        "familiar": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Familiar"
+        },
+        "usual_exertion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Usual Exertion"
+        },
+        "ongoing_pain": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ongoing Pain"
+        },
+        "injury": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Injury"
+        },
+        "functional_difficulty": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Functional Difficulty"
+        },
+        "repeated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repeated"
+        },
+        "worsening": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Worsening"
+        },
+        "new_unusual": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "New Unusual"
+        },
+        "fainted": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fainted"
+        },
+        "emergency_features_absent": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Emergency Features Absent"
+        },
+        "red_flags": {
+          "items": {
+            "enum": [
+              "cannot_get_up",
+              "head_neck_back_hip_injury",
+              "serious_injury",
+              "severe_disabling_pain",
+              "cannot_breathe",
+              "gasping_choking",
+              "cannot_speak_breathing",
+              "blue_grey",
+              "sudden_confusion",
+              "chest_pressure",
+              "spreading_pain",
+              "sweating",
+              "nausea_with_chest",
+              "collapse",
+              "one_sided_weakness",
+              "speech_difficulty",
+              "face_droop",
+              "vision_loss",
+              "severe_unusual_headache",
+              "sudden_cannot_walk",
+              "faint_incomplete_recovery",
+              "faint_exertion",
+              "faint_lying_down",
+              "faint_serious_injury",
+              "faint_palpitations",
+              "overdose_poisoning"
+            ],
+            "type": "string"
+          },
+          "title": "Red Flags",
+          "type": "array"
+        },
+        "medicine_result": {
+          "anyOf": [
+            {
+              "enum": [
+                "taken",
+                "not_taken",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Medicine Result"
+        },
+        "due": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Due"
+        },
+        "dose_period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dose Period"
+        },
+        "access_barrier": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Access Barrier"
+        },
+        "refusal": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Refusal"
+        },
+        "adverse_effect": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adverse Effect"
+        },
+        "instruction_conflict": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Instruction Conflict"
+        },
+        "reported_large_excess_or_poisoning": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "True for a reported large excess of tablets/medicine, a handful taken, an overdose, or poisoning. Feeling well does not negate the report. An uncertain first dose or a possible single extra dose alone does not establish this fact. Preserve subject and actual/negated/hypothetical context.",
+          "title": "Reported Large Excess Or Poisoning"
+        },
+        "possible_dose_error": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Possible Dose Error"
+        },
+        "repeated_unknown": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repeated Unknown"
+        },
+        "approved_medicine": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approved Medicine"
+        },
+        "clarification_failures": {
+          "default": 0,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Clarification Failures",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "incident_id",
+        "concern",
+        "quote"
+      ],
+      "title": "Facts",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "turn_id": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Turn Id",
+      "type": "string"
+    },
+    "text": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "consent": {
+      "anyOf": [
+        {
+          "enum": [
+            "yes",
+            "no",
+            "ambiguous"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Consent"
+    },
+    "stop": {
+      "default": false,
+      "title": "Stop",
+      "type": "boolean"
+    },
+    "end_call": {
+      "default": false,
+      "title": "End Call",
+      "type": "boolean"
+    },
+    "advice": {
+      "default": false,
+      "title": "Advice",
+      "type": "boolean"
+    },
+    "answers": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "propertyNames": {
+        "enum": [
+          "sleep",
+          "medicine",
+          "feeling",
+          "anything"
+        ]
+      },
+      "title": "Answers",
+      "type": "object"
+    },
+    "medicine_result": {
+      "anyOf": [
+        {
+          "enum": [
+            "taken",
+            "not_taken",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Medicine Result"
+    },
+    "concerns": {
+      "items": {
+        "$ref": "#/$defs/Facts"
+      },
+      "maxItems": 5,
+      "title": "Concerns",
+      "type": "array"
+    }
+  },
+  "required": [
+    "turn_id",
+    "text"
+  ],
+  "title": "Turn",
+  "type": "object"
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width: 100%; height: 100%; min-height: 40px;">{{ chartEl }}</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 160, &quot;height&quot;: 48}, &quot;color&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#009DE4&quot;, &quot;options&quot;: [&quot;#009DE4&quot;, &quot;#1FA845&quot;, &quot;#E08600&quot;, &quot;#D92D20&quot;], &quot;tsType&quot;: &quot;string&quot;}, &quot;values&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;number[]&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const h = (...a) => React.createElement(...a);
+    const color = this.props.color || "#009DE4";
+    let vals = Array.isArray(this.props.values) && this.props.values.length ? this.props.values.slice() : null;
+    if (!vals) {
+      vals = []; let v = 50;
+      for (let i = 0; i < 24; i += 1) { v += (Math.sin(i * 0.7) + (i % 3 ? 0.35 : -0.55)) * 6.5; v = Math.max(10, Math.min(92, v)); vals.push(+v.toFixed(1)); }
+    }
+    // padX/padY inset the plot so the end dot is never clipped by the SVG edge.
+    const n = vals.length, W = 100, H = 32, padX = 3.6, padY = 3.6;
+    const min = Math.min.apply(null, vals), max = Math.max.apply(null, vals), range = (max - min) || 1;
+    const x = (i) => (n > 1 ? padX + (i / (n - 1)) * (W - padX * 2) : W / 2);
+    const y = (val) => padY + (1 - (val - min) / range) * (H - padY * 2);
+    const pts = vals.map((val, i) => [x(i), y(val)]);
+    const line = "M " + pts.map((p) => p[0].toFixed(2) + " " + p[1].toFixed(2)).join(" L ");
+    const last = pts[pts.length - 1];
+    const firstX = pts[0][0];
+    const area = line + " L " + last[0].toFixed(2) + " " + H + " L " + firstX.toFixed(2) + " " + H + " Z";
+    const gid = "spk-" + Math.random().toString(36).slice(2, 8);
+    const svg = h("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", width: "100%", height: "100%", style: { display: "block", position: "absolute", inset: 0 } },
+      h("defs", null, h("linearGradient", { id: gid, x1: 0, y1: 0, x2: 0, y2: 1 },
+        h("stop", { offset: "0%", stopColor: color, stopOpacity: 0.26 }),
+        h("stop", { offset: "100%", stopColor: color, stopOpacity: 0 }))),
+      h("path", { d: area, fill: "url(#" + gid + ")", stroke: "none" }),
+      h("path", { d: line, fill: "none", stroke: color, strokeWidth: 1.6, vectorEffect: "non-scaling-stroke", strokeLinejoin: "round", strokeLinecap: "round" }));
+    // End marker as a real round HTML dot (positioned by %), so it is always circular and fully visible.
+    const dot = h("span", { style: { position: "absolute", left: (last[0] / W * 100).toFixed(2) + "%", top: (last[1] / H * 100).toFixed(2) + "%", width: "7px", height: "7px", borderRadius: "50%", background: color, boxShadow: "0 0 0 1.5px #fff", transform: "translate(-50%,-50%)" } });
+    const wrap = h("div", { style: { position: "relative", width: "100%", height: "100%", minHeight: "40px", overflow: "visible" } }, svg, dot);
+    return { chartEl: wrap };
+  }
+}
+</script>
+</body>
+</html>

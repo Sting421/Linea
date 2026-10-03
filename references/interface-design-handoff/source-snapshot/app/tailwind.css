@@ -1,0 +1,538 @@
+@font-face {
+	font-family: 'Overused Grotesk';
+	src: url('/fonts/overused-grotesk-latin-variable.woff2') format('woff2-variations');
+	font-weight: 300 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Opening Hours Sans';
+	src: url('/fonts/opening-hours-sans-latin.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* .alice-carousel__dots {
+	margin: 0 !important;
+} */
+
+.alice-carousel__dots .alice-carousel__dots-item {
+	--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+		var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+	--tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+		calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+	box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+		var(--tw-shadow, 0 0 #0000);
+	--tw-ring-offset-width: 2px;
+	--tw-ring-color: #03587f;
+	--tw-ring-opacity: 1;
+	--tw-bg-opacity: 1;
+	border-radius: 50%;
+	cursor: pointer;
+	height: 0.75rem !important;
+	width: 0.75rem !important;
+}
+
+.react-flow__attribution {
+	display: none;
+}
+
+.date-picker input {
+	padding-right: 2rem;
+}
+
+@keyframes fleet-pin-ping {
+	0% {
+		transform: scale(1);
+		opacity: var(--fleet-ping-opacity, 0.5);
+	}
+
+	70% {
+		transform: scale(var(--fleet-ping-scale, 2.1));
+		opacity: 0;
+	}
+
+	100% {
+		transform: scale(var(--fleet-ping-scale, 2.1));
+		opacity: 0;
+	}
+}
+
+@keyframes fleet-pin-in {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes fleet-chip-in {
+	from {
+		opacity: 0;
+		transform: translateY(2px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Only pins that are new to the map run this. React keeps the element for a plant that
+   survives a refetch, so the ones already on screen stay put while the arrivals fade in. */
+.fleet-pin {
+	animation: fleet-pin-in 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+	animation-delay: var(--fleet-pin-enter-delay, 0ms);
+	contain: layout paint;
+	position: relative;
+	display: block;
+	overflow: hidden;
+	border-radius: 9999px;
+	border-width: 4px;
+	border-style: solid;
+	border-color: #fff;
+	background-color: var(--fleet-pin-color);
+	transition: border-color 220ms ease, box-shadow 180ms ease;
+}
+
+.fleet-pin-detail {
+	position: absolute;
+	inset: 0;
+	display: block;
+	opacity: 0;
+	transition: opacity 220ms ease;
+}
+
+.fleet-pin-photo {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fleet-pin-initial {
+	@apply bg-gradient-to-br from-hue-sky-300 to-hue-sky-900;
+
+	display: flex;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+}
+
+/* Zoomed in far enough to read a plant apart from its neighbours: the disc becomes the
+   plant's own image and the ring takes the status colour it was standing in for. */
+.fleet-map--moving .fleet-pin-ping {
+	animation-play-state: paused;
+}
+
+.fleet-map--detail .fleet-pin {
+	border-color: var(--fleet-pin-color);
+}
+
+.fleet-map--detail .fleet-pin-detail {
+	opacity: 1;
+}
+
+/* The View Map entry sits above the zoom control in the same top-right gutter, so the
+   control drops below it. 54px is NAV_CONTROL_TOP_WITH_ENTRY_PX in
+   app/containers/Home/fullMapMode.ts, where the arithmetic is asserted; keep the two
+   in step. Applied where something sits above the zoom control: the dashboard entry, or the
+   overlay's close button. */
+.fleet-map--nav-offset .maplibregl-ctrl-top-right .maplibregl-ctrl {
+	margin-top: 54px;
+}
+
+/* The Full Map View's expand is an inline transform, computed from the dashboard card's
+   measured rectangle, so no class can express it and no class can neutralise it either.
+   This is the authority for the reduced-motion preference rather than the JS media query
+   in FullMapView, which cannot outrank an inline style. The opacity fades live on other
+   elements and survive, which is the intended reduction: drop the movement, keep the
+   transition that explains where the panel came from. */
+@media (prefers-reduced-motion: reduce) {
+	.fleet-map-expand {
+		transform: none !important;
+		transition: none !important;
+	}
+}
+
+/* The map's own controls: the View Map entry and the size-by-capacity toggle. Same shape as
+   .plant-popover-cta below, deliberately, because that is where this codebase already
+   settled the three things a pressable control needs: a press that responds, a hover that
+   only fires for a real pointer rather than on a touch tap, and both stood down when the
+   user has asked for less motion. */
+.fleet-map-control {
+	transition-property: color, background-color, border-color, transform;
+	transition-duration: 100ms;
+	transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.fleet-map-control:active {
+	transform: scale(0.98);
+}
+
+/* Same treatment the plant popover's close already uses: the button highlights and the
+   glyph turns a quarter. Mirrored rather than shared, so the two components stay
+   independent of each other's selectors. */
+.fleet-map-close-glyph {
+	display: block;
+	transform-origin: 50% 50%;
+	transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.fleet-map-entry-glyph {
+	display: inline-block;
+	transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.fleet-map-entry:hover {
+		@apply text-hue-sky-600;
+	}
+
+	.fleet-map-entry:hover .fleet-map-entry-glyph {
+		transform: translateX(2px);
+	}
+
+	.fleet-map-toggle:hover {
+		@apply border-hue-sky-300 bg-hue-sky-50 text-hue-sky-800;
+	}
+
+	.fleet-map-close:hover {
+		@apply border-hue-sky-500 text-hue-sky-500;
+	}
+
+	.fleet-map-close:hover .fleet-map-close-glyph {
+		transform: rotate(90deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fleet-map-control {
+		transition: none;
+	}
+
+	.fleet-map-control:active {
+		transform: none;
+	}
+
+	.fleet-map-entry-glyph,
+	.fleet-map-entry:hover .fleet-map-entry-glyph,
+	.fleet-map-close-glyph,
+	.fleet-map-close:hover .fleet-map-close-glyph {
+		transition: none;
+		transform: none;
+	}
+}
+
+.fleet-pin-ping {
+	position: absolute;
+	inset: 0;
+	border-radius: 9999px;
+	border-width: 4px;
+	border-style: solid;
+	pointer-events: none;
+	animation: fleet-pin-ping var(--fleet-ping-duration, 2400ms) cubic-bezier(0, 0, 0.2, 1) infinite;
+	animation-delay: var(--fleet-ping-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fleet-pin-ping {
+		display: none;
+	}
+
+	/* The chip still says what it is doing, so the text carries the meaning without
+	   the motion. Hiding it outright would remove the feedback, not soften it. */
+	.fleet-map-loading-spinner {
+		animation: none;
+	}
+
+	/* Gentler rather than absent: the arrival still needs a bridge, it just does not
+	   need to travel or to arrive in sequence. */
+	.fleet-pin {
+		animation: fleet-chip-fade 120ms ease-out both;
+		animation-delay: 0ms;
+	}
+
+	.fleet-map-loading-chip {
+		animation: fleet-chip-fade 120ms ease-out both;
+	}
+}
+
+@keyframes fleet-chip-fade {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.fleet-map-loading-chip {
+	animation: fleet-chip-in 160ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.fleet-map-popup .maplibregl-popup-content {
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+.fleet-map-popup .maplibregl-popup-tip {
+	display: none;
+}
+
+@keyframes plant-popover-in {
+	from {
+		opacity: 0;
+		transform: translateY(14px) scaleY(0.82);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scaleY(1);
+	}
+}
+
+.plant-popover {
+	transform-origin: bottom center;
+	animation: plant-popover-in 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.plant-popover-close {
+	contain: layout paint;
+	transition: border-color 150ms cubic-bezier(0.23, 1, 0.32, 1), color 150ms
+		cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plant-popover-close-glyph {
+	display: block;
+	transform-origin: 50% 50%;
+	will-change: transform;
+	transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plant-popover-cta {
+	transition: background-color 160ms ease, transform 160ms
+		cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plant-popover-close:active,
+.plant-popover-cta:active {
+	transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.plant-popover-close:hover {
+		@apply border-hue-sky-500 text-hue-sky-500;
+	}
+
+	.plant-popover-close:hover .plant-popover-close-glyph {
+		transform: rotate(90deg);
+	}
+
+	.plant-popover-cta:hover {
+		@apply bg-hue-sky-600;
+	}
+}
+
+@keyframes plant-popover-fade {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.plant-popover {
+		animation: plant-popover-fade 160ms ease-out;
+	}
+
+	.plant-popover-close,
+	.plant-popover-cta {
+		transition-property: border-color, background-color, color;
+	}
+
+	.plant-popover-close:active,
+	.plant-popover-cta:active {
+		transform: none;
+	}
+
+	.plant-popover-close-glyph,
+	.plant-popover-close:hover .plant-popover-close-glyph {
+		transition: none;
+		transform: none;
+	}
+}
+
+.react-flow__controls-interactive {
+	display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-status-pulse {
+		animation: none;
+	}
+}
+
+.plant-card-avatar {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	flex: none;
+	width: 34px;
+	height: 34px;
+	border-radius: 9999px;
+	background-color: theme('colors.hue-ink.100');
+}
+
+.plant-card-avatar--ring {
+	border-width: 2px;
+	border-style: solid;
+	border-color: var(--fleet-pin-color);
+	background-color: var(--fleet-pin-color);
+}
+
+.bar-fade path {
+	transition: fill-opacity 150ms ease;
+}
+
+.plant-card-avatar-photo {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.plant-card-avatar-initial {
+	@apply bg-gradient-to-br from-hue-sky-300 to-hue-sky-900;
+
+	display: flex;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+}
+
+.plant-card-chevron {
+	transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1), color 150ms ease;
+}
+
+/* Snapping to card boundaries is what stops a manual scroll leaving the top card sliced through
+   its own outline: every resting offset is a card's offset, which is also where the autoscroll
+   puts it. Proximity rather than mandatory, so a deliberate free scroll is not fought. */
+.plant-card-scroller {
+	scroll-snap-type: y proximity;
+	scroll-padding-top: 1px;
+}
+
+.plant-card-scroller,
+.quiet-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: theme('colors.hue-ink.300') transparent;
+}
+
+.plant-card-scroller::-webkit-scrollbar,
+.quiet-scrollbar::-webkit-scrollbar {
+	width: 8px;
+}
+
+.plant-card-scroller::-webkit-scrollbar-track,
+.quiet-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.plant-card-scroller::-webkit-scrollbar-thumb,
+.quiet-scrollbar::-webkit-scrollbar-thumb {
+	border-radius: 9999px;
+	border: 2px solid transparent;
+	background-clip: content-box;
+	background-color: theme('colors.hue-ink.200');
+}
+
+/* The arrival is staggered across the cards that are actually in view. Past those the delay would
+   be longer than the time it takes to scroll to them, which reads as lag rather than as sequence. */
+.plant-card-scroller > li {
+	animation: plant-card-in 260ms cubic-bezier(0.23, 1, 0.32, 1) both;
+	scroll-snap-align: start;
+	scroll-snap-stop: normal;
+}
+
+.plant-card-scroller > li:nth-child(1) { animation-delay: 0ms; }
+.plant-card-scroller > li:nth-child(2) { animation-delay: 40ms; }
+.plant-card-scroller > li:nth-child(3) { animation-delay: 80ms; }
+.plant-card-scroller > li:nth-child(4) { animation-delay: 120ms; }
+.plant-card-scroller > li:nth-child(5) { animation-delay: 160ms; }
+.plant-card-scroller > li:nth-child(6) { animation-delay: 200ms; }
+.plant-card-scroller > li:nth-child(n + 7) { animation-delay: 240ms; }
+
+@keyframes plant-card-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.plant-card:hover .plant-card-chevron {
+		transform: translateX(2px);
+	}
+}
+
+.plant-card:focus-within .plant-card-chevron {
+	transform: translateX(2px);
+}
+
+/* The halo alone, and no growth. Growing the pin was there to make it findable among a hundred
+   others; the viewport now draws one plant, so the only job left is to confirm which. It also
+   avoids a mismatch: the ping ring is a sibling of the pin rather than a child, so scaling the pin
+   would have left the ring emerging from inside its own edge. */
+.fleet-pin--focus {
+	box-shadow:
+		0 0 0 3px var(--fleet-pin-color),
+		0 6px 16px rgba(20, 30, 45, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.plant-card-scroller > li {
+		animation: fleet-chip-fade 120ms ease-out both;
+		animation-delay: 0ms;
+	}
+
+	.plant-card-chevron {
+		transition: color 150ms ease;
+		transform: none;
+	}
+
+	.plant-card:hover .plant-card-chevron,
+	.plant-card:focus-within .plant-card-chevron {
+		transform: none;
+	}
+}

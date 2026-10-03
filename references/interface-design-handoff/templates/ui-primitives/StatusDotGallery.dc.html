@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>@keyframes sdg-pulse { 0% { transform: translate(-50%,-50%) scale(1); opacity:.55 } 100% { transform: translate(-50%,-50%) scale(2.7); opacity:0 } }</style>
+</helmet>
+<div style="padding:24px 26px 26px; background:#fff; font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; color:#1F4173;">
+
+  <div style="margin-bottom:24px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">Status</div>
+    <div style="display:flex; flex-wrap:wrap; gap:18px 24px; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; background:#009DE4; box-shadow:0 0 0 2px #fff;"></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">normal</span></div>
+      
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; background:#E08600; box-shadow:0 0 0 2px #fff;"></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">warning</span></div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; background:#6B7177; box-shadow:0 0 0 2px #fff;"></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">offline</span></div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; background:#D92D20; box-shadow:0 0 0 2px #fff;"></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">fault</span></div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; background:#8B5CF6; box-shadow:0 0 0 2px #fff;"></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">anomaly</span></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:24px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">Sizes</div>
+    <div style="display:flex; flex-wrap:wrap; gap:18px 24px; align-items:flex-end;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="display:flex; height:12px; align-items:center;"><span style="width:7px; height:7px; border-radius:50%; background:#009DE4; box-shadow:0 0 0 2px #fff;"></span></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">sm</span></div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="display:flex; height:12px; align-items:center;"><span style="width:9px; height:9px; border-radius:50%; background:#009DE4; box-shadow:0 0 0 2px #fff;"></span></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">md</span></div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:9px;"><span style="display:flex; height:12px; align-items:center;"><span style="width:12px; height:12px; border-radius:50%; background:#009DE4; box-shadow:0 0 0 2px #fff;"></span></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:#8A97A3;">lg</span></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:24px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">With label</div>
+    <div style="display:flex; flex-wrap:wrap; gap:14px 26px; align-items:center;">
+      
+      <span style="display:inline-flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:50%; background:#E08600; box-shadow:0 0 0 2px #fff;"></span><span style="font-size:13px; color:#3A434B;">Warning</span></span>
+      <span style="display:inline-flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:50%; background:#D92D20; box-shadow:0 0 0 2px #fff;"></span><span style="font-size:13px; color:#3A434B;">Fault</span></span>
+      <span style="display:inline-flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:50%; background:#6B7177; box-shadow:0 0 0 2px #fff;"></span><span style="font-size:13px; color:#3A434B;">Offline</span></span>
+      <span style="display:inline-flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:50%; background:#8B5CF6; box-shadow:0 0 0 2px #fff;"></span><span style="font-size:13px; color:#3A434B;">Anomaly</span></span>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5B6A78; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid #EAEFF3;">Pulse (live)</div>
+    <div style="display:flex; flex-wrap:wrap; gap:14px 26px; align-items:center;">
+      <span style="display:inline-flex; align-items:center; gap:8px;"><span style="position:relative; display:inline-flex; width:9px; height:9px;"><span style="position:absolute; left:50%; top:50%; width:9px; height:9px; border-radius:50%; background:#009DE4; transform:translate(-50%,-50%); animation:sdg-pulse 1.6s ease-out infinite;"></span><span style="width:9px; height:9px; border-radius:50%; background:#009DE4; box-shadow:0 0 0 2px #fff; position:relative;"></span></span><span style="font-size:13px; color:#3A434B;">Live · normal</span></span>
+      <span style="display:inline-flex; align-items:center; gap:8px;"><span style="position:relative; display:inline-flex; width:9px; height:9px;"><span style="position:absolute; left:50%; top:50%; width:9px; height:9px; border-radius:50%; background:#D92D20; transform:translate(-50%,-50%); animation:sdg-pulse 1.6s ease-out infinite;"></span><span style="width:9px; height:9px; border-radius:50%; background:#D92D20; box-shadow:0 0 0 2px #fff; position:relative;"></span></span><span style="font-size:13px; color:#3A434B;">Live · fault</span></span>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 560, &quot;height&quot;: 340}}"></script>
+</body>
+</html>

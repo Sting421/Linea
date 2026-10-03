@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Load balancing" description="Area 1/2 'How loads are met' widget: 100%-height stacked bars showing the share of load served by solar-direct, battery discharge and grid import across the day. Rebuilds LoadBalancingStackedBar's stacked-bar view." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;box-sizing:border-box;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 18px 4px;">
+    <div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#1F4173;">How loads are met</div>
+      <div style="font-size:12px;color:#8A9199;margin-top:2px;">{{ plant }} · share of load by source</div>
+    </div>
+    <span style="font-size:11px;color:#5A636B;background:#F2F5F8;border:1px solid #E7ECF0;border-radius:999px;padding:4px 10px;font-weight:500;white-space:nowrap;">Today</span>
+  </div>
+  <div style="padding:8px 16px 15px;">{{ chartEl }}</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:340},&quot;plant&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Riverside Solar&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  buckets() {
+    return [
+      { t: "00", solar: 0,  battery: 35, grid: 65 },
+      { t: "03", solar: 0,  battery: 40, grid: 60 },
+      { t: "06", solar: 15, battery: 30, grid: 55 },
+      { t: "09", solar: 55, battery: 25, grid: 20 },
+      { t: "12", solar: 80, battery: 15, grid: 5  },
+      { t: "15", solar: 62, battery: 28, grid: 10 },
+      { t: "18", solar: 10, battery: 55, grid: 35 },
+      { t: "21", solar: 0,  battery: 45, grid: 55 },
+    ];
+  }
+  sources() {
+    return [
+      { key: "solar",   label: "Solar direct", color: "#EAB308" },
+      { key: "battery", label: "Battery",      color: "#1FA845" },
+      { key: "grid",    label: "Grid import",  color: "#0B7285" },
+    ];
+  }
+  chart() {
+    const h = (...a) => React.createElement(...a);
+    const b = this.buckets(), src = this.sources();
+    const W = 560, H = 202, padT = 12, padB = 22, padL = 30, padR = 8;
+    const plotH = H - padT - padB, plotW = W - padL - padR;
+    const bw = plotW / b.length;
+    const barW = Math.min(bw * 0.58, 32);
+    const r = Math.min(barW / 2, 7);
+    const bot = padT + plotH;
+    const defs = [], grid = [], bars = [];
+    src.forEach(s => {
+      defs.push(h("linearGradient", { key: "g" + s.key, id: "lb-" + s.key, x1: 0, y1: 0, x2: 0, y2: 1 },
+        h("stop", { key: "a", offset: "0%", stopColor: s.color, stopOpacity: 0.95 }),
+        h("stop", { key: "b", offset: "100%", stopColor: s.color, stopOpacity: 0.72 })));
+    });
+    [0, 25, 50, 75, 100].forEach(pct => {
+      const y = padT + plotH * (1 - pct / 100);
+      grid.push(h("line", { key: "gl" + pct, x1: padL, y1: y, x2: W - padR, y2: y, stroke: pct === 0 ? "#DCE3E9" : "#EDF1F5", strokeWidth: 1, strokeDasharray: pct === 0 ? "0" : "2 4" }));
+      grid.push(h("text", { key: "gt" + pct, x: padL - 7, y: y + 3, textAnchor: "end", fontSize: 8.5, fill: "#B4BCC4", fontWeight: 500 }, pct));
+    });
+    b.forEach((bk, i) => {
+      const cx = padL + bw * i + bw / 2, x0 = cx - barW / 2;
+      const clipId = "lbc-" + bk.t;
+      const path = "M " + x0 + "," + bot + " L " + x0 + "," + (padT + r) + " Q " + x0 + "," + padT + " " + (x0 + r) + "," + padT + " L " + (x0 + barW - r) + "," + padT + " Q " + (x0 + barW) + "," + padT + " " + (x0 + barW) + "," + (padT + r) + " L " + (x0 + barW) + "," + bot + " Z";
+      defs.push(h("clipPath", { key: clipId, id: clipId }, h("path", { d: path })));
+      const segs = [];
+      let acc = 0;
+      src.forEach(s => {
+        const segH = plotH * (bk[s.key] / 100);
+        const y = bot - acc - segH;
+        if (bk[s.key] > 0) segs.push(h("rect", { key: s.key, x: x0, y, width: barW, height: segH, fill: "url(#lb-" + s.key + ")" }));
+        acc += segH;
+      });
+      let acc2 = 0;
+      src.forEach((s, si) => {
+        acc2 += plotH * (bk[s.key] / 100);
+        if (si < src.length - 1 && bk[s.key] > 0) segs.push(h("rect", { key: "sep" + s.key, x: x0, y: bot - acc2 - 0.75, width: barW, height: 1.5, fill: "#fff" }));
+      });
+      bars.push(h("g", { key: bk.t, clipPath: "url(#" + clipId + ")" }, ...segs));
+      bars.push(h("text", { key: "t" + bk.t, x: cx, y: H - 7, textAnchor: "middle", fontSize: 9.5, fill: "#AEB6BE", fontWeight: 500 }, bk.t));
+    });
+    return h("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", height: "auto", style: { display: "block" } },
+      h("defs", { key: "d" }, ...defs),
+      h("g", { key: "grid" }, ...grid),
+      h("g", { key: "bars" }, ...bars));
+  }
+  renderVals() {
+    const p = this.props;
+    return { plant: p.plant ?? "Riverside Solar", chartEl: this.chart() };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 14px 18px 8px;">
+    <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">{{ title }}</div>
+    <div style="font-size: 12px; color: #8A9199;">{{ subtitle }}</div>
+  </div>
+  <div style="width: 100%; height: 280px; padding: 4px 10px 12px; box-sizing: border-box;">
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+      {{ chartEl }}
+    </sc-if>
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+      <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #B4BBC1; font-size: 13px;">Loading chart…</div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 560, &quot;height&quot;: 340}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Today · Power&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;subtitle&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;PV · Load · Net grid · SOC&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;kind&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;area&quot;, &quot;line&quot;], &quot;default&quot;: &quot;area&quot;, &quot;tsType&quot;: &quot;'area' | 'line'&quot;}, &quot;data&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;Array&lt;Record&lt;string, number|string&gt;&gt;&quot;}, &quot;series&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;Array&lt;{ key: string; label: string; color: string; axis?: 'left'|'right' }&gt;&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this._tries = 0; }
+  componentDidMount() { this.waitForLib(); }
+  waitForLib() {
+    if (window.Recharts) { this.forceUpdate(); return; }
+    if (this._tries++ < 150) setTimeout(() => this.waitForLib(), 60);
+  }
+
+  sampleData() {
+    const pts = [];
+    for (let hr = 0; hr <= 24; hr += 1) {
+      const solar = Math.max(0, Math.sin((hr - 6) / 12 * Math.PI)) * 8.4;
+      const load = 2.1 + Math.sin((hr - 9) / 24 * Math.PI * 2) * 1.1 + (hr > 17 && hr < 22 ? 2.4 : 0);
+      const soc = Math.min(100, Math.max(18, 40 + (hr < 16 ? hr * 3.4 : (16 * 3.4) - (hr - 16) * 6)));
+      const grid = Math.max(-4, load - solar);
+      pts.push({ t: (hr < 10 ? "0" + hr : "" + hr) + ":00", solar: +solar.toFixed(2), load: +load.toFixed(2), soc: Math.round(soc), grid: +grid.toFixed(2) });
+    }
+    return pts;
+  }
+  defaultSeries() {
+    return [
+      { key: "solar", label: "PV", color: "#EAB308" },
+      { key: "load", label: "Load", color: "#E0521E" },
+      { key: "grid", label: "Net grid", color: "#0B7285" },
+      { key: "soc", label: "SOC", color: "#1FA845", axis: "right" },
+    ];
+  }
+
+  buildChart() {
+    const R = window.Recharts;
+    const { ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } = R;
+    const data = (Array.isArray(this.props.data) && this.props.data.length) ? this.props.data : this.sampleData();
+    const series = (Array.isArray(this.props.series) && this.props.series.length) ? this.props.series : this.defaultSeries();
+    const kind = this.props.kind || "area";
+    const h = (...a) => React.createElement(...a);
+    const hasRight = series.some((s) => s.axis === "right");
+
+    const gradDefs = h("defs", { key: "defs" }, series.map((s) => h("linearGradient", { id: "g_" + s.key, key: s.key, x1: 0, y1: 0, x2: 0, y2: 1 },
+      h("stop", { offset: "0%", stopColor: s.color, stopOpacity: 0.26 }),
+      h("stop", { offset: "100%", stopColor: s.color, stopOpacity: 0.02 }))));
+
+    const marks = series.map((s) => {
+      const axisId = s.axis === "right" ? "right" : "left";
+      if (kind === "area" && s.axis !== "right") {
+        return h(Area, { key: s.key, yAxisId: axisId, type: "monotone", dataKey: s.key, name: s.label, stroke: s.color, strokeWidth: 2, fill: "url(#g_" + s.key + ")", dot: false, activeDot: { r: 3 } });
+      }
+      return h(Line, { key: s.key, yAxisId: axisId, type: "monotone", dataKey: s.key, name: s.label, stroke: s.color, strokeWidth: 2, dot: false, activeDot: { r: 3 }, strokeDasharray: s.axis === "right" ? "4 3" : null });
+    });
+
+    const children = [
+      gradDefs,
+      h(CartesianGrid, { key: "grid", strokeDasharray: "3 3", stroke: "#EEF2F5", vertical: false }),
+      h(XAxis, { key: "x", dataKey: "t", tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: { stroke: "#E2E7EB" }, interval: 3, minTickGap: 12 }),
+      h(YAxis, { key: "yl", yAxisId: "left", tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: false, width: 34 }),
+      hasRight ? h(YAxis, { key: "yr", yAxisId: "right", orientation: "right", tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: false, width: 34, domain: [0, 100] }) : null,
+      h(Tooltip, { key: "tip", contentStyle: { borderRadius: 8, border: "1px solid #E2E7EB", fontSize: 12, fontFamily: "'Space Grotesk', sans-serif" }, labelStyle: { color: "#46505A", fontWeight: 600 } }),
+      h(Legend, { key: "lg", iconType: "plainline", wrapperStyle: { fontSize: 12, paddingTop: 6 } }),
+    ].concat(marks).filter(Boolean);
+
+    const chart = h(ComposedChart, { data, margin: { top: 8, right: 6, left: 0, bottom: 0 } }, children);
+    return h(ResponsiveContainer, { width: "100%", height: "100%" }, chart);
+  }
+
+  renderVals() {
+    const ready = !!window.Recharts;
+    return {
+      ready,
+      loading: !ready,
+      chartEl: ready ? this.buildChart() : null,
+      title: this.props.title ?? "Today \u00b7 Power",
+      subtitle: this.props.subtitle ?? "PV \u00b7 Load \u00b7 Net grid \u00b7 SOC",
+    };
+  }
+}
+</script>
+</body>
+</html>

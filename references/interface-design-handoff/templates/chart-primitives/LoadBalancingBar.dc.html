@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</helmet>
+<div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 14px 18px 8px;">
+    <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">{{ title }}</div>
+    <div style="font-size: 12px; color: #8A9199;">{{ subtitle }}</div>
+  </div>
+  <div style="width: 100%; height: 280px; padding: 4px 10px 12px; box-sizing: border-box;">
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+      {{ chartEl }}
+    </sc-if>
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+      <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #B4BBC1; font-size: 13px;">Loading chart…</div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 560, &quot;height&quot;: 340}, &quot;title&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Load balancing&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;subtitle&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Source contribution · kW&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;stacked&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;data&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;Array&lt;Record&lt;string, number|string&gt;&gt;&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this._tries = 0; }
+  componentDidMount() { this.waitForLib(); }
+  waitForLib() {
+    if (window.Recharts) { this.forceUpdate(); return; }
+    if (this._tries++ < 150) setTimeout(() => this.waitForLib(), 60);
+  }
+
+  sampleData() {
+    // loadBalancingResult: contribution by source across the day (provisional shape)
+    const slots = ["00", "03", "06", "09", "12", "15", "18", "21"];
+    return slots.map((s, i) => {
+      const solar = Math.max(0, Math.sin((i - 1.5) / 8 * Math.PI)) * 6.2;
+      const battery = i > 4 ? 2.6 : (i < 2 ? 1.4 : 0.4);
+      const grid = Math.max(0, 3.0 - solar * 0.5 + (i > 5 ? 1.6 : 0));
+      const gen = i === 6 ? 1.2 : 0;
+      return { t: s + ":00", Solar: +solar.toFixed(2), Battery: +battery.toFixed(2), Grid: +grid.toFixed(2), Generator: +gen.toFixed(2) };
+    });
+  }
+  series() {
+    return [
+      { key: "Solar", color: "#EAB308" },
+      { key: "Battery", color: "#1FA845" },
+      { key: "Grid", color: "#0B7285" },
+      { key: "Generator", color: "#7F5539" },
+    ];
+  }
+
+  buildChart() {
+    const R = window.Recharts;
+    const { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } = R;
+    const h = (...a) => React.createElement(...a);
+    const data = (Array.isArray(this.props.data) && this.props.data.length) ? this.props.data : this.sampleData();
+    const series = this.series();
+    const stacked = this.props.stacked !== false;
+
+    const bars = series.map((s, i) => h(Bar, {
+      key: s.key, dataKey: s.key, name: s.key, fill: "url(#lbg_" + i + ")",
+      stackId: stacked ? "a" : undefined,
+      radius: stacked ? (i === series.length - 1 ? [3, 3, 0, 0] : 0) : [3, 3, 0, 0],
+      maxBarSize: 40, isAnimationActive: false,
+    }));
+
+    const children = [
+      h("defs", { key: "d" }, series.map((s, i) => h("linearGradient", { id: "lbg_" + i, key: s.key, x1: 0, y1: 0, x2: 0, y2: 1 },
+        h("stop", { offset: "0%", stopColor: s.color, stopOpacity: 1 }),
+        h("stop", { offset: "100%", stopColor: s.color, stopOpacity: 0.72 })))),
+      h(CartesianGrid, { key: "g", strokeDasharray: "3 3", stroke: "#EEF2F5", vertical: false }),
+      h(XAxis, { key: "x", dataKey: "t", tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: { stroke: "#E2E7EB" } }),
+      h(YAxis, { key: "y", tick: { fontSize: 11, fill: "#8A9199" }, tickLine: false, axisLine: false, width: 34, unit: "" }),
+      h(Tooltip, { key: "t", cursor: { fill: "#F4F8FA" }, itemStyle: { color: "#46505A" }, contentStyle: { borderRadius: 8, border: "1px solid #E2E7EB", fontSize: 12, fontFamily: "'Space Grotesk', sans-serif" }, labelStyle: { color: "#46505A", fontWeight: 600 } }),
+      h(Legend, { key: "l", iconType: "circle", wrapperStyle: { fontSize: 12, paddingTop: 6 }, payload: series.map((s) => ({ value: s.key, type: "circle", color: s.color, id: s.key })) }),
+    ].concat(bars);
+
+    return h(ResponsiveContainer, { width: "100%", height: "100%" }, h(BarChart, { data, margin: { top: 8, right: 6, left: 0, bottom: 0 } }, children));
+  }
+
+  renderVals() {
+    const ready = !!window.Recharts;
+    return {
+      ready, loading: !ready,
+      chartEl: ready ? this.buildChart() : null,
+      title: this.props.title ?? "Load balancing",
+      subtitle: this.props.subtitle ?? "Source contribution \u00b7 kW",
+    };
+  }
+}
+</script>
+</body>
+</html>

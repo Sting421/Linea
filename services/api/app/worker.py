@@ -1,0 +1,191 @@
+"""Supabase scheduler, provider-command, callback, push and retention worker.
+Default is read-only planning. --execute is explicit and requires acceptance.
+"""
+
+import argparse
+import json
+import logging
+import os
+import time
+from pathlib import Path
+from types import SimpleNamespace
+
+from dotenv import load_dotenv
+
+from .models import now
+from .notifications import deliver_one
+from .runtime_config import accepted, build_runtime
+from .runtime_repository import RuntimeRepository, service_client
+from .runtime_service import EmergencyJournal
+from .scheduler import plan
+
+
+def log_failure(operation, error):
+    """Log actionable metadata, never exception text, URLs, bodies or credentials."""
+    status = getattr(error, "status_code", None)
+    response = getattr(error, "response", None)
+    if response is not None:
+        status = response.status_code
+    logging.getLogger(__name__).error(
+        "%s failed: %s; HTTP status=%s",
+        operation,
+        type(error).__name__,
+        status if isinstance(status, int) else "unavailable",
+    )
+    diagnostic = getattr(error, "provider_diagnostic", None)
+    if diagnostic:
+        logging.getLogger(__name__).error(
+            "Provider placement diagnostic: %s", json.dumps(diagnostic, sort_keys=True)
+        )
+
+
+def tick(runtime, *, execute=False, push=False, role="voice"):
+    repo = runtime.repo
+    if not execute:
+        return {
+            "mode": "plan_only",
+            "repository": "supabase",
+            "proposals": plan(repo.profiles(), repo.calls(), now()),
+        }
+    repo.request(
+        "POST",
+        "linea_worker_status",
+        params={"on_conflict": "role"},
+        headers={"Prefer": "resolution=merge-duplicates,return=minimal"},
+        json={"role": role, "updated_at": now().isoformat()},
+    )
+    if role == "notifications":
+        if push:
+            deliver_one(repo)
+        return {"mode": "notifications", "repository": "supabase"}
+    if role == "retention":
+        repo.request("POST", "rpc/expire_linea_history", json={})
+        if runtime.journal:
+            for path in runtime.journal.directory.glob("*.emergency"):
+                runtime.journal.read(path.stem)
+        return {"mode": "retention", "repository": "supabase"}
+    # Reconcile saved completions before handling any new provider turn/event.
+    for path in runtime.journal.directory.glob("*.emergency"):
+        recovered = runtime.journal.read(path.stem)
+        if recovered:
+            call, profile, commands = recovered
+            if not runtime.allowed(call.elder_id):
+                continue
+            with repo.locked(call.elder_id) as lease:
+                runtime.persist(call, profile, lease, commands)
+    for job in repo.jobs("linea_event_inbox"):
+        if not runtime.allowed(repo.call(job["checkin_id"]).elder_id):
+            continue
+        try:
+            runtime.process_event(job)
+        except Exception as exc:
+            log_failure("Provider event processing", exc)
+    for job in repo.jobs("linea_commands"):
+        if not runtime.allowed(repo.call(job["checkin_id"]).elder_id):
+            continue
+        from datetime import datetime
+
+        if datetime.fromisoformat(job["not_before"]) > now():
+            continue
+        try:
+            runtime.process_command(job)
+        except Exception as exc:
+            log_failure("Provider command", exc)
+    for job in repo.rows(
+        "linea_commands", {"state": "in.(inflight,uncertain)", "order": "created_at.asc,id.asc"}
+    ):
+        if runtime.allowed(repo.call(job["checkin_id"]).elder_id):
+            try:
+                runtime.reconcile_command(job)
+            except Exception as exc:
+                log_failure("Command reconciliation", exc)
+    for proposal in plan(
+        [p for p in repo.profiles() if runtime.allowed(p.id, p.owner_id)], repo.calls(), now()
+    ):
+        try:
+            runtime.place(proposal["elder_id"], kind=proposal["kind"])
+        except Exception as exc:
+            log_failure("Scheduled placement", exc)
+    for call in repo.calls():
+        if not runtime.allowed(call.elder_id):
+            continue
+        try:
+            runtime.reconcile_call(call.id)
+        except Exception as exc:
+            log_failure("Call reconciliation", exc)
+        if call.state == "connected" and call.family:
+            try:
+                members = runtime.voice.members(call)
+                for member in call.family:
+                    if call.rtc_members.get(member) not in members:
+                        runtime.family_control(call.id, member, "leave")
+            except Exception as exc:
+                log_failure("Family membership reconciliation", exc)
+    return {"mode": "worker", "repository": "supabase"}
+
+
+def main():
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--once", action="store_true")
+    parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--role", choices=("voice", "notifications", "retention"), default="voice")
+    args = parser.parse_args()
+    if not args.execute:
+        with service_client() as client:
+            repo = RuntimeRepository(client)
+            print(
+                json.dumps(
+                    {
+                        "mode": "plan_only",
+                        "repository": "supabase",
+                        "proposals": plan(repo.profiles(), repo.calls(), now()),
+                    }
+                )
+            )
+        return
+    if args.role in ("retention", "notifications"):
+        if args.role == "notifications" and (
+            os.getenv("LINEA_PUSH_ENABLED") != "1"
+            or any(
+                not os.getenv(key)
+                for key in ("WEB_PUSH_PUBLIC_KEY", "WEB_PUSH_PRIVATE_KEY", "WEB_PUSH_SUBJECT")
+            )
+        ):
+            parser.error("Push worker requires enabled push and all three WEB_PUSH settings")
+        bearer = os.getenv("LINEA_CUSTOM_LLM_BEARER")
+        runtime = SimpleNamespace(
+            repo=RuntimeRepository(service_client()),
+            journal=EmergencyJournal(
+                os.getenv("LINEA_RUNTIME_JOURNAL_PATH", ".local/runtime-journal"), bearer
+            )
+            if bearer and args.role == "retention"
+            else None,
+        )
+    else:
+        runtime = build_runtime(now)
+        if not accepted() and not runtime.test_scope:
+            parser.error(
+                "Live work is gated until all MVP acceptance checks pass; use an explicitly scoped acceptance test"
+            )
+    while True:
+        try:
+            print(
+                json.dumps(
+                    tick(
+                        runtime,
+                        execute=True,
+                        push=os.getenv("LINEA_PUSH_ENABLED") == "1",
+                        role=args.role,
+                    )
+                )
+            )
+        except Exception as exc:
+            log_failure("Worker tick", exc)
+        if args.once:
+            break
+        time.sleep(60 if args.role == "retention" else 2)
+
+
+if __name__ == "__main__":
+    main()

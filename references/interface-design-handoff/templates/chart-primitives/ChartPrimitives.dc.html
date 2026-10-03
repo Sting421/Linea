@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Chart Primitives" description="Recharts-backed chart family themed to the status palette: time-series, load-balancing bar, status donut (click-to-filter), inverter pie, generation radial, frequency×voltage scatter, and sparkline, with loading/empty/error states." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #F4F6F8; }
+  * { box-sizing: border-box; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+</style>
+</helmet>
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #20262B; background: #F4F6F8; padding: 0 0 80px;">
+
+
+  <div style="max-width: 1240px; margin: 0 auto; padding: 0 56px;">
+
+    <!-- Time series + load balancing -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Time-series &amp; source mix</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <dc-import name="TimeSeriesChart" hint-size="100%,340px"></dc-import>
+        <dc-import name="LoadBalancingBar" hint-size="100%,340px"></dc-import>
+      </div>
+    </section>
+
+    <!-- Status / inverter / generation -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Status &amp; composition</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr 0.9fr; gap: 16px; align-items: start;">
+        <dc-import name="StatusDonut" hint-size="100%,230px"></dc-import>
+        <dc-import name="InverterPie" hint-size="100%,220px"></dc-import>
+        <dc-import name="GenerationRadial" hint-size="100%,280px"></dc-import>
+      </div>
+    </section>
+
+    <!-- Scatter -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">Power quality <span style="font-size:13px;color:#8A9199;font-weight:400;">· net-new (dead in legacy code)</span></h2>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <dc-import name="FreqVoltageScatter" hint-size="100%,340px"></dc-import>
+        <div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; padding: 18px 20px;">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight: 600; font-size: 15px; color: #1F4173; margin-bottom: 12px;">Sparkline</div>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div style="height:48px;"><dc-import name="Sparkline" color="#009DE4" hint-size="100%,48px"></dc-import></div>
+            <div style="height:48px;"><dc-import name="Sparkline" color="#1FA845" hint-size="100%,48px"></dc-import></div>
+            <div style="height:48px;"><dc-import name="Sparkline" color="#E08600" hint-size="100%,48px"></dc-import></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- States -->
+    <section style="margin-top: 40px;">
+      <div style="border-bottom: 2px solid #E2E7EB; padding-bottom: 12px; margin-bottom: 22px;">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; margin: 0; color: #1F4173;">States <span style="font-size:13px;color:#8A9199;font-weight:400;">· loading · empty · error</span></h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <!-- Loading -->
+        <div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden;">
+          <div style="padding: 14px 18px 8px; font-family:'Space Grotesk',sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">Loading</div>
+          <div style="height: 220px; padding: 4px 14px 14px; display:flex; flex-direction:column; gap:10px;">
+            <div style="flex:1; background: linear-gradient(90deg,#F4F6F8,#EEF2F5,#F4F6F8); background-size:200% 100%; border-radius:8px; animation: shimmer 1.4s infinite linear;"></div>
+            <div style="height:14px; width:60%; background:#EEF2F5; border-radius:5px;"></div>
+            <div style="height:14px; width:40%; background:#F1F4F6; border-radius:5px;"></div>
+          </div>
+        </div>
+        <!-- Empty -->
+        <div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden;">
+          <div style="padding: 14px 18px 8px; font-family:'Space Grotesk',sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">No data</div>
+          <div style="height: 220px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#9AA3AB;">
+            <div style="width:46px; height:46px; border-radius:12px; background:#F1F4F6; display:flex; align-items:center; justify-content:center;">
+              <span style="width:20px; height:2px; background:#C7CDD2; display:block;"></span>
+            </div>
+            <div style="font-size:13px;">No readings in this range</div>
+            <div style="font-size:12px; color:#B4BBC1;">Try a wider window</div>
+          </div>
+        </div>
+        <!-- Error -->
+        <div style="background: #fff; border: 1px solid #E2E7EB; border-radius: 12px; overflow: hidden;">
+          <div style="padding: 14px 18px 8px; font-family:'Space Grotesk',sans-serif; font-weight: 600; font-size: 15px; color: #1F4173;">Error</div>
+          <div style="height: 220px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#9E1B12;">
+            <div style="width:46px; height:46px; border-radius:50%; background:#FDECEA; display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:22px; color:#D92D20;">!</div>
+            <div style="font-size:13px; color:#3A434B;">Couldn't load chart</div>
+            <button style="font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600; color:#03587F; background:#E6F7FF; border:1px solid #8AD9FD; border-radius:8px; padding:6px 14px; cursor:pointer;">Retry</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer note -->
+    <div style="margin-top: 44px; padding: 22px 24px; background: #EAF5FB; border: 1px solid #C3E5F4; border-radius: 12px; display: flex; gap: 16px; align-items: flex-start;">
+      <span style="width: 26px; height: 26px; border-radius: 7px; background: #009DE4; flex: 0 0 auto; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-family:'Space Grotesk',sans-serif;">i</span>
+      <div style="font-size: 13.5px; line-height: 1.55; color: #2A4A5C;">
+        <strong style="color:#1F4173;">Notes.</strong> All series colours come from the status palette so charts and badges stay in lockstep. The <strong>StatusDonut</strong> hover-dim is the provisional click-to-filter affordance (final filter wiring pending Area 1/3 review). The legacy <strong>InverterStatus</strong> bug, Fault counts folded into <code style="font-family:'Space Grotesk',monospace; background:#EEF2F5; padding:1px 5px; border-radius:4px;">normalCount</code>, is fixed here: each status is its own slice. <strong>Generation Sankey</strong> (needs d3-sankey) and the <strong>power-flow</strong> diagram (reactflow) are tracked separately, not in this Recharts family.
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

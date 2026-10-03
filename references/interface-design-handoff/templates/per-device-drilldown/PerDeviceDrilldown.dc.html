@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Per-device drill-down" description="Area 2 Equipment device drill-in: a device-identity header with a Metrics/Settings tab strip. Metrics shows a selectable per-metric time-series chart with min/avg/max; Settings is the readout-before-write entry into the unified Control surface. Capability- and role-gated. Shown here as both tab states side by side." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+</helmet>
+<div style="display:flex;gap:18px;align-items:stretch;justify-content:center;flex-wrap:nowrap;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;width:100%;">
+
+  <div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;min-width:0;max-width:560px;box-sizing:border-box;flex:1 1 0;display:flex;flex-direction:column;">
+    <div style="padding:13px 16px 13px;border-bottom:1px solid #EEF2F5;">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;margin-bottom:10px;">
+        <span style="color:#8A9199;font-weight:500;cursor:pointer;">Equipment</span>
+        <span style="color:#9AA6AF;font-weight:600;">›</span>
+        <span style="color:#1F4173;font-weight:600;">{{ deviceName }}</span>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:19px;color:#1F4173;">{{ deviceName }}</div>
+          {{ statePill }}
+          <div style="display:inline-flex;margin-left:auto;border-bottom:1px solid #E2E7EB;">
+            <div style="padding:8px 13px;font-size:13px;font-weight:600;color:#03587F;box-shadow:inset 0 -2px 0 0 #009DE4;">Metrics</div>
+            <div style="padding:8px 13px;font-size:13px;font-weight:500;color:#6B7177;">Settings</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap">
+          <sc-for list="{{ metaChips }}" as="c" hint-placeholder-count="3">
+            <span style="font-size:11px;color:#5A636B;background:#F2F5F8;border:1px solid #E7ECF0;border-radius:6px;padding:3px 8px;font-weight:500;">{{ c.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="padding:15px 16px 16px;">
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;">
+        <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+          <sc-if value="{{ c.inactive }}" hint-placeholder-val="{{ true }}"><div style="padding:6px 12px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid #E2E7EB;background:#fff;color:#5A636B;" onClick="{{ c.onClick }}">{{ c.label }}</div></sc-if>
+          <sc-if value="{{ c.activeAc }}" hint-placeholder-val="{{ false }}"><div style="padding:6px 12px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid #009DE4;background:#009DE4;color:#fff;" onClick="{{ c.onClick }}">{{ c.label }}</div></sc-if>
+          <sc-if value="{{ c.activeDc }}" hint-placeholder-val="{{ false }}"><div style="padding:6px 12px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid #7C5CE0;background:#7C5CE0;color:#fff;" onClick="{{ c.onClick }}">{{ c.label }}</div></sc-if>
+          <sc-if value="{{ c.activeTemp }}" hint-placeholder-val="{{ false }}"><div style="padding:6px 12px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid #E8833A;background:#E8833A;color:#fff;" onClick="{{ c.onClick }}">{{ c.label }}</div></sc-if>
+          <sc-if value="{{ c.activeFreq }}" hint-placeholder-val="{{ false }}"><div style="padding:6px 12px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid #1FA86E;background:#1FA86E;color:#fff;" onClick="{{ c.onClick }}">{{ c.label }}</div></sc-if>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:10px;margin:2px 0 12px;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;color:#20262B;line-height:1;">{{ curValue }}</div>
+        <div style="font-size:13px;color:#8A9199;margin-bottom:4px;">{{ curUnit }} today</div>
+        <div style="margin-bottom:5px;">{{ curDeltaEl }}</div>
+      </div>
+      <div style="border:1px solid #F0F3F5;border-radius:10px;padding:10px 12px 6px;">
+        {{ chartEl }}
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#B4BBC1;margin-top:4px;">
+          <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:14px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;">
+            <span style="font-size:10.5px;color:#8A9199;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;">{{ s.label }}</span>
+            {{ s.valueEl }}
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #E2E7EB;border-radius:12px;overflow:hidden;min-width:0;max-width:560px;box-sizing:border-box;flex:1 1 0;display:flex;flex-direction:column;">
+    <div style="padding:13px 16px 13px;border-bottom:1px solid #EEF2F5;">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;margin-bottom:10px;">
+        <span style="color:#8A9199;font-weight:500;cursor:pointer;">Equipment</span>
+        <span style="color:#9AA6AF;font-weight:600;">›</span>
+        <span style="color:#1F4173;font-weight:600;">{{ deviceName }}</span>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:19px;color:#1F4173;">{{ deviceName }}</div>
+          {{ statePill2 }}
+          <div style="display:inline-flex;margin-left:auto;border-bottom:1px solid #E2E7EB;">
+            <div style="padding:8px 13px;font-size:13px;font-weight:500;color:#6B7177;">Metrics</div>
+            <div style="padding:8px 13px;font-size:13px;font-weight:600;color:#03587F;box-shadow:inset 0 -2px 0 0 #009DE4;">Settings</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap">
+          <sc-for list="{{ metaChips }}" as="c" hint-placeholder-count="3">
+            <span style="font-size:11px;color:#5A636B;background:#F2F5F8;border:1px solid #E7ECF0;border-radius:6px;padding:3px 8px;font-weight:500;">{{ c.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="padding:15px 16px 16px;flex:1;display:flex;flex-direction:column;">
+      <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#F4FAFE;border:1px solid #D3EAF7;border-radius:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex:none;margin-top:1px;"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#1F4173" stroke-width="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#1F4173" stroke-width="2" stroke-linecap="round"></path></svg>
+          <div>
+            <div style="font-size:12.5px;font-weight:600;color:#1F4173;">Per-device settings open in Control</div>
+            <div style="font-size:11.5px;color:#5A636B;margin-top:2px;line-height:1.45;">Readout-before-write. Writes are role-gated, guarded by preconditions, and land in the audit log.</div>
+          </div>
+        </div>
+        <div style="border:1px solid #EEF2F5;border-radius:10px;overflow:hidden;">
+          <sc-for list="{{ readouts }}" as="r" hint-placeholder-count="3">
+            <sc-if value="{{ r.notLast }}" hint-placeholder-val="{{ true }}"><div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #F0F3F5;">
+              <div><div style="font-size:12.5px;color:#20262B;font-weight:500;">{{ r.label }}</div><div style="font-size:10.5px;color:#B4BBC1;margin-top:1px;">{{ r.reg }}</div></div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:#1F4173;">{{ r.value }}</div>
+            </div></sc-if>
+            <sc-if value="{{ r.last }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;">
+              <div><div style="font-size:12.5px;color:#20262B;font-weight:500;">{{ r.label }}</div><div style="font-size:10.5px;color:#B4BBC1;margin-top:1px;">{{ r.reg }}</div></div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:#1F4173;">{{ r.value }}</div>
+            </div></sc-if>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:4px;">
+          <span style="font-size:11px;color:#12855A;background:#E3F6EE;border-radius:999px;padding:5px 11px;font-weight:600;">Controllable · role-gated</span>
+          <button style="border:none;background:#009DE4;color:#fff;font-weight:600;font-size:12.5px;padding:9px 15px;border-radius:8px;cursor:pointer;font-family:inherit;">Open in Control →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:470},&quot;deviceName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Inverter 3&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;model&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SG5.0RT&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;serial&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;22A3-0917&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;firmware&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;1.4.2&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;runState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;running&quot;,&quot;options&quot;:[&quot;running&quot;,&quot;standby&quot;,&quot;fault&quot;,&quot;offline&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { tab: "metrics", metric: 0 };
+  metrics() {
+    return [
+      { key: "ac", label: "AC power", unit: "kW", color: "#EAB308", cur: "4.28", delta: "+0.3", min: "0.0", max: "4.9", avg: "2.6",
+        series: [0,0,0.2,0.9,1.8,2.7,3.4,3.9,4.3,4.6,4.8,4.9,4.7,4.5,4.2,3.8,3.1,2.3,1.4,0.6,0.1,0,0,0] },
+      { key: "dc", label: "DC voltage", unit: "V", color: "#0B7285", cur: "612", delta: "+4", min: "560", max: "628", avg: "602",
+        series: [560,562,570,585,598,606,612,618,622,625,627,628,626,623,620,616,610,602,592,582,572,566,562,560] },
+      { key: "temp", label: "Temperature", unit: "°C", color: "#E0521E", cur: "41", delta: "+2", min: "22", max: "46", avg: "35",
+        series: [22,22,23,25,28,31,34,37,39,41,43,45,46,46,45,44,42,40,37,33,29,26,24,22] },
+      { key: "freq", label: "Frequency", unit: "Hz", color: "#1F4173", cur: "50.01", delta: "±0", min: "49.96", max: "50.05", avg: "50.00",
+        series: [50.00,49.99,50.01,50.02,50.00,49.98,49.97,50.00,50.03,50.05,50.02,50.00,49.99,50.01,50.02,50.00,49.98,49.99,50.01,50.02,50.00,49.99,50.00,50.01] },
+    ];
+  }
+  chart(series, color) {
+    const h = (...a) => React.createElement(...a);
+    const W = 480, H = 118, pad = 5;
+    const min = Math.min(...series), max = Math.max(...series);
+    const rng = (max - min) || 1;
+    const n = series.length;
+    const x = i => pad + (i / (n - 1)) * (W - 2 * pad);
+    const y = v => pad + (1 - (v - min) / rng) * (H - 2 * pad);
+    const line = series.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+    const area = line + " L" + x(n - 1).toFixed(1) + " " + (H - pad) + " L" + x(0).toFixed(1) + " " + (H - pad) + " Z";
+    const gid = "grad" + color.replace("#", "");
+    return h("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", height: "auto", style: { display: "block" } },
+      h("defs", { key: "d" }, h("linearGradient", { id: gid, x1: 0, y1: 0, x2: 0, y2: 1 },
+        h("stop", { offset: "0%", stopColor: color, stopOpacity: 0.20 }),
+        h("stop", { offset: "100%", stopColor: color, stopOpacity: 0 }))),
+      h("path", { key: "a", d: area, fill: "url(#" + gid + ")" }),
+      h("path", { key: "l", d: line, fill: "none", stroke: color, strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round" }),
+      h("circle", { key: "c", cx: x(n - 1), cy: y(series[n - 1]), r: 3.4, fill: "#fff", stroke: color, strokeWidth: 2 })
+    );
+  }
+  pill(state) {
+    const h = (...a) => React.createElement(...a);
+    const map = { running: ["#E3F6EE", "#12855A", "#1FA86E", "Running"], standby: ["#FBEEDD", "#B4670E", "#E8833A", "Standby"], fault: ["#FBE4E4", "#B4231F", "#DB4B45", "Fault"], offline: ["#EEF1F4", "#6B7580", "#9AA4AE", "Offline"] };
+    const m = map[(state || "running").toLowerCase()] || map.running;
+    return h("div", { style: { display: "inline-flex", alignItems: "center", gap: "5px", padding: "4px 10px", borderRadius: "999px", fontSize: "11px", fontWeight: 700, letterSpacing: "0.02em", background: m[0], color: m[1], flex: "none" } },
+      h("span", { key: 1, style: { width: "6px", height: "6px", borderRadius: "999px", background: m[2] } }), m[3]);
+  }
+  deltaBadge(txt) {
+    const h = (...a) => React.createElement(...a);
+    const t = (txt || "").trim();
+    const up = t.startsWith("+"), down = t.startsWith("-");
+    const col = up ? "#12855A" : down ? "#B4231F" : "#8A9199";
+    const bg = up ? "#E3F6EE" : down ? "#FBE4E4" : "#F2F5F8";
+    const arrow = up ? "▲" : down ? "▼" : "•";
+    return h("span", { style: { display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 700, color: col, background: bg, borderRadius: "6px", padding: "3px 7px" } }, arrow + " " + t.replace(/^[+-]/, ""));
+  }
+  statPill(value, level, color) {
+    const h = (...a) => React.createElement(...a);
+    const bgW = level === 0 ? 86 : level === 1 ? 74 : 60;
+    const txtB = level === 0 ? 8 : level === 1 ? 24 : 40;
+    const brW = level === 0 ? 62 : level === 1 ? 46 : 32;
+    return h("span", { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: "17px",
+      color: "color-mix(in oklab, " + color + ", black " + txtB + "%)",
+      background: "color-mix(in oklab, " + color + ", white " + bgW + "%)",
+      border: "1px solid color-mix(in oklab, " + color + ", white " + brW + "%)",
+      borderRadius: "999px", padding: "7px 16px" } }, value);
+  }
+  renderVals() {
+    const p = this.props;
+    const mIdx = this.state.metric;
+    const ms = this.metrics(), m = ms[mIdx];
+    const chips = ms.map((mm, i) => ({ label: mm.label, onClick: () => this.setState({ metric: i }), inactive: i !== mIdx, activeAc: i === mIdx && mm.key === "ac", activeDc: i === mIdx && mm.key === "dc", activeTemp: i === mIdx && mm.key === "temp", activeFreq: i === mIdx && mm.key === "freq" }));
+    const readoutsRaw = [
+      { label: "Working mode", reg: "Register 30003", value: p.mode ?? "Self-consumption" },
+      { label: "Grid connection", reg: "Register 30009", value: p.grid ?? "On-grid" },
+      { label: "Cut-off SOC", reg: "Register 40046", value: p.soc ?? "20%" },
+    ];
+    const readouts = readoutsRaw.map((r, i) => ({ ...r, notLast: i < readoutsRaw.length - 1, last: i === readoutsRaw.length - 1 }));
+    return {
+      deviceName: p.deviceName ?? "Inverter 3",
+      metaChips: [{ label: p.model ?? "SG5.0RT" }, { label: "SN " + (p.serial ?? "22A3-0917") }, { label: "FW " + (p.firmware ?? "1.4.2") }],
+      statePill: this.pill(p.runState ?? "running"),
+      statePill2: this.pill(p.runState ?? "running"),
+      chips, curValue: m.cur, curUnit: m.unit, curDeltaEl: this.deltaBadge(m.delta),
+      chartEl: this.chart(m.series, m.color), metricName: m.label,
+      stats: [
+        { label: "Min", valueEl: this.statPill(m.min + " " + m.unit, 0, m.color) },
+        { label: "Avg", valueEl: this.statPill(m.avg + " " + m.unit, 1, m.color) },
+        { label: "Max", valueEl: this.statPill(m.max + " " + m.unit, 2, m.color) },
+      ],
+      readouts,
+    };
+  }
+}
+</script>
+</body>
+</html>

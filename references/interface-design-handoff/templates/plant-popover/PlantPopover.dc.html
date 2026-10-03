@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Plant Popover" description="Map pin popover for the fleet map (Area 1) — REPLACES the current basic popover (DC/AC Capacity + Bess, i.e. the repo PlantInfoWindow) and the inline infoContent() HTML in fleet-map/PlantMap.dc.html. Header: plant initial avatar, plant name, DS SeverityBadge status chip (5-status palette via dc-import — do NOT hand-roll the chip). Body: location + type line, Updated timestamp, capacity rows (DC capacity, AC capacity, BESS, BESS reserve), live metric row (OUTPUT = current power output kW, SOC = battery state of charge %, DEVICES = connected device count), View plant CTA. Behavior contract in class Component. REPO FLAGS — confirm on port, do not guess: (1) exact field names for output/soc/devices on the plant record; (2) the View plant route (assumed /plants/:plantId); (3) whether 'Updated' is telemetry lastReportedAt or record updatedAt." -->
+<helmet>
+  <script src="./ds-base.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+</helmet>
+<div style="position:relative; width:264px; box-sizing:border-box; background:#fff; border:1px solid #E2E7EB; border-radius:12px; box-shadow:0 10px 30px rgba(31,65,115,0.20); padding:12px 13px; font-family:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <!-- close: circular hover highlight around the ×, never a square -->
+  <button type="button" onClick="{{ onClose }}" aria-label="Close" style="position:absolute; top:6px; right:6px; width:22px; height:22px; border:none; background:transparent; border-radius:50%; color:#9AA3AB; font-size:15px; line-height:22px; text-align:center; padding:0; cursor:pointer;" style-hover="background:#F2F5F7; color:#46505A;">×</button>
+  <!-- header -->
+  <div style="display:flex; align-items:center; gap:10px;">
+    <span style="width: 45px; height: 45px; border-radius: 8px; flex: none; background: linear-gradient(135deg,#8AD9FD,#1F4173); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Space Grotesk',sans-serif; font-weight: 700; font-size: 13px">{{ initial }}</span>
+    <div style="flex:1; min-width:0;">
+      <div style="margin-top:6px; padding-right:20px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px; color:#20262B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ name }}</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:0;">
+        
+        <dc-import name="SeverityBadge" status="{{ status }}" size="sm" hint-size="64px,20px"></dc-import><span style="display:inline-flex; align-items:center; justify-content:flex-end; margin-top:3px; margin-left:auto; min-width:0; font-size:10.5px; color:#8A9199; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:right;">{{ location }}&nbsp;·&nbsp;{{ plantType }}</span>
+      </div>
+    </div>
+  </div>
+  <!-- updated (repo flag: lastReportedAt vs updatedAt) -->
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:7px; padding:4.5px 0;">
+    <span style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:#8A9199;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9AA3AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Updated</span>
+    <span style="font-size:11.5px; font-weight:600; color:#46505A;">{{ updated }}</span>
+  </div>
+  <!-- capacity rows (nameplate config, not live) -->
+  <sc-for list="{{ capRows }}" as="c" hint-placeholder-count="4">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:4.5px 0; border-top:1px solid #F2F5F7;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:#8A9199;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9AA3AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="{{ c.icon }}"></path></svg>{{ c.label }}</span>
+      <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12px; color:#20262B; white-space:nowrap;">{{ c.value }}</span>
+    </div>
+  </sc-for>
+  <!-- live metric row: OUTPUT = current power (kW), SOC = battery state of charge (%), DEVICES = connected device count -->
+  <div style="display:flex; gap:14px; margin-top:2px; padding-top:7px; border-top:1px solid #EEF2F5;">
+    <div><div style="font-size:9.5px; color:#9AA3AB; text-transform:uppercase; letter-spacing:0.04em;">Output</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; color:#20262B; margin-top:1px;">{{ output }}</div></div>
+    <div><div style="font-size:9.5px; color:#9AA3AB; text-transform:uppercase; letter-spacing:0.04em;">SOC</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; color:#20262B; margin-top:1px;">{{ soc }}</div></div>
+    <div><div style="font-size:9.5px; color:#9AA3AB; text-transform:uppercase; letter-spacing:0.04em;">Devices</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px; color:#20262B; margin-top:1px;">{{ devices }}</div></div>
+  </div>
+  <!-- CTA: routes to plant detail (Area 2). Brand blue, not a status hue. -->
+  <div style="margin-top:8px;">
+    <button type="button" onClick="{{ onView }}" style="display:block; width:100%; text-align:center; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; color:#fff; background:#009DE4; border:none; border-radius:8px; padding:7px 12px; cursor:pointer;" style-hover="background:#0289C6;">View plant →</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 320, &quot;height&quot;: 420}, &quot;name&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Maple Grove&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;status&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;normal&quot;, &quot;warning&quot;, &quot;anomaly&quot;, &quot;offline&quot;, &quot;fault&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;'normal'|'warning'|'anomaly'|'offline'|'fault'&quot;, &quot;section&quot;: &quot;Plant&quot;}, &quot;location&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Vermont&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Plant&quot;}, &quot;plantType&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;4 inverters&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Plant&quot;}, &quot;updated&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Jul 15, 2026 · 8:00 PM&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Plant&quot;}, &quot;dcKw&quot;: {&quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 240, &quot;unit&quot;: &quot;kW&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Capacity&quot;}, &quot;acKw&quot;: {&quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 204, &quot;unit&quot;: &quot;kW&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Capacity&quot;}, &quot;bessKwh&quot;: {&quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 120, &quot;unit&quot;: &quot;kWh&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Capacity&quot;}, &quot;bessReserveKwh&quot;: {&quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 36, &quot;unit&quot;: &quot;kWh&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Capacity&quot;}, &quot;output&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;8.2 kW&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Live metrics&quot;}, &quot;soc&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;78%&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Live metrics&quot;}, &quot;devices&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 12, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Live metrics&quot;}, &quot;onClose&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;() =&gt; void&quot;}, &quot;onViewPlant&quot;: {&quot;editor&quot;: null, &quot;tsType&quot;: &quot;() =&gt; void&quot;}}">
+class Component extends DCLogic {
+  // ── Behavior contract (for the repo port) ────────────────────────────────
+  // OPEN    on map pin click: the map (fleet-map/PlantMap.dc.html selectPlant())
+  //         mounts this popover anchored to the pin (MapLibre Popup / Google
+  //         InfoWindow), offset tracks pin size × zoom scale; the map then
+  //         flyTo-centers with an upward offset and pans the popover fully
+  //         into view (ensurePopupVisible, 12px padding).
+  // CLOSE   × button (top-right, circular hover), click on bare map, Esc, or
+  //         automatically when the anchor scrolls out of the viewport
+  //         (autoClosePopup, 8px margin). Only one popover open at a time;
+  //         opening another pin closes this one.
+  // HOVER   × → circular #F2F5F7 fill, icon #9AA3AB→#46505A.
+  //         View plant → #009DE4→#0289C6. No hover states on data rows.
+  // ACTIVE  while open, the source pin is scaled 1.22× with a deeper shadow.
+  // CTA     "View plant" routes to the plant detail screen (Area 2).
+  //         REPO FLAG: assumed route /plants/:plantId — confirm actual route
+  //         and id field. Also confirm real field names for output (current
+  //         AC power, kW), soc (battery state of charge, %), devices
+  //         (connected device count), and whether `updated` is telemetry
+  //         lastReportedAt or record updatedAt.
+  renderVals() {
+    const p = this.props;
+    const dash = "\u2014";
+    const kw = (v) => (v == null || v === "" ? dash : v + " kW");
+    const kwh = (v) => (v == null || v === "" ? dash : v + " kWh");
+    const loc = p.location ?? "Vermont";
+    const type = p.plantType ?? "4 inverters";
+    // capacity rows: nameplate config (neutral greys — not status colors)
+    const capRows = [
+      { label: "DC capacity", value: kw(p.dcKw ?? 240), icon: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-6v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4" },
+      { label: "AC capacity", value: kw(p.acKw ?? 204), icon: "M13 2 3 14h9l-1 8 10-12h-9l1-8Z" },
+      { label: "BESS", value: kwh(p.bessKwh ?? 120), icon: "M2 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9Zm20 2v2M6 10.5v3m4-3v3" },
+      { label: "BESS reserve", value: kwh(p.bessReserveKwh ?? 36), icon: "M2 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9Zm20 2v2M6 10.5v3" },
+    ];
+    return {
+      name: p.name ?? "Maple Grove",
+      initial: String(p.name ?? "M").charAt(0).toUpperCase(),
+      status: p.status ?? "normal",
+      location: loc,
+      plantType: type,
+      updated: p.updated ?? "Jul 15, 2026 \u00b7 8:00 PM",
+      capRows,
+      output: p.output ?? "8.2 kW",
+      soc: p.soc ?? "78%",
+      devices: p.devices != null ? String(p.devices) : "12",
+      onClose: () => { if (typeof p.onClose === "function") p.onClose(); },
+      onView: () => { if (typeof p.onViewPlant === "function") p.onViewPlant(); }, // repo: navigate /plants/:plantId
+    };
+  }
+}
+</script>
+</body>
+</html>
