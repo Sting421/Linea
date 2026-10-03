@@ -38,3 +38,6 @@ inventory above describes the documentation stage and is retained as context.
 
 All live test results remain NOT RUN until executed on a recorded deployed build.
 
+`scripts/run-verification.py` executes backend regression and read-only API
+smoke subchecks, with private reports and explicit manual-acceptance limits.
+

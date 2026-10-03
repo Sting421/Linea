@@ -88,6 +88,47 @@ record observed reconnect delay and costs rather than inventing a limit.
 
 ## Phase 1 Confirm that integration tests can run
 
+### Run the Python automation
+
+These commands run existing synthetic backend tests and optional read-only
+deployment checks, saving Markdown/JSON reports and pytest evidence under an
+ignored `artifacts/test-runs` folder. They do not start calls, use the model,
+send push, or modify server/database records.
+
+```powershell
+# Backend policy, conversation, lifecycle, retention, and fixture inventory.
+.\.venv\Scripts\python.exe scripts/run-verification.py --local
+
+# Health, deployed contract, and missing/invalid authentication rejection.
+.\.venv\Scripts\python.exe scripts/run-verification.py --api-url https://lineaapi.aldrinvitorillo.dev
+
+# Require live declarations as well, once the integrations are connected.
+.\.venv\Scripts\python.exe scripts/run-verification.py --local --api-url https://lineaapi.aldrinvitorillo.dev --require-live
+```
+
+Exit 0 means the requested scripted subchecks passed; 1 means a failure; 2
+means blocked prerequisites. A network/server failure is not a pass. Reports
+record the local commit, uncommitted-change flag, and source fingerprint;
+fill in the deployed commit separately. Source changes during a local run
+block its result until rerun. The runner
+does not overwrite existing reports. Add `--run-name scripted-ready-01` to
+choose a new report folder. It never copies a subcheck PASS into the full
+manual acceptance tracker, and it does not retrieve valid-user private data.
+
+| Guide area | What Python can verify now | What still needs the connected app or human evidence |
+| --- | --- | --- |
+| QA-01 Server readiness | HTTP health, core OpenAPI methods, optional declared live flags | Actual connected voice/push/database and deployed version |
+| QA-03 Backend regression | Existing pytest suite for structured facts and state | Frontend checks use the existing pnpm commands; real browser behavior is separate |
+| QA-08, QA-13, QA-14, QA-18 to QA-24 | Code paths for consent, tiers, LISTEN state, attempt budgets, guards, calendar | Real language extraction, audible replies, participant events, actual provider teardown |
+| QA-11 Conversation suite | All 41 source fixtures and 10 additional phrases are inventoried | Actual model extraction can be scripted once its endpoint/contract is connected; inventory is not accuracy |
+| QA-27 Authentication | Missing/invalid bearer rejected on a healthy Linea API | Valid account authentication and A/B isolation against Supabase and API |
+| QA-32, QA-33 Retention | Synthetic repository expiry/unenrollment tests | Production database jobs, readable copies, provider retention and backups |
+| QA-16, QA-17, QA-26 | Future delivery/browser automation can provide partial evidence | Device push receipt, two-way phone audio, visual fidelity, actual hover/focus behavior |
+
+For example, a state test proving one reconnect does not prove that the elder
+phone was redialed once. Keep both results. Likewise, a live declaration is a
+prerequisite, not proof that the declared integration actually delivers.
+
 ### Server health and deployed contract
 
 **QA-01 · Engineer · Setup:** Record the deployed API URL. For the supplied
