@@ -21,6 +21,11 @@ verification limits, and the remaining connection work. Provider calls, push,
 semantic interpretation, production Auth/database isolation, and live acceptance
 are still integration tasks. The backend refuses live mode while unconnected.
 
+When integrations are ready, follow [the MVP verification guide](testing/README.md).
+It includes ordered test steps, observable pass conditions, all 41 conversation
+fixtures plus 10 held-out phrases, and a results template. Create a private run
+with `python scripts/prepare-test-run.py --run-name ready-check-01`.
+
 Quick checks:
 
 ```powershell

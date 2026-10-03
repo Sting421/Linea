@@ -26,3 +26,15 @@ locks and a CI workflow. `IMPLEMENTATION-NOTES.md` records the build map,
 verification evidence, and remaining integration work. Historical packet
 inventory above describes the documentation stage and is retained as context.
 
+## Verification guide extension 4 October 2026
+
+- `testing/README.md`: ordered manual and integration checks, pass conditions,
+  timings, evidence requirements, and coverage of all 22 MVP acceptance cases.
+- `testing/conversation-cases.md`: 41 source fixtures and 10 additional phrases.
+- `testing/held-out-utterances.json`: evaluation phrases excluded from retrieval.
+- `testing/results-template.md`: blank tracker and detailed evidence record.
+- `scripts/prepare-test-run.py`: validates inventory and creates private run
+  folders under ignored `artifacts/test-runs`; never calls providers.
+
+All live test results remain NOT RUN until executed on a recorded deployed build.
+

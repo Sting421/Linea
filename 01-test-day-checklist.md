@@ -8,6 +8,11 @@
 
 # Current MVP acceptance matrix
 
+For a step-by-step runbook, use [Linea MVP verification guide](testing/README.md).
+It maps every requirement below to concrete checks and provides conversation
+scripts, a blank results tracker, and commands to create a private test run.
+Preparing these files does not change any acceptance status below.
+
 Assembled 3 October 2026 from the agreed product rules. **Every case below is
 NOT RUN.** This is a specification, not a record of new test results. The
 historical test-day results later in this file remain separately labeled.

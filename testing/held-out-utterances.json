@@ -1,0 +1,62 @@
+[
+  {
+    "id": "held_out_fall_recovered",
+    "context": {},
+    "dialogue": [["elder", "I tripped last evening. Nothing was injured or sore, I'm completely back to normal and moving as usual. It happened only once and there were no other symptoms."]],
+    "expected": {"concerns": ["FALL"], "tier": "routine", "assessment": "complete", "resume_checkin": true}
+  },
+  {
+    "id": "held_out_other_person_current_fall_emergency",
+    "context": {},
+    "dialogue": [["elder", "My husband fell just now. He is still on the floor and cannot get up. I did not fall."]],
+    "expected": {"concerns": ["FALL"], "subject": "other", "tier": "emergency", "attribute_fall_to_elder": false, "resume_checkin": false}
+  },
+  {
+    "id": "held_out_breathing_new_resolved",
+    "context": {},
+    "dialogue": [["elder", "For the first time this morning, my breathing felt harder than normal. It's entirely normal again, with no other symptoms during the episode."]],
+    "expected": {"concerns": ["BREATHING"], "tier": "significant", "announce_notification": true}
+  },
+  {
+    "id": "held_out_breathing_negated",
+    "context": {"active_question": "feeling"},
+    "dialogue": [["elder", "My breathing has been normal the whole day. I haven't had trouble catching my breath."]],
+    "expected": {"new_event": false, "tier": null, "invent_breathing_symptom": false}
+  },
+  {
+    "id": "held_out_chest_current_small_ache",
+    "context": {},
+    "dialogue": [["elder", "There is a small ache in my chest at this moment. It's not very strong."]],
+    "expected": {"concerns": ["CHEST_PAIN"], "tier": "emergency", "clarify_before_escalation": false, "resume_checkin": false}
+  },
+  {
+    "id": "held_out_chest_remote_reviewed",
+    "context": {},
+    "dialogue": [["elder", "That chest problem was two years ago and my doctor already checked it. No chest symptoms have happened recently or today."]],
+    "expected": {"new_event": false, "tier": null, "preserve_history": true}
+  },
+  {
+    "id": "held_out_dizziness_recovered",
+    "context": {},
+    "dialogue": [["elder", "I felt slightly lightheaded for a few seconds, just once today. I am entirely normal again, didn't faint or get hurt, and can move as usual. There were no other symptoms."]],
+    "expected": {"concerns": ["DIZZINESS"], "tier": "routine", "infer_cause": false, "resume_checkin": true}
+  },
+  {
+    "id": "held_out_dizziness_resolved_speech_change",
+    "context": {},
+    "dialogue": [["elder", "Half an hour ago I became dizzy and suddenly couldn't get my words out clearly. Both problems went away."]],
+    "expected": {"concerns": ["DIZZINESS"], "tier": "emergency", "diagnose_stroke": false, "resume_checkin": false}
+  },
+  {
+    "id": "held_out_medicine_future_intention",
+    "context": {"medicine": "Losartan", "dose_due": true, "isolated": true, "other_concerns": false},
+    "dialogue": [["elder", "Today's Losartan is still untouched. I'm planning to take it after lunch. This is the first time I haven't taken a due dose, and nothing else is wrong."]],
+    "expected": {"concerns": ["MEDICINE_NOT_TAKEN"], "medicine_result": "not_taken", "tier": "routine", "give_dosing_instruction": false}
+  },
+  {
+    "id": "held_out_medicine_possible_duplicate",
+    "context": {"medicine": "Losartan", "emergency_symptoms": false},
+    "dialogue": [["elder", "I took one Losartan today, and I may have mistakenly swallowed a second one. I don't have symptoms."]],
+    "expected": {"medicine_result": "taken", "dose_error_possible": true, "tier": "significant", "immediate_professional_advice": true, "count_as_missed": false, "resume_checkin": false}
+  }
+]
