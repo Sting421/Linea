@@ -1,5 +1,29 @@
 # Implementation Notes
 
+## Calling rejection recovery and worker diagnostics — 4 October 2026
+
+Agora placement responses with HTTP 401, 403, 404 or 422 now explicitly fail the
+phone leg and release its active-call reservation through the existing lifecycle
+policy. The failed attempt remains recorded. Other errors, including 400 (which
+may represent a provider conflict), 408, 409, 429, server failures and timeouts,
+remain uncertain and require reconciliation rather than an automatic second call.
+Recovery also handles an interruption between saving a rejection and marking its
+command failed. No existing uncertain records are changed by this patch.
+
+Worker failures now log the operation, exception type and HTTP status. Exception
+messages, provider bodies, request URLs and credentials are excluded. These logs
+distinguish an authorization/schema rejection from a transport or database error.
+Targeted voice-runtime, lifecycle and connected API verification passed: 42 tests.
+
+This patch does not start a worker or enable calls. The hosted runtime accepted
+the locally configured completion bearer and webhook HMAC during deliberately
+invalid, non-mutating validation probes. This verifies local/server agreement,
+not an Agora-originated signature. The configured Supabase project still had no
+worker heartbeats or queued call commands during the check. The hosted operator
+must confirm the actual Agora notification secret and inspect `linea-voice`
+status/logs. Existing consent, account scope and 06:00–21:00 elder-local calling
+hours remain enforced; no acceptance evidence or heartbeat was fabricated.
+
 ## Saved profile calling setup repair — 4 October 2026
 
 The user confirmed the profile is saved. Private scope was configured from the

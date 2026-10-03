@@ -9,7 +9,7 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from app.agora_runtime import AgoraRuntime
+from app.agora_runtime import AgoraRuntime, PlacementRejected
 from app.interpreter import OpenAIClassifier, output_schema
 from app.models import CheckIn, Facts, Profile, Turn, now
 from app.provider_routes import install_provider_routes
@@ -229,6 +229,70 @@ def test_ambiguous_placement_is_reconciled_without_a_second_paid_request(runtime
     assert attempts == [call.id]
     assert runtime.repo.jobs[job["id"]]["state"] == "done"
     assert runtime.current(call.id).legs[-1].provider_agent_id == "recovered-agent"
+
+
+@pytest.mark.parametrize("status", [401, 403, 404, 422, 400, 408, 409, 429, 500])
+def test_provider_rejection_releases_leg_but_ambiguous_response_does_not(
+    runtime, monkeypatch, status
+):
+    for name, value in {
+        "AGORA_APP_ID": "a" * 32,
+        "AGORA_APP_CERTIFICATE": "b" * 32,
+        "AGORA_FROM_NUMBER": "+12025550100",
+        "LINEA_PUBLIC_API_URL": "https://api.test",
+        "LINEA_CUSTOM_LLM_BEARER": "private",
+    }.items():
+        monkeypatch.setenv(name, value)
+    requests = []
+
+    def dispatch(request):
+        requests.append(request)
+        return httpx.Response(status, json={"detail": "private-provider-response"})
+
+    runtime.voice = AgoraRuntime(
+        httpx.Client(base_url="https://api.agora.io", transport=httpx.MockTransport(dispatch)),
+        {"asr": {"vendor": "ares"}, "tts": {"vendor": "configured"}},
+    )
+    p = runtime.repo.profile
+    call = runtime.place(p.id, p.owner_id, request_id="rejected")
+    job = {**runtime.repo.commands[0], "checkin_id": call.id, "state": "pending"}
+    runtime.repo.jobs[job["id"]] = job.copy()
+    runtime.repo.request = lambda method, path, **kw: [runtime.repo.jobs[job["id"]].copy()]
+    definite = status in (401, 403, 404, 422)
+    with pytest.raises(PlacementRejected if definite else httpx.HTTPStatusError):
+        runtime.process_command(job)
+    saved = runtime.current(call.id)
+    if definite:
+        assert saved.state == "ended" and saved.legs[-1].state == "failed"
+        assert saved.ended_at and not saved.complete and saved.alerts
+        assert runtime.repo.jobs[job["id"]]["state"] == "failed"
+        # Simulate interruption before the terminal job update; no provider lookup/redial.
+        runtime.repo.jobs[job["id"]]["state"] = "inflight"
+        runtime.reconcile_command(job)
+        assert runtime.repo.jobs[job["id"]]["state"] == "failed"
+        assert runtime.place(p.id, p.owner_id, request_id="after-repair").id != call.id
+    else:
+        assert saved.state == "ringing" and saved.ended_at is None
+        assert runtime.repo.jobs[job["id"]]["state"] == "uncertain"
+        with pytest.raises(HTTPException):
+            runtime.place(p.id, p.owner_id, request_id="do-not-double-dial")
+    runtime.process_command(job)
+    assert len(requests) == 1
+
+
+def test_worker_logs_status_without_private_provider_content(caplog):
+    from app.worker import log_failure
+
+    request = httpx.Request("POST", "https://api.test/private-url-marker")
+    response = httpx.Response(403, request=request, text="private-body-marker")
+    log_failure(
+        "Provider command",
+        httpx.HTTPStatusError("private-message-marker", request=request, response=response),
+    )
+    assert "HTTP status=403" in caplog.text and "HTTPStatusError" in caplog.text
+    assert "private-" not in caplog.text
+    log_failure("Worker tick", HTTPException(503, "private-database-marker"))
+    assert "HTTP status=503" in caplog.text and "private-" not in caplog.text
 
 
 def test_family_token_is_not_presence_and_listen_still_detects_emergency(runtime):

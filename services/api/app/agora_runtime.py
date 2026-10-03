@@ -17,6 +17,14 @@ from .conversation import opening
 from .models import now
 
 
+class PlacementRejected(RuntimeError):
+    """Provider explicitly refused a placement before creating a call."""
+
+    def __init__(self, status_code):
+        self.status_code = status_code
+        super().__init__(f"Phone provider rejected placement (HTTP {status_code})")
+
+
 class AgoraRuntime:
     def __init__(self, client=None, properties=None):
         self.app_id = os.environ["AGORA_APP_ID"]
@@ -88,6 +96,11 @@ class AgoraRuntime:
                 },
             },
         )
+        # Authentication, missing endpoint, and schema rejection cannot create a call.
+        # Keep conflicts, timeouts, throttling and server errors ambiguous: an agent
+        # may exist even when the caller did not receive its identity.
+        if response.status_code in (401, 403, 404, 422):
+            raise PlacementRejected(response.status_code)
         response.raise_for_status()
         agent = response.json().get("agent_id")
         if not isinstance(agent, str) or not agent:

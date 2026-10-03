@@ -20,6 +20,20 @@ from .runtime_service import EmergencyJournal
 from .scheduler import plan
 
 
+def log_failure(operation, error):
+    """Log actionable metadata, never exception text, URLs, bodies or credentials."""
+    status = getattr(error, "status_code", None)
+    response = getattr(error, "response", None)
+    if response is not None:
+        status = response.status_code
+    logging.getLogger(__name__).error(
+        "%s failed: %s; HTTP status=%s",
+        operation,
+        type(error).__name__,
+        status if isinstance(status, int) else "unavailable",
+    )
+
+
 def tick(runtime, *, execute=False, push=False, role="voice"):
     repo = runtime.repo
     if not execute:
@@ -59,8 +73,8 @@ def tick(runtime, *, execute=False, push=False, role="voice"):
             continue
         try:
             runtime.process_event(job)
-        except Exception:
-            logging.getLogger(__name__).error("Provider event processing will retry")
+        except Exception as exc:
+            log_failure("Provider event processing", exc)
     for job in repo.jobs("linea_commands"):
         if not runtime.allowed(repo.call(job["checkin_id"]).elder_id):
             continue
@@ -70,38 +84,38 @@ def tick(runtime, *, execute=False, push=False, role="voice"):
             continue
         try:
             runtime.process_command(job)
-        except Exception:
-            logging.getLogger(__name__).error("Provider command requires reconciliation")
+        except Exception as exc:
+            log_failure("Provider command", exc)
     for job in repo.rows(
         "linea_commands", {"state": "in.(inflight,uncertain)", "order": "created_at.asc,id.asc"}
     ):
         if runtime.allowed(repo.call(job["checkin_id"]).elder_id):
             try:
                 runtime.reconcile_command(job)
-            except Exception:
-                logging.getLogger(__name__).error("Command reconciliation deferred")
+            except Exception as exc:
+                log_failure("Command reconciliation", exc)
     for proposal in plan(
         [p for p in repo.profiles() if runtime.allowed(p.id, p.owner_id)], repo.calls(), now()
     ):
         try:
             runtime.place(proposal["elder_id"], kind=proposal["kind"])
-        except Exception:
-            logging.getLogger(__name__).error("Placement proposal deferred")
+        except Exception as exc:
+            log_failure("Scheduled placement", exc)
     for call in repo.calls():
         if not runtime.allowed(call.elder_id):
             continue
         try:
             runtime.reconcile_call(call.id)
-        except Exception:
-            logging.getLogger(__name__).error("Call reconciliation deferred")
+        except Exception as exc:
+            log_failure("Call reconciliation", exc)
         if call.state == "connected" and call.family:
             try:
                 members = runtime.voice.members(call)
                 for member in call.family:
                     if call.rtc_members.get(member) not in members:
                         runtime.family_control(call.id, member, "leave")
-            except Exception:
-                logging.getLogger(__name__).error("Family membership reconciliation deferred")
+            except Exception as exc:
+                log_failure("Family membership reconciliation", exc)
     return {"mode": "worker", "repository": "supabase"}
 
 
@@ -153,8 +167,8 @@ def main():
                     )
                 )
             )
-        except Exception:
-            logging.getLogger(__name__).error("Worker tick failed; it will retry")
+        except Exception as exc:
+            log_failure("Worker tick", exc)
         if args.once:
             break
         time.sleep(60 if args.role == "retention" else 2)

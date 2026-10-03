@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 from cryptography.fernet import Fernet
 from fastapi import HTTPException
 
+from .agora_runtime import PlacementRejected
 from .bridge import BrainBridge
 from .conversation import emergency
 from .lifecycle import event, finalize, join, leave, place
@@ -417,6 +418,15 @@ class RuntimeService:
                     if target.legs and target.legs[-1].provider_agent_id:
                         self.voice.end_everyone(target)
                 self.repo.update_job("linea_commands", job["id"], state="done")
+            except PlacementRejected:
+                # A known refusal must release the ringing leg, while preserving
+                # lifecycle retry budgets and the record of the failed attempt.
+                if job["kind"] != "place":
+                    raise
+                event(call, profile, f"rejected:{job['id']}", "failed", job["leg_id"], self.clock())
+                self.persist(call, profile, lease)
+                self.repo.update_job("linea_commands", job["id"], state="failed")
+                raise
             except Exception:
                 # Never retry a possibly billed placement/speech automatically after an
                 # ambiguous timeout/crash. Keep the call reserved for reconciliation.
@@ -432,6 +442,11 @@ class RuntimeService:
             if not leg:
                 return
             if job["kind"] == "place":
+                if f"rejected:{job['id']}" in call.processed_events:
+                    # Recover a crash between saving the refusal and closing the job.
+                    self.persist(call, profile, lease)
+                    self.repo.update_job("linea_commands", job["id"], state="failed")
+                    return
                 agent = leg.provider_agent_id or self.voice.find_agent(leg)
                 if not agent:
                     # Absence from an eventually consistent listing is not proof of failure.
