@@ -112,8 +112,8 @@ def test_retrieval_outage_does_not_skip_safety_interpretation(caplog):
     assert "private-utterance" not in caplog.text
 
 
-@pytest.mark.parametrize("quote", ["", " "])
-def test_empty_concern_evidence_is_rejected(quote):
+@pytest.mark.parametrize("quote", ["", " ", "An older utterance", None])
+def test_concern_evidence_is_exact_received_text_instead_of_model_quote(quote):
     p, c = setup()
     model = classifier(
         {
@@ -122,5 +122,56 @@ def test_empty_concern_evidence_is_rejected(quote):
             ]
         }
     )
-    with pytest.raises(ValueError):
-        model.classify("I am fine", c, p)
+    result = model.classify("My chest hurts right now.", c, p)
+    assert result.concerns[0].quote == "My chest hurts right now."
+
+
+def test_maximum_length_utterance_is_preserved_as_evidence():
+    p, c = setup()
+    text = "My chest hurts. " + "a" * (4000 - len("My chest hurts. "))
+    result = classifier(
+        {"concerns": [{"incident_id": "new", "concern": "CHEST_PAIN", "current": True}]}
+    ).classify(text, c, p)
+    assert result.concerns[0].quote == text
+
+
+@pytest.mark.parametrize("quote", [None, "invented"])
+def test_concern_cannot_bypass_dose_evidence_gate(quote):
+    p, c = setup()
+    result = classifier(
+        {
+            "medicine_result": "not_taken",
+            "evidence": {"medicine": quote},
+            "concerns": [
+                {
+                    "incident_id": "dose",
+                    "concern": "MEDICINE_NOT_TAKEN",
+                    "medicine_result": "not_taken",
+                    "access_barrier": True,
+                }
+            ],
+        }
+    ).classify("I'm out of tablets.", c, p)
+    assert result.medicine_result is None
+    assert result.concerns[0].medicine_result is None
+    assert result.concerns[0].access_barrier is True
+
+
+def test_concern_dose_result_cannot_overwrite_evidenced_answer():
+    p, c = setup()
+    result = classifier(
+        {
+            "medicine_result": "taken",
+            "evidence": {"medicine": "I took it"},
+            "concerns": [
+                {
+                    "incident_id": "dose",
+                    "concern": "MEDICINE_NOT_TAKEN",
+                    "medicine_result": "unknown",
+                    "possible_dose_error": True,
+                }
+            ],
+        }
+    ).classify("I took it but I might have taken it twice.", c, p)
+    assert result.medicine_result == result.concerns[0].medicine_result == "taken"
+    assert result.concerns[0].possible_dose_error is True

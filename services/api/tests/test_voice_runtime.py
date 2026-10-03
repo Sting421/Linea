@@ -603,14 +603,15 @@ def test_strict_interpreter_schema_and_exact_evidence_validation():
         owner_id=str(uuid4()),
         contacts=[{"name": "Family", "relationship": "Family", "phone": "+12025550102"}],
     )
-    with pytest.raises(ValueError, match="evidence"):
-        interpreter.classify(
-            "My chest hurts.",
-            CheckIn(elder_id=profile.id, owner_id=profile.owner_id, local_date="2026-10-04"),
-            profile,
-        )
+    result = interpreter.classify(
+        "My chest hurts.",
+        CheckIn(elder_id=profile.id, owner_id=profile.owner_id, local_date="2026-10-04"),
+        profile,
+    )
+    assert result.concerns[0].quote == "My chest hurts."
     schema = output_schema()
     assert "due" not in schema["$defs"]["ExtractedFacts"]["properties"]
+    assert "quote" not in schema["$defs"]["ExtractedFacts"]["properties"]
     assert set(schema["properties"]) == set(schema["required"])
     assert requests[0]["model"] == "gpt-4.1-mini-2025-04-14" and not requests[0]["store"]
 

@@ -50,6 +50,25 @@ devices with headphones to distinguish real two-way audio from local playback.
 
 ## Record a result
 
+### Optional synthetic model evaluation
+
+From the repository root, `python scripts/verify-model.py` lists the 41 cases
+without external requests. Add `--execute` to run paid embedding and model
+requests using the configured backend key/model. These are synthetic in-memory
+conversations; the runner creates no accounts, calls, or database records.
+It defaults to one worker and six seconds between model requests. Reports go to
+ignored `.local/model-check-*.json`; existing reports are never overwritten.
+Use `--case CASE_ID` to narrow a recheck, or `--model SNAPSHOT` for an evaluation
+comparison only. Neither option changes deployment configuration.
+
+The runner checks only the named core outcomes in its report, not every prose
+expectation in the fixture. Review the returned facts and responses as well.
+Elapsed case time includes multiple turns and request pacing; it is not phone
+latency. Mismatches and HTTP failures exit nonzero and remain recorded. A green
+run is sample evidence, not live acceptance or proof of general model accuracy.
+
+### Device results
+
 For the first shared session, have the engineer complete Phase 1 first. Then
 test fresh setup and consent (QA-06 to QA-08), a normal phone check-in (QA-10),
 and a separate Significant concern call with alert, push, family join, LISTEN,

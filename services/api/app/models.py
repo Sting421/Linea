@@ -101,7 +101,7 @@ class Facts(StrictModel):
     context: Literal["actual", "near_event", "negated", "hypothetical", "remote_assessed"] = (
         "actual"
     )
-    quote: str = Field(min_length=1, max_length=2000)
+    quote: str = Field(min_length=1, max_length=4000)
     current: bool | None = None
     resolved: bool | None = None
     mild: bool | None = None

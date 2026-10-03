@@ -1145,7 +1145,7 @@
           },
           "quote": {
             "type": "string",
-            "maxLength": 2000,
+            "maxLength": 4000,
             "minLength": 1,
             "title": "Quote"
           },

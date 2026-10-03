@@ -152,3 +152,44 @@ def test_not_due_or_taken_is_not_a_missed_dose():
 def test_unknown_recovery_never_becomes_routine():
     assert assess(f("FALL", resolved=True)).tier is None
     assert not assess(f("FALL", resolved=True)).resume
+
+
+@pytest.mark.parametrize(
+    "concern,known,question",
+    [
+        (
+            "FALL",
+            {
+                "resolved": True,
+                "ongoing_pain": False,
+                "injury": False,
+                "functional_difficulty": False,
+                "repeated": False,
+            },
+            "Did anything else happen during or after this episode?",
+        ),
+        (
+            "BREATHING",
+            {
+                "current": False,
+                "resolved": True,
+                "familiar": True,
+                "new_unusual": False,
+                "usual_exertion": True,
+            },
+            "Was the breathing difficulty worse than your usual pattern?",
+        ),
+        ("DIZZINESS", {"current": False, "fainted": False}, "Were you hurt during this episode?"),
+        (
+            "DIZZINESS",
+            {"current": False, "fainted": False, "injury": False},
+            "Have you had any new difficulty moving since this episode?",
+        ),
+    ],
+)
+def test_clarification_asks_for_missing_facts_instead_of_repeating_known_answers(
+    concern, known, question
+):
+    result = assess(f(concern, **known))
+    assert result.question == question
+    assert result.tier is None and not result.resume

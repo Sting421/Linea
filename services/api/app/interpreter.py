@@ -45,8 +45,25 @@ SERVER_FACTS = {
 def output_schema():
     schema = Interpretation.model_json_schema()
     facts = schema["$defs"]["ExtractedFacts"]
-    for key in SERVER_FACTS:
+    for key in SERVER_FACTS | {"quote"}:
         facts["properties"].pop(key)
+    facts["properties"]["red_flags"]["description"] = (
+        "Positively reported features only, never denied features. Include faint_exertion "
+        "for fainting during exercise, overdose_poisoning for a reported handful/large "
+        "excess of tablets even when feeling well. Later recovery does not erase them."
+    )
+    facts["properties"]["context"]["description"] = (
+        "near_event means almost fell but caught themselves; actual means it happened. "
+        "Denying associated symptoms does not negate an existing episode."
+    )
+    facts["properties"]["resolved"]["description"] = (
+        "True when the episode is over and the speaker explicitly reports being back "
+        "to normal now, including a recovered near-fall. This does not deny earlier symptoms."
+    )
+    facts["properties"]["worsening"]["description"] = (
+        "True if getting worse; false when explicitly unchanged from usual or explicitly "
+        "not worsening; null only when this is not addressed."
+    )
 
     # Strict Structured Outputs requires every field, including nullable findings.
     def strict(node):
@@ -69,7 +86,20 @@ def output_schema():
     schema["properties"]["medicine_result"] = {
         "type": ["string", "null"],
         "enum": ["taken", "not_taken", "unknown", None],
+        "description": "An explicit dose report, not an inference from dropping, finding, or handling a tablet. Those actions leave the dose result unreported (null).",
     }
+    facts["properties"]["medicine_result"]["description"] = (
+        "Only an explicit dose report. Dropping/finding/handling a tablet does not "
+        "establish whether today's dose was taken; leave null unless actually reported."
+    )
+    schema["properties"]["concerns"]["description"] = (
+        "Include each supported concern reported or clarified in the latest utterance. "
+        "A newly mentioned supported concern gets its own object and unique incident_id, "
+        "even when also an associated symptom of an existing concern. A short reply "
+        "to active_prompt must update the existing concern even without naming it: "
+        "'No, nothing else' to an associated-symptoms question sets "
+        "emergency_features_absent=true for that incident. Do not return an empty list."
+    )
     return schema
 
 
@@ -81,14 +111,20 @@ when it answers the consent question. Detect refusal/stop and requests for medic
 advice. Extract all five supported concerns independently. Preserve subject,
 negation, actual/hypothetical/remote timing, and correction evidence. Missing or
 unmentioned findings stay null; 'fine' does not prove no injury or no red flags.
-Quotes must be exact substrings of the latest utterance. Reuse an existing incident
+The server attaches the exact latest utterance as evidence. Reuse an existing incident
 id when clarifying/correcting that incident; use a new id for a distinct event.
 One episode has one fact object per concern and subject. Associated features
 belong in that object's fields/red_flags; they are not separate incidents.
 For example, dizziness with a speech change during the same episode is one
 DIZZINESS object with the speech-change red flag, not two dizziness objects.
-Quote the relevant episode including its important associated features together
-when they occur in one contiguous passage. Preserve separate actual episodes.
+Preserve separate actual episodes.
+If the episode includes TWO supported concerns, return one object for EACH:
+chest pain with breathing difficulty needs CHEST_PAIN and BREATHING objects.
+Each of those concern objects needs a distinct incident_id, even for the same
+episode. Reuse the old ID for the original concern; add a new ID for the new one.
+Ordinary shortness of breath is not automatically cannot_breathe; preserve its
+reported severity. Features like sweating or speech change are fields/red_flags,
+not additional duplicates of the same concern.
 Medicine concerns concern today's prescribed dose. Do not treat examples or family
 presence as facts heard from the elder. Answers contain only explicitly supplied
 routine answers. For each routine answer or medicine_result, supply evidence with
@@ -99,6 +135,36 @@ and medicine_result only when the elder reports taken, not_taken, or uncertainty
 about today's dose. Consent yes/no is not a medicine answer. Prior dialogue and
 retrieved synthetic examples are context, not new answers. Never copy their facts.
 No invented symptoms, negatives, names, or recovery."""
+
+INSTRUCTION += """
+Extraction definitions (facts only; the server applies policy):
+- red_flags contains ONLY positively reported features, never a list of features
+  that were denied, absent, or merely asked about. Reassurance or later recovery
+  does not erase a feature that actually occurred during this episode.
+- Passing out/fainting during exercise is faint_exertion; fainting while lying
+  down is faint_lying_down. A reported handful, large excess, or poisoning is
+  overdose_poisoning even without symptoms. The medicine concern covers dose
+  errors and overdose as well as omissions; never omit it because a dose was taken.
+- An explicit taken dose plus uncertainty about a SECOND dose means
+  medicine_result=taken and possible_dose_error=true, not an unknown first dose.
+- A reported clinician instruction to stop/change the listed medicine sets
+  instruction_conflict=true. This is a reported change, not consent withdrawal.
+- Almost falling while catching oneself is context=near_event, not an actual fall.
+  Do not assign injuries or inability to get up to someone who reports no injury.
+- 'Just like usual' explicitly reports no change in the usual pattern:
+  familiar=true, new_unusual=false, worsening=false. Complete recovery is
+  resolved=true/current=false, but does not by itself rule out earlier red flags.
+- Explicit 'once' means repeated=false. 'A little dizzy' means mild=true.
+  An explicit comprehensive denial such as 'nothing else happened' covers other
+  episode features (injury, functional difficulty, fainting, worsening, emergency
+  features) when those were not separately reported. Populate those denials;
+  do not replace them with null. Mere reassurance ('fine') is NOT such a denial.
+- A short clarification answer must update the same existing concern, using
+  active_prompt to identify the field. Denying other symptoms sets
+  emergency_features_absent=true; it does not negate the original episode.
+  Saying yes to being hurt reports ongoing_pain/injury, not taking medicine.
+  Preserve existing facts through nulls for fields not addressed.
+"""
 
 
 class OpenAIClassifier:
@@ -155,10 +221,15 @@ class OpenAIClassifier:
         choice = response.json()["choices"][0]
         if choice["finish_reason"] != "stop" or choice["message"].get("refusal"):
             raise ValueError("Interpretation was not completed")
-        data = Interpretation.model_validate_json(choice["message"]["content"])
-        for fact in data.concerns:
-            if not fact.quote.strip() or fact.quote not in text:
-                raise ValueError("Interpretation quotation is not elder evidence")
+        extracted = json.loads(choice["message"]["content"])
+        # Evidence is the actual received utterance, never a model-authored quote.
+        # This also avoids losing a valid short clarification because the model
+        # copied an older quotation while updating the existing incident.
+        if isinstance(extracted, dict) and isinstance(extracted.get("concerns"), list):
+            for fact in extracted["concerns"]:
+                if isinstance(fact, dict):
+                    fact["quote"] = text
+        data = Interpretation.model_validate(extracted)
         answers = {}
         for key in ("sleep", "medicine", "feeling", "anything"):
             value, quote = getattr(data, key), getattr(data.evidence, key)
@@ -172,6 +243,16 @@ class OpenAIClassifier:
         )
         if medicine_result is None:
             answers.pop("medicine", None)
+        for fact in data.concerns:
+            if (
+                fact.concern == "MEDICINE_NOT_TAKEN"
+                and fact.subject == "elder"
+                and fact.context == "actual"
+            ):
+                # A concern must not bypass the dose-answer evidence gate or
+                # overwrite it with a conflicting duplicate extraction. Null
+                # leaves an already established incident result intact on merge.
+                fact.medicine_result = medicine_result
         return Turn(
             turn_id="interpreted",
             text=text,

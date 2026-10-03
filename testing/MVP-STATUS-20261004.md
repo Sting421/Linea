@@ -51,7 +51,13 @@ The original historical record is preserved, not rewritten to manufacture a pass
   provider request fails; unresolved cleanup remains retryable. Cancelled commands
   that never reached the provider become failed rather than indefinitely uncertain.
 - Speech chunks also handle unbroken multibyte text without exceeding the provider
-  byte limit. Whitespace-only concern quotations cannot supply model evidence.
+  byte limit. Concern quotations are now attached by the server from the exact
+  received utterance, including short clarifications and the full 4,000-character
+  input limit. This establishes provenance, not correctness of extracted facts.
+- Concern-level medicine results use the same evidence gate as the main dose
+  answer, preventing a duplicated unsupported/conflicting field from overriding
+  the checked answer. Clarification questions now ask for missing facts instead
+  of repeating an already answered recovery question.
 - Browser audio cancels pending joins when the call/leg changes or the page
   unmounts. A late token response, microphone publication, or join confirmation
   cannot restore joined controls after hangup. Old SDK callbacks cannot expire
@@ -63,7 +69,7 @@ The original historical record is preserved, not rewritten to manufacture a pass
 
 ## Verification and limits
 
-The retained backend suite passed (165 cases, none skipped), including 13 real
+The retained backend suite passed (175 cases, none skipped), including 13 real
 PostgreSQL integration cases against an isolated local PostgreSQL 17 cluster.
 Those tests applied all migrations and verified lease serialization, atomic
 writes, manual versus automatic calling hours, cross-account row-level security,
@@ -93,12 +99,34 @@ accounts, calls, or Supabase records. Several emergency backend turns exceeded t
 seconds (about 2.2–2.9 seconds); the two-second audible target is not achieved by
 this evidence and still needs performance work and deployed measurement.
 
+The full 41-case synthetic model evaluation subsequently exposed interpretation
+errors that the earlier small sample did not reveal. Prompt/schema refinements
+improved the results but have not established reliable passage of every case.
+Examples include a short injury answer being confused with a dose answer and a
+clarification failing to update its existing concern. Deterministic unit-test
+success must not be presented as proof of model accuracy. The deployment model
+has not been changed by evaluation-only comparisons.
+
+The latest configured-model run (`gpt-4.1-mini-2025-04-14`) passed the runner's
+core checks in 40/41 cases, with all expected severity outcomes matched. In
+`chest_resolved_with_delayed_red_flags`, it gave the Emergency response but omitted
+the separately required BREATHING concern record. This failure remains open.
+The targeted injury/medicine and short-clarification rechecks passed after the
+evidence-gate fix. Local synthetic report:
+`.local/model-check-20261003T224751724389.json`.
+An evaluation-only `gpt-4.1-2025-04-14` comparison also passed 40/41 core checks;
+its remaining recovered-fall case stayed pending and asked about other episode
+features rather than declaring Routine. It ran before the final dose-evidence
+gate change and is not evidence for the configured/deployed model. Its local
+report is `.local/model-check-20261003T224306290250.json`. No model was switched.
+
 Still requiring deployed/device evidence: the corrected complete four-beat call;
 family browser microphone/playback and briefing/LISTEN; provider callback delivery;
-push receipt and latency; actual scheduled retry/reconnection; phone/agent cleanup
+actual scheduled retry/reconnection; phone/agent cleanup
 under failures; provider recording/retention configuration; and three uninterrupted
 full recording runs. Existing policy/RTC tests do not substitute for these checks.
 Do not generate a live-acceptance file or claim all 22 requirements pass.
+Push receipt and latency remain deferred under the user's current scope.
 
 ## Server deployment
 
@@ -117,12 +145,11 @@ The updater installs and enables the hourly retention timer; existing retention
 rules remove only expired data. It leaves the frontend release separate.
 
 For the local frontend, use this checkout's normal dev command. For a hosted
-frontend, deploy/build the updated `apps/web` separately. In Settings, choose
-Enable browser notifications and grant browser permission. Actual push receipt
-still requires an alert and a subscribed device; saving a subscription is not proof.
+frontend, deploy/build the updated `apps/web` separately. Notification setup is
+optional and deferred for this test; leave `--enable-push` off.
 
 Before the next phone test, watch:
 
 ```bash
-sudo journalctl -u linea-api -u linea-voice -u linea-notifications -f -o cat
+sudo journalctl -u linea-api -u linea-voice -f -o cat
 ```

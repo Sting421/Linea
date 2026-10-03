@@ -93,8 +93,10 @@ def assess(f: Facts) -> Assessment:
             question = "Do you have any new difficulty moving since this happened?"
         elif f.repeated is None:
             question = "Has this been happening repeatedly?"
-        else:
+        elif f.resolved is not True:
             question = "Are you back to how you felt before this happened?"
+        else:
+            question = "Did anything else happen during or after this episode?"
     elif f.concern == "BREATHING":
         significant = any(v is True for v in (f.new_unusual, f.current, f.repeated, f.worsening))
         routine = (
@@ -119,6 +121,8 @@ def assess(f: Facts) -> Assessment:
             question = "Is this the same breathing pattern you usually experience?"
         elif f.usual_exertion is None:
             question = "Did this follow your usual activity?"
+        elif f.worsening is None:
+            question = "Was the breathing difficulty worse than your usual pattern?"
         else:
             question = "Did anything else happen during this episode?"
     elif f.concern == "CHEST_PAIN":
@@ -151,11 +155,26 @@ def assess(f: Facts) -> Assessment:
                 f.worsening,
             )
         )
-        question = (
-            "Are you still feeling dizzy now?"
-            if f.current is None
-            else "Did you faint or have any other difficulty during this episode?"
-        )
+        if f.current is None:
+            question = "Are you still feeling dizzy now?"
+        elif f.fainted is None:
+            question = "Did you faint during this episode?"
+        elif f.injury is None:
+            question = "Were you hurt during this episode?"
+        elif f.functional_difficulty is None:
+            question = "Have you had any new difficulty moving since this episode?"
+        elif f.repeated is None:
+            question = "Has this happened more than once?"
+        elif f.worsening is None:
+            question = "Has the dizziness been getting worse?"
+        elif f.mild is None:
+            question = "Was the dizziness mild or severe?"
+        elif f.brief is None:
+            question = "How long did the dizziness last?"
+        elif f.resolved is None:
+            question = "Has the dizziness completely stopped?"
+        else:
+            question = "Did anything else happen during this episode?"
     if significant:
         return Assessment(
             tier="significant",
