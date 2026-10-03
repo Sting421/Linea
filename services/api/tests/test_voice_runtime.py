@@ -307,6 +307,69 @@ def test_custom_endpoint_sse_auth_stale_legs_and_message_turn_identity(runtime, 
         assert client.post(url, json={"messages": []}, headers=auth).status_code == 400
 
 
+def test_openai_envelope_without_turn_id_deduplicates_retries(runtime, monkeypatch):
+    monkeypatch.setenv("LINEA_CUSTOM_LLM_BEARER", "completion-private")
+    call = connected_call(runtime)
+    app = FastAPI()
+    install_provider_routes(app, runtime)
+    url = f"/provider/checkins/{call.id}/legs/{call.legs[-1].id}/chat/completions"
+    auth = {"Authorization": "Bearer completion-private"}
+    body = {"messages": [{"role": "user", "content": "I slept well."}], "stream": False}
+    with TestClient(app) as client:
+        first = client.post(url, json=body, headers=auth)
+        assert first.status_code == 200
+        retry = client.post(
+            url,
+            json={"messages": [{"content": "I slept well.", "role": "user"}], "stream": True},
+            headers=auth,
+        )
+        assert retry.status_code == 200 and "[DONE]" in retry.text
+    saved = runtime.repo.saved[call.id]
+    assert runtime.bridge.classifier.count == 1
+    assert len([t for t in saved.transcript if t["speaker"] == "elder"]) == 1
+    assert len(saved.processed_turns) == 1
+
+
+def test_identical_words_in_later_message_history_are_a_new_turn(runtime, monkeypatch):
+    monkeypatch.setenv("LINEA_CUSTOM_LLM_BEARER", "completion-private")
+    call = connected_call(runtime)
+    app = FastAPI()
+    install_provider_routes(app, runtime)
+    url = f"/provider/checkins/{call.id}/legs/{call.legs[-1].id}/chat/completions"
+    auth = {"Authorization": "Bearer completion-private"}
+    messages = [{"role": "user", "content": "Yes."}]
+    with TestClient(app) as client:
+        first = client.post(url, json={"messages": messages, "stream": False}, headers=auth)
+        assert first.status_code == 200
+        messages.extend(
+            [
+                {"role": "assistant", "content": first.json()["choices"][0]["message"]["content"]},
+                {"role": "user", "content": "Yes."},
+            ]
+        )
+        second = client.post(url, json={"messages": messages, "stream": False}, headers=auth)
+        assert second.status_code == 200
+    assert runtime.bridge.classifier.count == 2
+    assert len(runtime.repo.saved[call.id].processed_turns) == 2
+
+
+@pytest.mark.parametrize("identity", [True, "", {}, []])
+def test_invalid_explicit_turn_identity_is_not_replaced_by_history(runtime, monkeypatch, identity):
+    monkeypatch.setenv("LINEA_CUSTOM_LLM_BEARER", "completion-private")
+    call = connected_call(runtime)
+    app = FastAPI()
+    install_provider_routes(app, runtime)
+    url = f"/provider/checkins/{call.id}/legs/{call.legs[-1].id}/chat/completions"
+    with TestClient(app) as client:
+        response = client.post(
+            url,
+            json={"messages": [{"role": "user", "content": "Yes."}], "turn_id": identity},
+            headers={"Authorization": "Bearer completion-private"},
+        )
+        assert response.status_code == 400
+    assert runtime.bridge.classifier.count == 0
+
+
 def test_strict_interpreter_schema_and_exact_evidence_validation():
     requests = []
 

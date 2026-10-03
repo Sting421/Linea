@@ -71,6 +71,23 @@ def test_demo_cannot_be_marked_live_ready():
     assert results["QA-01.live_declarations"]["status"] == "BLOCKED"
 
 
+def test_connected_health_allows_auth_checks_without_claiming_live_readiness():
+    results, requests = run_checks(
+        {
+            "status": "ok",
+            "mode": "connected",
+            "voice_connected": False,
+            "push_connected": False,
+            "repository": "supabase",
+        }
+    )
+    assert results["QA-01.health"]["status"] == "PASS"
+    assert results["QA-01.live_declarations"]["status"] == "BLOCKED"
+    assert results["QA-27.missing_auth"]["status"] == "PASS"
+    assert results["QA-27.invalid_bearer"]["status"] == "PASS"
+    assert len(requests) == 4
+
+
 @pytest.mark.parametrize("health", [{"status": "ok", "mode": {}}, "proxy error"])
 def test_invalid_health_blocks_auth_checks_instead_of_accepting_proxy_status(health):
     results, requests = run_checks(health, denied=403)

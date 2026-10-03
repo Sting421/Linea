@@ -1,5 +1,6 @@
 """Verified Agora envelopes; do not accept client-authored policy facts."""
 
+import hashlib
 import json
 import os
 import secrets
@@ -109,12 +110,33 @@ def install_provider_routes(app, runtime):
             or not content.strip()
             or len(content) > 4000
             or (
-                not isinstance(turn_id, (str, int))
-                or isinstance(turn_id, bool)
-                or len(str(turn_id)) > 80
+                turn_id is not None
+                and (
+                    not isinstance(turn_id, (str, int))
+                    or isinstance(turn_id, bool)
+                    or len(str(turn_id)) > 80
+                    or not str(turn_id)
+                )
             )
         ):
             raise HTTPException(400, "Missing text or stable turn identity")
+        if turn_id is None:
+            # Agora documents an OpenAI-compatible message envelope, which does
+            # not require turn_id. Use the authenticated conversation history for
+            # retry identity, rather than text alone: repeated words answering a
+            # later question must remain a different turn. Never use a random ID
+            # or a server counter here, since retries must survive API restarts.
+            if not all(isinstance(item, dict) for item in messages):
+                raise HTTPException(400, "Invalid conversation history")
+            history = [
+                {"role": item.get("role"), "content": item.get("content")} for item in messages
+            ]
+            turn_id = (
+                "history-"
+                + hashlib.sha256(
+                    json.dumps(history, sort_keys=True, separators=(",", ":")).encode()
+                ).hexdigest()
+            )
         if not isinstance(body.get("stream", True), bool):
             raise HTTPException(400, "Invalid streaming preference")
         from starlette.concurrency import run_in_threadpool

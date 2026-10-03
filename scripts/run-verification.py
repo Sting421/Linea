@@ -175,7 +175,7 @@ def api_checks(api_url, require_live, client):
     valid_health = (
         isinstance(health, dict)
         and health.get("status") == "ok"
-        and health.get("mode") in ("demo", "live")
+        and health.get("mode") in ("demo", "connected", "live")
     )
     checks.append(
         check(

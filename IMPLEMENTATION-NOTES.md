@@ -1,5 +1,188 @@
 # Implementation Notes
 
+## Saved profile calling setup repair — 4 October 2026
+
+The user confirmed the profile is saved. Private scope was configured from the
+unique existing enrolled profile matching the already authorized recipient and
+its actual owner; no identity was added to source or database records. Voice
+construction succeeded as root, but service-identity testing found the speech
+file under `/etc/linea` inaccessible to `linea`: the parent directory is root-only
+0700. The file was copied to `/opt/linea/config/agora-properties.json`, with a
+root-owned 0750 directory and root:linea 0640 file. `/etc/linea`, environment
+files, backups and previous speech configuration retained their permissions.
+
+The actual `linea` service identity can now read the speech properties, write
+the private recovery journal and construct the scoped runtime successfully.
+A candidate scoped API started under that identity and passed health before
+the private environment was activated and the API restarted. Runtime settings
+are now connected mode, voice=1, scoped test=1, push=0, using only the saved
+profile/owner pair. The voice worker remains disabled/inactive. This prepares
+provider callback handling without authorizing calls through a fake heartbeat.
+
+The 04:52 Manila/Singapore audit confirmed one matching private scope and zero
+active phone/provider sessions, runtime calls, commands, callbacks, retries,
+recovery files or due scheduler proposals. The actual notification Secret
+remains unchanged and unverified; the user was asked to confirm installation
+from Agora Console. No calls have been placed. The dashboard correctly stays
+disconnected while no actual voice worker heartbeat exists. General live mode
+is gated; the earliest permitted phone call remains 06:00 true elder local time.
+All phone/audio/LISTEN/result/rehearsal evidence remains NOT RUN.
+
+## Hosted family app and recording blockers — 4 October 2026
+
+Continuation at 04:44 Manila/Singapore rechecked the same blockers: matching
+recipient profile still has pending consent, the notification Secret is unchanged
+and unverified, private scope is unset, and no browser automation is enabled.
+No calls were placed. `scripts/preflight-calling.py` now provides a read-only
+operator audit, installed separately at `/opt/linea/ops/preflight-calling.py`.
+It includes future commands, pending retry/reconnection schedules, temporary
+and encrypted recovery files, actual scoped calling hours, scheduler proposals
+and provider agents. Four local regression cases verify privacy, scope/hour
+blocking and that scheduled/queued work is not hidden. Its hosted snapshot found
+zero outstanding work/resources and correctly returned BLOCKED for unset scope.
+See `deploy/README.md` for the operator command. This tool never starts workers
+or supplies calling authorization/readiness/acceptance evidence.
+
+The actual family app is now deployed at https://linea.aldrinvitorillo.dev,
+using source commit `098e52a8a6e2ef44169f8446c200c82fbcc0c020`, also used by
+the hosted API. The domain previously had no frontend service and returned
+the API domain's TLS certificate. The repair installed the immutable frontend
+release, `linea-web.service` under the existing `linea` service user, a separate
+Nginx virtual host, and a valid Let's Encrypt certificate. Existing API/SIP
+configuration and the server checkout's package edits were preserved.
+
+The private frontend environment is `/etc/linea/web.env`; its app origin is the
+public HTTPS frontend. Only the public Supabase and VAPID keys enter the browser.
+The frozen dependency install and production build passed on the server.
+HTTPS sign-in/signup pages return 200, unauthenticated dashboard requests return
+401, malformed sign-in and unavailable demo actions return 400, and cross-origin
+session requests return 403. These HTTP checks do not verify a browser session.
+Local type checking, 33 web tests, and 26 voice-runtime/connected tests passed;
+the existing regression/smoke report also passed its six automated subchecks.
+
+Documented English ARES ASR and Agora-managed OpenAI TTS (`tts-1`, `alloy`) are
+staged in `/etc/linea/agora-properties.json`. This replaces the missing speech
+configuration blocker with a configuration requiring actual phone validation.
+Sources: [ARES](https://docs.agora.io/en/ai/models/asr/ares),
+[OpenAI TTS](https://docs.agora.io/en/ai/models/tts/openai).
+The notification Secret remains unchanged from the earlier unverified setup;
+Console callback configuration and provider-originated signatures are unverified.
+Follow [Agora's webhook setup](https://docs.agora.io/en/ai/build/handle-runtime-events/webhooks).
+
+The user explicitly authorized one normal check-in and two rehearsals for the
+consenting teammate, including policy retries/reconnection. Private inspection
+found exactly one enrolled profile matching that recipient, pending consent,
+real timezone Asia/Manila and scheduled time 08:00. The owner must still verify
+that profile through normal sign-in before its IDs are configured as private scope.
+No accounts, profiles, history, consent, alerts or call outcomes were created,
+seeded, deleted or reset during this preparation.
+
+At inspection there were zero runtime calls, queued/inflight/uncertain commands,
+pending callbacks, recovery files, scheduler proposals and active provider agents.
+The voice service remains disabled/inactive, with voice, test mode and push disabled.
+The actual clock was 04:33 on 4 October in Manila/Singapore: calls must wait until
+06:00 elder local time, without changing the profile's timezone or calling rules.
+Recheck all work immediately before starting the scoped worker. No call was placed.
+
+No browser automation surfaces are enabled for this session (`Browser is not
+available: iab`). Actual signup/sign-in/profile QA, microphone permission,
+ringing, conversational consent, speech, Significant alerts, family two-way audio,
+LISTEN silence, hangup, saved call records, refresh persistence and both rehearsals
+remain NOT RUN. Push is unverified. The complete acceptance matrix is unchanged;
+general live mode remains gated. See `testing/RECORDING-RUNBOOK.md`.
+
+## Actual-product recording preparation — 4 October 2026
+
+The recording uses normal email/password signup and an app-created profile with
+a consenting teammate's phone. This supersedes earlier special/synthetic-profile
+setup instructions. IDs may be configured privately for scope only after verifying
+the real account/profile and recipient authorization; they are never source-code
+defaults. Consent/history are preserved across takes. No accounts or production
+records were created or seeded during this preparation.
+
+The provider completion adapter previously rejected OpenAI-compatible messages
+without a `turn_id`, which Agora's documented request does not require. It now
+derives a deterministic identity from the authenticated message history when the
+provider omits that field. Exact retries are deduplicated; identical words in later
+history are distinct. Invalid explicit IDs, completion authentication, active-leg
+validation, and readiness gates remain enforced. Actual provider history behavior,
+including repeated/truncated histories, still needs real-call verification.
+Reference: [Agora custom LLM guide](https://docs.agora.io/en/ai/build/custom-model-integration/custom-llm).
+
+All 19 voice-runtime regression cases pass, including new envelope/retry cases.
+The current repository's private web configuration now targets the hosted API
+instead of local port 8002, and the optimized web build passes. This does not
+verify the separately running older-snapshot frontend or a hosted frontend URL.
+
+See `testing/RECORDING-RUNBOOK.md` for a normal call, two concern/family-join
+rehearsals, microphone/feedback setup, exact existing controls, privacy cropping,
+actual-record persistence, cleanup checks, and deferred acceptance. Actual browser
+and phone rehearsals remain NOT RUN: browser/Agora Console access, verified provider
+configuration, frontend URL, and explicit recipient/session authorization are
+still missing. Push is secondary and unverified. General live mode remains gated.
+
+The compatible API release is prepared on an isolated Git branch so the primary
+checkout's local changes and the server's package edits remain intact. The exact
+active deployed build is recorded privately in `/etc/linea/backend.env` and
+`/etc/linea/setup-status.md`; the previous deployment details below are historical.
+
+## Hosted provider setup progress — 4 October 2026
+
+The current Git checkout is `D:\Hackathon\Agora\Linea`; the supplied
+`D:\Hackathon\linea` directory is an older snapshot without Git metadata.
+Both local and server `pre-deployment` matched remote commit
+`4d16f362711539adb5ec81c64bf9c1307f1189d4` after fetch. The local checkout
+started clean. Server edits to `package.json` and its untracked `package-lock.json`
+were preserved, with private backups under `/etc/linea/`. No force reset, migration
+reapplication, or SIP-trunk modification was performed.
+
+The API now runs as the dedicated `linea` user under enabled `linea-api.service`,
+behind the existing HTTPS Nginx proxy. Its immutable application release is
+`/opt/linea/releases/4d16f362711539adb5ec81c64bf9c1307f1189d4`, selected by
+`/opt/linea/current`; Python 3.12 locked dependencies are installed in
+`/opt/linea/venv`. The private environment is `/etc/linea/backend.env` (0600).
+The shared persistent journal is `/var/lib/linea/runtime-journal` (0700,
+owned by `linea`). The API and prepared voice unit use the same environment and
+completion bearer. These paths supersede editing the old checkout's `.env` for
+the running service. Access logging is disabled for the API; systemd supervises
+startup/restart and records lifecycle logs.
+
+Read-only credential checks returned HTTP 200 for Supabase service-role runtime
+reads, Agora agent listing, Twilio owned-number/trunk inspection, and access to
+the configured OpenAI model. The sole owned voice number, already associated
+with the existing SIP trunk, supplied `AGORA_FROM_NUMBER`. The public API URL
+and deployed build ID are configured. Existing secrets were preserved privately;
+presence or model access does not prove voice execution or interpretation quality.
+
+Migration history confirms `20261003193503_voice_runtime`. All five private
+runtime tables have RLS enabled and deny anonymous/authenticated access; all
+eight runtime/retention functions retain fixed empty search paths and service-role
+execution only. The database had zero runtime calls, commands, callback events,
+and worker heartbeats. The read-only scheduler returned no placement proposals;
+the existing profile's consent is pending. Recheck these immediately before any
+worker start, since this is a point-in-time observation.
+
+Hosted `/health` and `/openapi.json` returned 200. Missing/invalid dashboard
+authentication and unsigned/invalid provider signatures returned 401. The
+completion route accepted the installed bearer far enough to return the expected
+503 for an unconfigured voice runtime. This does not verify an Agora-originated
+signature. The smoke runner now recognizes connected-mode health without passing
+the separate live-readiness gate; its deployment health/contract/auth checks pass.
+
+Remaining blockers: no enabled browser/Console access to obtain Agora's actual
+notification Secret or configure its telephony callback, no verified English
+ASR/TTS properties JSON, no agreed normally-created profile/owner and explicit recipient
+authorization, and no authenticated test-owner session for scoped dashboard QA.
+The existing generated webhook candidate is not provider evidence. The local
+environment helper no longer generates webhook candidates.
+
+`linea-voice.service` is installed **disabled and inactive**; it also checks
+`LINEA_VOICE_ENABLED` before starting. Voice and push remain disabled in connected
+mode. No heartbeat was fabricated, no call/model inference/push was sent, and no
+acceptance result was marked passed. Ringing, conversation, family audio, hangup,
+persisted call records, and the full 22-case acceptance run remain NOT RUN.
+See `deploy/README.md` and the acceptance section below before starting workers.
+
 ## Supabase voice runtime implementation — 4 October 2026
 
 This entry supersedes the calling-readiness and scaffold status below. The user
@@ -107,8 +290,9 @@ Mount one persistent private `LINEA_RUNTIME_JOURNAL_PATH` into the API and voice
 worker, using the same completion bearer for encryption. Keep it writable by the
 service user, restrict access, and retain the key while pending recovery exists.
 For explicitly authorized test calls only, set `LINEA_VOICE_ENABLED=1`,
-`LINEA_VOICE_TEST_MODE=1`, and the exact synthetic `LINEA_TEST_ELDER_ID` and
-`LINEA_TEST_OWNER_ID`. Keep `LINEA_MODE=connected`: this confines voice execution
+`LINEA_VOICE_TEST_MODE=1`, and `LINEA_TEST_ELDER_ID` / `LINEA_TEST_OWNER_ID`
+from the verified normally app-created profile and its signed-in owner.
+Keep `LINEA_MODE=connected`: this confines voice execution
 to that profile and owner while acceptance remains incomplete.
 
 Run separate supervised worker processes from `services/api`:

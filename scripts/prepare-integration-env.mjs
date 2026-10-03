@@ -51,7 +51,9 @@ try {
   }
 
   const generated = [];
-  for (const key of ['LINEA_CUSTOM_LLM_BEARER', 'LINEA_PROVIDER_WEBHOOK_SECRET']) {
+  // Agora generates its project notification secret. A local random value cannot
+  // authenticate Agora callbacks and must never be presented as provider setup.
+  for (const key of ['LINEA_CUSTOM_LLM_BEARER']) {
     if (!settings[key]) {
       backend = setValue(backend, key, randomBytes(32).toString('base64url'));
       generated.push(key);
@@ -102,6 +104,7 @@ try {
       : 'Existing credentials preserved; push key pair validated.',
   );
   console.log('Only the public push key was copied to the web environment.');
+  console.log('Install LINEA_PROVIDER_WEBHOOK_SECRET from Agora Console; local presence is unverified.');
   console.log(
     'Credentials are local preparation only; no provider, delivery, or live mode was enabled.',
   );

@@ -11,11 +11,13 @@ that phone calls, semantic interpretation, account isolation, or push work.
 
 ## Start a test run
 
-1. Pull `keith-branch` and record the exact commit being deployed. If the server
+1. Pull `pre-deployment` and record the exact commit being deployed. If the server
    and web app use different commits, record both.
-2. Use an isolated test environment, synthetic profiles, and consenting
-   teammates as the elder and family. Roleplay the symptom scripts; do not
-   place a real emergency-service call during a test.
+2. Use normal email/password signup and profile creation through the app, with
+   a consenting teammate's phone as the elder and the signed-in profile owner
+   as family. Do not seed profiles, reset consent/history, or fabricate results.
+   Roleplay the symptom scripts; do not place a real emergency-service call
+   during a test. Obtain explicit recipient/session authorization before calling.
 3. Prepare one phone for the elder, two browser sessions for authorized family
    members, and an unrelated account B. Do not confuse a saved telephone contact
    with an authorized signed-in family member; the engineer must establish
@@ -33,9 +35,11 @@ that phone calls, semantic interpretation, account isolation, or push work.
    names, profile aliases, and provider session IDs. Record evidence in that
    run folder. Use screenshots, status codes, synthetic text, and redacted
    timing logs; avoid recording raw call audio or exporting tokens/keys.
-6. Have an engineer ready to seed test context, replay provider events, and
-   inject controlled failures. Those capabilities are not exposed by the
-   current family UI. If a required setup is unavailable, mark the case BLOCKED.
+6. Have an engineer verify the app-created context and observe real provider
+   events. Recording results must come from actual calls; do not seed context
+   or replay events to manufacture them. Exercise controlled failure/retention
+   checks separately in an isolated environment. If a required setup is
+   unavailable, mark the case BLOCKED and retain that acceptance requirement.
 
 The phone tester speaks the scripts; the family tester verifies the screens
 and notifications; the engineer checks state, timings, identity, and delivery
