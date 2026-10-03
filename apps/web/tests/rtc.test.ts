@@ -78,3 +78,48 @@ test('leaving while microphone permission is pending prevents a later join and c
   assert.ok(calls.includes('close'));
   assert.ok(!calls.some((c) => c.startsWith('join:')));
 });
+
+test('leaving while publish is pending cannot report a successful join', async () => {
+  const { rtc, client } = fixture();
+  let finish!: () => void;
+  client.publish = () =>
+    new Promise<number>((resolve) => {
+      finish = () => resolve(1);
+    });
+  const join = rtc.join(credentials);
+  await new Promise((resolve) => setImmediate(resolve));
+  await rtc.leave();
+  finish();
+  await assert.rejects(join, /cancelled/);
+});
+
+test('stale SDK callbacks cannot disconnect or expire a new audio session', async () => {
+  const { rtc, handlers, calls } = fixture();
+  await rtc.join(credentials);
+  const oldExpired = handlers.get('token-privilege-did-expire')!;
+  const oldState = handlers.get('connection-state-change')!;
+  const oldPublish = handlers.get('user-published')!;
+  await rtc.join(credentials);
+  const states: string[] = [];
+  rtc.onConnectionChange((state) => states.push(state));
+  const before = calls.length;
+  oldState('DISCONNECTED');
+  oldExpired();
+  await oldPublish({ audioTrack: { play: () => assert.fail('stale playback') } }, 'audio');
+  assert.deepEqual(states, []);
+  assert.equal(calls.length, before);
+});
+
+test('failed provider leave still closes microphone and reports disconnected', async () => {
+  const { rtc, client, calls } = fixture();
+  await rtc.join(credentials);
+  client.leave = async () => {
+    throw new Error('network failure');
+  };
+  const states: string[] = [];
+  rtc.onConnectionChange((state) => states.push(state));
+  await assert.rejects(rtc.leave(), /network failure/);
+  assert.ok(calls.includes('close'));
+  assert.deepEqual(states, ['disconnected']);
+  await assert.rejects(rtc.setMuted(true), /No live microphone/);
+});

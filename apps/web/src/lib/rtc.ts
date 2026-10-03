@@ -43,22 +43,25 @@ export class AgoraFamilyRTC implements FamilyRTC {
   }
 
   async join(credentials: RTCCredentials) {
-    await this.leave();
+    const leaving = this.leave();
     const generation = this.generation;
+    await leaving;
+    if (generation !== this.generation) throw new Error('Audio join was cancelled.');
     const { default: AgoraRTC } = await this.loadSDK();
     if (generation !== this.generation) throw new Error('Audio join was cancelled.');
     const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
     this.client = client;
     client.on('user-published', async (user, mediaType) => {
-      if (mediaType !== 'audio') return;
+      if (mediaType !== 'audio' || generation !== this.generation) return;
       try {
         await client.subscribe(user, 'audio');
         if (generation === this.generation) user.audioTrack?.play();
       } catch {
-        this.callbacks.forEach((cb) => cb('disconnected'));
+        if (generation === this.generation) this.callbacks.forEach((cb) => cb('disconnected'));
       }
     });
     client.on('connection-state-change', (state) => {
+      if (generation !== this.generation) return;
       const mapped =
         state === 'CONNECTED'
           ? 'connected'
@@ -68,9 +71,10 @@ export class AgoraFamilyRTC implements FamilyRTC {
       this.callbacks.forEach((cb) => cb(mapped));
     });
     client.on('token-privilege-did-expire', () => {
-      void this.leave();
+      if (generation === this.generation) void this.leave().catch(() => {});
     });
     client.on('token-privilege-will-expire', async () => {
+      if (generation !== this.generation) return;
       try {
         if (!this.renew) throw new Error('Token renewal is unavailable.');
         const fresh = await this.renew();
@@ -96,6 +100,7 @@ export class AgoraFamilyRTC implements FamilyRTC {
       await client.join(credentials.appId, credentials.channel, credentials.token, credentials.uid);
       if (generation !== this.generation) throw new Error('Audio join was cancelled.');
       await client.publish(this.microphone);
+      if (generation !== this.generation) throw new Error('Audio join was cancelled.');
     } catch (error) {
       if (generation === this.generation) await this.leave();
       else {
@@ -107,24 +112,25 @@ export class AgoraFamilyRTC implements FamilyRTC {
   }
 
   async setMuted(muted: boolean) {
-    await this.microphone?.setMuted(muted);
+    if (!this.microphone) throw new Error('No live microphone track is connected.');
+    await this.microphone.setMuted(muted);
   }
 
   async leave() {
-    this.generation++;
+    const generation = ++this.generation;
     const client = this.client;
     this.client = null;
     this.microphone?.stop();
     this.microphone?.close();
     this.microphone = null;
-    if (client) {
-      try {
+    try {
+      if (client) {
         await client.leave();
-      } finally {
-        client.removeAllListeners();
       }
+    } finally {
+      client?.removeAllListeners();
+      if (generation === this.generation) this.callbacks.forEach((cb) => cb('disconnected'));
     }
-    this.callbacks.forEach((cb) => cb('disconnected'));
   }
 
   onConnectionChange(callback: (state: 'connected' | 'reconnecting' | 'disconnected') => void) {

@@ -1,7 +1,7 @@
 import { test, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
-import type { Profile, Dashboard } from '../src/lib/types';
+import type { Profile, Dashboard, CheckIn } from '../src/lib/types';
 
 // Synthetic component DOM only: no navigation or request to the local app.
 const dom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -21,6 +21,7 @@ for (const key of [
   Object.defineProperty(globalThis, key, { configurable: true, value: dom.window[key] });
 }
 globalThis.requestAnimationFrame = dom.window.requestAnimationFrame.bind(dom.window);
+globalThis.cancelAnimationFrame = dom.window.cancelAnimationFrame.bind(dom.window);
 Object.defineProperty(globalThis, 'localStorage', {
   value: dom.window.localStorage,
   configurable: true,
@@ -33,11 +34,13 @@ Object.defineProperty(globalThis, 'IS_REACT_ACT_ENVIRONMENT', {
 });
 const components = (async () => {
   const { createElement } = await import('react');
-  const { render, screen, cleanup, waitFor } = await import('@testing-library/react');
+  const { render, screen, cleanup, waitFor, act } = await import('@testing-library/react');
   const { default: userEvent } = await import('@testing-library/user-event');
   const { Onboarding } = await import('../src/components/onboarding');
   const { FamilyApp } = await import('../src/components/family-app');
   const { MetricHelp } = await import('../src/components/ui');
+  const { LiveCall } = await import('../src/components/live-call');
+  const { AgoraFamilyRTC } = await import('../src/lib/rtc');
   const { AppRouterContext } =
     await import('next/dist/shared/lib/app-router-context.shared-runtime');
   return {
@@ -51,6 +54,9 @@ const components = (async () => {
     FamilyApp,
     MetricHelp,
     AppRouterContext,
+    act,
+    LiveCall,
+    AgoraFamilyRTC,
   };
 })();
 const originalFetch = globalThis.fetch;
@@ -276,4 +282,81 @@ test('family app gates first use, saves setup, and retains completion on a later
   render(app());
   await screen.findByRole('heading', { name: 'Monitoring' });
   assert.equal(screen.queryByText('Step 1 Of 4'), null);
+});
+
+const liveCall: CheckIn = {
+  id: 'call',
+  elder_id: profile.id,
+  local_date: '2026-10-04',
+  created_at: '2026-10-04T00:00:00Z',
+  ended_at: null,
+  state: 'connected',
+  mode: 'SCRIPT',
+  complete: false,
+  medicine_result: 'unknown',
+  medicine_due: null,
+  alerts: [],
+  legs: [],
+  retry_at: null,
+  transcript: [],
+  summary: null,
+  text_expired: false,
+  day_status: 'yellow',
+  answers: {},
+  family: [],
+  family_joined_at: null,
+  active_question: 'sleep',
+  farewell_asked: false,
+};
+
+for (const pendingAt of ['credentials', 'confirmation'] as const) {
+  test(`ending a call during ${pendingAt} cannot restore joined controls`, async (t) => {
+    const { createElement, render, screen, userEvent, LiveCall, AgoraFamilyRTC, act } =
+      await components;
+    const audioJoin = t.mock.method(AgoraFamilyRTC.prototype, 'join', async () => {});
+    t.mock.method(AgoraFamilyRTC.prototype, 'leave', async () => {});
+    let respond!: (value: Response) => void;
+    globalThis.fetch = async (input) => {
+      const isConfirmation = String(input).endsWith('/confirm-join');
+      if ((pendingAt === 'confirmation') === isConfirmation) {
+        return new Promise<Response>((resolve) => {
+          respond = resolve;
+        });
+      }
+      return Response.json({ rtc: {} });
+    };
+    const props = { profile, refresh: async () => {}, demo: false };
+    const view = render(createElement(LiveCall, { ...props, call: liveCall }));
+    await userEvent.setup().click(screen.getByRole('button', { name: 'Join call' }));
+    assert.ok(respond);
+    view.rerender(
+      createElement(LiveCall, { ...props, call: { ...liveCall, state: 'ended', mode: 'ENDING' } }),
+    );
+    await act(async () => {
+      respond(Response.json({ rtc: {}, briefing: 'Briefing' }));
+    });
+    assert.equal(screen.queryByText('You · family participant'), null);
+    assert.equal(screen.queryByRole('button', { name: 'Mute' }), null);
+    assert.ok(screen.getByText('The call has ended.'));
+    assert.equal(audioJoin.mock.callCount(), pendingAt === 'credentials' ? 0 : 1);
+  });
+}
+
+test('rejoining starts with an unmuted control matching the new microphone', async (t) => {
+  const { createElement, render, screen, userEvent, LiveCall, AgoraFamilyRTC } = await components;
+  t.mock.method(AgoraFamilyRTC.prototype, 'join', async () => {});
+  t.mock.method(AgoraFamilyRTC.prototype, 'leave', async () => {});
+  t.mock.method(AgoraFamilyRTC.prototype, 'setMuted', async () => {});
+  globalThis.fetch = async () => Response.json({ rtc: {}, reply: '' });
+  render(
+    createElement(LiveCall, { call: liveCall, profile, refresh: async () => {}, demo: false }),
+  );
+  const user = userEvent.setup();
+  await user.click(screen.getByRole('button', { name: 'Join call' }));
+  await user.click(screen.getByRole('button', { name: 'Mute' }));
+  assert.ok(screen.getByRole('button', { name: 'Unmute' }));
+  await user.click(screen.getByRole('button', { name: 'Leave' }));
+  await user.click(screen.getByRole('button', { name: 'Join call' }));
+  assert.ok(screen.getByRole('button', { name: 'Mute' }));
+  assert.equal(screen.queryByRole('button', { name: 'Unmute' }), null);
 });

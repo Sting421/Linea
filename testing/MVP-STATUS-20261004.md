@@ -52,6 +52,11 @@ The original historical record is preserved, not rewritten to manufacture a pass
   that never reached the provider become failed rather than indefinitely uncertain.
 - Speech chunks also handle unbroken multibyte text without exceeding the provider
   byte limit. Whitespace-only concern quotations cannot supply model evidence.
+- Browser audio cancels pending joins when the call/leg changes or the page
+  unmounts. A late token response, microphone publication, or join confirmation
+  cannot restore joined controls after hangup. Old SDK callbacks cannot expire
+  or disconnect a newer session. A newly joined microphone resets the mute UI;
+  failed network teardown still closes the local microphone and clears presence.
 
 ## Verification and limits
 
@@ -61,8 +66,10 @@ Those tests applied all migrations and verified lease serialization, atomic
 writes, manual versus automatic calling hours, cross-account row-level security,
 notification leases, unenrollment, immutable expiry anchors, and access/cleanup
 across detailed-text and structured-history expiry. No production data was used.
-No SQL migrations changed in this patch. The web suite previously passed 33 cases;
-type checking and the production web build passed, with no subsequent web edits.
+No SQL migrations changed in this patch. The web suite passed 39 cases, including
+SDK cancellation and synthetic DOM tests for late join responses after call end
+and mute state after rejoining. Type checking and the production web build passed.
+These tests do not establish actual browser microphone permissions or phone audio.
 
 An actual API-backed, in-memory synthetic conversation exercised consent, sleep,
 medicine, feeling, and closing. It asked the missing medicine beat and completed

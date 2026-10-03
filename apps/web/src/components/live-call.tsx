@@ -37,40 +37,47 @@ export function LiveCall({
     [muted, setMuted] = useState(false),
     [confirmEnd, setConfirmEnd] = useState(false);
   const rtc = useRef<AgoraFamilyRTC | null>(null);
+  const audioEpoch = useRef(0);
   const [audioJoined, setAudioJoined] = useState(false);
   const joined = demo ? call.family.length > 0 : audioJoined,
     leg = call.legs.at(-1);
-  useEffect(
-    () => () => {
-      void rtc.current?.leave();
-    },
-    [],
-  );
   useEffect(() => {
-    if (call.state !== 'connected' && !demo) {
-      void rtc.current?.leave();
+    if (call.state !== 'connected') {
       setAudioJoined(false);
+      setMuted(false);
     }
-  }, [call.state, demo]);
+    return () => {
+      audioEpoch.current++;
+      void rtc.current?.leave().catch(() => {});
+    };
+  }, [call.id, leg?.id, call.state, demo]);
   async function action(path: string, body?: unknown) {
     setBusy(true);
     setError('');
     try {
       if (!demo && path.endsWith('/join')) {
+        const epoch = audioEpoch.current;
         const r = await post<{ rtc: RTCCredentials }>(path);
+        if (epoch !== audioEpoch.current) return;
         if (!rtc.current) {
           rtc.current = new AgoraFamilyRTC();
           rtc.current.onConnectionChange((state) => {
-            if (state === 'disconnected') setAudioJoined(false);
+            if (state === 'disconnected') {
+              setAudioJoined(false);
+              setMuted(false);
+            }
           });
         }
         rtc.current.onTokenExpiring(
           async () => (await post<{ rtc: RTCCredentials }>(`checkins/${call.id}/join`)).rtc,
         );
         await rtc.current.join(r.rtc);
+        if (epoch !== audioEpoch.current) return;
         try {
           const confirmed = await post<Result>(`checkins/${call.id}/confirm-join`);
+          if (epoch !== audioEpoch.current) return;
           setReply(confirmed.briefing ?? '');
+          setMuted(false);
           setAudioJoined(true);
         } catch (error) {
           await rtc.current.leave();
@@ -186,7 +193,7 @@ export function LiveCall({
           {reply && (
             <div className="spoken-preview" aria-live="polite">
               <span className="eyebrow">
-                {joined ? 'BRIEFING / AGENT RESPONSE' : 'SIMULATED AGENT RESPONSE'}
+                {demo ? 'SIMULATED AGENT RESPONSE' : 'BRIEFING / AGENT RESPONSE'}
               </span>
               <p>{reply || 'Empty completion: Linea stays quiet.'}</p>
             </div>
