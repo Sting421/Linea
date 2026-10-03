@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Linea MVP API",
-    "description": "Local scaffold. All voice and push actions in demo mode are simulated.",
+    "description": "Family workspace API. Connected mode stores real records; voice and push delivery are not connected.",
     "version": "0.1.0"
   },
   "paths": {

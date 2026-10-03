@@ -48,7 +48,7 @@ async function proxy(req: NextRequest, ctx: { params: Promise<{ path: string[] }
     });
   } catch {
     return NextResponse.json(
-      { detail: 'Linea’s local API is unavailable. Start the API and try again.' },
+      { detail: 'Linea’s API is unavailable. Start the API and try again.' },
       { status: 503 },
     );
   }

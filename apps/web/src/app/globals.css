@@ -1797,6 +1797,16 @@ dialog.modal::backdrop {
   padding-top: 24px;
   border-top: 1px solid var(--line);
 }
+.auth-switch {
+  margin-top: 24px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+.auth-switch a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .demo-entry small {
   display: block;
   text-align: center;

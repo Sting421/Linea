@@ -11,10 +11,12 @@ export function Onboarding({
   profile,
   onSaved,
   mode = 'setup',
+  demo = true,
 }: {
   profile?: Profile;
   onSaved: (p: Profile) => void | Promise<void>;
   mode?: 'setup' | 'edit';
+  demo?: boolean;
 }) {
   const setup = mode === 'setup';
   const [step, setStep] = useState(0),
@@ -27,7 +29,7 @@ export function Onboarding({
     phone: profile?.phone ?? '',
     timezone: profile?.timezone ?? 'Asia/Manila',
     call_time: profile?.call_time ?? '08:00',
-    medicine: profile?.medicine ?? 'Losartan',
+    medicine: profile?.medicine ?? (demo ? 'Losartan' : ''),
     medicine_time: profile?.medicine_time ?? '08:00',
     language: 'en-US' as const,
     contacts: profile?.contacts ?? [{ name: '', relationship: '', phone: '', nearby: true }],
@@ -280,7 +282,9 @@ export function Onboarding({
                 </label>
                 <MetricHelp label="Medicine policy">
                   <p>
-                    Losartan is the demo medicine. Other medicines require omission-policy review.
+                    {demo
+                      ? 'Losartan is the demo medicine. Other medicines require omission-policy review. '
+                      : 'Record the medicine from the elder’s existing prescription. '}
                     Linea gives no dosing instructions.
                   </p>
                 </MetricHelp>

@@ -141,11 +141,13 @@ export function Shell({
   profile,
   children,
   setup = false,
+  mode = process.env.NEXT_PUBLIC_LINEA_MODE ?? 'demo',
 }: {
   section: string;
   profile: Profile | null;
   children: React.ReactNode;
   setup?: boolean;
+  mode?: string;
 }) {
   const items = [
     { path: '/', name: 'Monitoring', icon: LayoutGrid },
@@ -185,9 +187,9 @@ export function Shell({
           </nav>
           <div className="sidebar-bottom">
             <div className="account">
-              <Avatar name="Ana" />
+              <Avatar name={mode === 'demo' ? 'Ana' : 'Family'} />
               <div>
-                <strong>Ana Santos</strong>
+                <strong>{mode === 'demo' ? 'Ana Santos' : 'Family workspace'}</strong>
                 <small>Family account</small>
               </div>
             </div>
@@ -206,7 +208,7 @@ export function Shell({
           )}
           <div className="topbar-actions">
             <span className="demo-label">
-              <Circle size={7} fill="currentColor" /> Demo
+              <Circle size={7} fill="currentColor" /> {mode === 'demo' ? 'Demo' : 'Connected'}
             </span>
             <button className="icon-button" aria-label="Sign out" onClick={() => void signOut()}>
               <LogOut size={17} />

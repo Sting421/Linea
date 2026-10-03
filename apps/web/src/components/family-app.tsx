@@ -81,6 +81,7 @@ export function FamilyApp({
       section={setupNeeded ? 'Setup' : section}
       profile={data?.profile ?? null}
       setup={setupNeeded !== false || (!!data && !data.profile)}
+      mode={data?.mode}
     >
       {error && (
         <div className="error-banner" role="alert">
@@ -110,6 +111,7 @@ export function FamilyApp({
           key={data.profile?.id ?? 'new'}
           profile={data.profile ?? undefined}
           mode={setupNeeded || !data.profile ? 'setup' : 'edit'}
+          demo={data.mode === 'demo'}
           onSaved={async (p) => {
             try {
               localStorage.setItem(SETUP_STORAGE_KEY, profileSetupId(p));
@@ -134,7 +136,13 @@ export function FamilyApp({
       ) : date ? (
         <DayView date={date} data={data} onHandle={(a) => void handle(a)} />
       ) : callId ? (
-        data.checkins.find((c) => c.id === callId) ? (
+        data.mode !== 'demo' && data.checkins.find((c) => c.id === callId) ? (
+          <DayView
+            date={data.checkins.find((c) => c.id === callId)!.local_date}
+            data={data}
+            onHandle={(a) => void handle(a)}
+          />
+        ) : data.checkins.find((c) => c.id === callId) ? (
           <LiveCall
             call={data.checkins.find((c) => c.id === callId)!}
             profile={data.profile}
@@ -237,8 +245,7 @@ function SettingsView({
     setError('');
     try {
       const key = process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY;
-      if (!key)
-        throw new Error('Web push is not connected yet. In-app alerts are available in the demo.');
+      if (!key) throw new Error('Web push is not connected yet. Use the in-app alert list.');
       if (!('serviceWorker' in navigator) || !('PushManager' in window))
         throw new Error('This browser does not support web push. Use the in-app alert list.');
       const permission = await Notification.requestPermission();
@@ -329,7 +336,9 @@ function SettingsView({
         <Panel className="config-panel">
           <div className="panel-heading">
             <h2>Connection status</h2>
-            <span className="badge status-neutral">Local Demo</span>
+            <span className="badge status-neutral">
+              {config?.mode === 'demo' ? 'Local demo' : 'Connected workspace'}
+            </span>
           </div>
           <p className="muted">Service availability</p>
           {config ? (

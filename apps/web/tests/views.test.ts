@@ -152,3 +152,32 @@ test('live call simulation cannot pretend an actual microphone connection exists
   assert.match(html, /Leave/);
   assert.match(html, /scripted examples/);
 });
+
+test('connected workspace shows saved data without a demo identity or usable call controls', () => {
+  const data = { ...d, mode: 'connected' };
+  const html = renderToStaticMarkup(
+    createElement(Monitoring, {
+      data,
+      month: '2026-10',
+      setMonth: () => {},
+      onCall: () => {},
+      onHandle: () => {},
+      busy: false,
+    }),
+  );
+  assert.match(html, /disabled=""[^>]*>[\s\S]*?Calling unavailable/);
+  assert.match(html, /phone service not connected/);
+  assert.doesNotMatch(html, /Simulated call/);
+  const shell = renderToStaticMarkup(
+    createElement(Shell, {
+      section: 'Monitoring',
+      profile: p,
+      mode: 'connected',
+      children: html,
+    }),
+  );
+  assert.match(shell, /Connected/);
+  assert.doesNotMatch(shell, /Ana Santos|> Demo/);
+  assert.equal(requiresSetup(data, null), false);
+  assert.equal(requiresSetup({ ...data, profile: null }, null), true);
+});

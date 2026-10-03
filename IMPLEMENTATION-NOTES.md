@@ -1,5 +1,162 @@
 # Implementation Notes
 
+## Calling readiness and teammate deployment — 4 October 2026
+
+The user confirmed that their teammate deploys `lineaapi.aldrinvitorillo.dev`.
+Read-only checks during the calling investigation found:
+
+| Component | Observed result |
+| --- | --- |
+| Local API, `http://127.0.0.1:8000/health` | HTTP 200; `mode=connected`, `repository=supabase`, `voice_connected=false` |
+| Hosted API, `https://lineaapi.aldrinvitorillo.dev/health` | HTTP 200; `mode=demo`, `repository=sqlite-demo`, `voice_connected=false` |
+| Hosted `/openapi.json` | HTTP 200; demo call routes exist, but no provider callback or custom completion routes |
+| Twilio account using the local API credentials | Read access works; one voice-capable number and one SIP trunk exist |
+| Agora and interpretation configuration | Credentials and a pipeline ID are present locally; this does not verify the published pipeline or a live call |
+
+The earlier HTTP 502 is resolved. Restarting the server or changing the frontend
+API URL alone will not enable calling. The local connected backend deliberately
+returns 503 for call placement. `UnconnectedVoiceRuntime` is still a placeholder,
+and `LINEA_MODE=live` deliberately refuses startup. No phone was called during
+this investigation, no provider settings were changed, and nothing was deployed.
+
+### Deploy the working account and records backend first
+
+The connected-workspace changes are included in this `keith-branch` update.
+Pull the latest branch through the team's normal Git review/release process
+before deployment; the previously hosted demo does not include these changes.
+Use Python 3.12 and `services/api/requirements.lock.txt`, or build the existing
+Dockerfile with `services/api` as its build context. Configure the backend's
+private environment with:
+
+```dotenv
+LINEA_MODE=connected
+SUPABASE_URL=<the existing project's HTTPS URL>
+SUPABASE_PUBLISHABLE_KEY=<the existing project's public key>
+```
+
+The existing project already has both checked-in Supabase migrations applied.
+For a different project, apply both migrations in filename order first. Do not
+copy `.env` files into Git or put backend secrets in browser environment values.
+Connected profile access uses the public key plus the authenticated user's JWT;
+the service-role key is not required for these account/profile requests.
+
+For a host process, run from `services/api` behind the existing HTTPS proxy:
+
+```sh
+python -m pip install -r requirements.lock.txt
+uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
+```
+
+After release, the hosted health response must report `mode=connected` and
+`repository=supabase`. Verify authenticated profile save/reload and cross-account
+isolation before setting the Next.js server's `LINEA_API_URL` to the hosted URL
+and restarting it. The web mode variables must remain `connected`. Calling will
+still correctly report unavailable after this release.
+
+### Implementation required before enabling the call button
+
+1. Implement Agora outbound call placement, scoped RTC tokens, speech delivery,
+   and teardown in `services/api/app/ports.py`'s runtime interface. Verify the
+   published pipeline's SIP, ASR, TTS and custom-completion settings against the
+   current provider contract. The presence of a Twilio trunk does not establish
+   that all these settings work together.
+2. Implement the fact-extraction model adapter and the authenticated Agora
+   custom-completion HTTP endpoint around `BrainBridge`. Preserve deterministic
+   consent, safety rules and empty completions during LISTEN. The model chooses
+   neither escalation tiers nor unscripted medical advice.
+3. Add authenticated, replay-safe provider callbacks, durable check-in/policy
+   state, call-leg events and alert writes in Supabase. Call creation and callback
+   processing need atomic ownership/idempotency checks; the connected repository
+   currently reads call records but does not run a provider session.
+4. Connect the scheduling/retry and notification workers, plus authorized family
+   voice participation and end-call controls, before claiming the automated
+   welfare-check workflow works. Provision the shared completion bearer and the
+   provider's actual signing configuration privately on the server. The locally
+   generated webhook secret remains a candidate, not a verified provider key.
+5. Deploy those routes on the HTTPS backend, configure Agora to reach them, and
+   verify signed events and completion authentication. Then run an explicitly
+   authorized test call, confirm answer/end behavior, saved records, consent,
+   alerts, retries, and family controls using `testing/README.md`. Enable the
+   frontend capability only once the corresponding runtime path is verified.
+
+The deployment URL supplies public reachability for provider requests; the
+implementation above is a separate prerequisite. Do not remove the live-mode
+gate or return `voice_connected=true` merely to make the button clickable.
+
+## Email/password accounts — 4 October 2026
+
+The connected app now uses email and password at `/sign-in`, with a separate
+`/sign-up` page (email, password and password confirmation). Passwords go directly
+from the same-origin server route to Supabase Auth; Linea stores no password copy
+and returns no session tokens to the form. The server sets the existing Supabase
+SSR session cookies. Magic-link login has been removed from the session endpoint.
+
+The user explicitly approved disabling email confirmation for this development
+project after registration hit `over_email_send_rate_limit` (the built-in mailer
+has a project-wide quota of two emails per hour). `mailer_autoconfirm=true` is now
+configured in Supabase. Signup creates a session immediately and accepts non-team
+email addresses without proving mailbox ownership. Password authentication and
+user-scoped RLS remain enabled. This is a project-wide development setting; enable
+confirmation and configure a working email provider before a public rollout.
+The callback remains available for previously issued links or future confirmation.
+
+Verification: 30 frontend tests, typecheck and production build passed. The real
+connected verification script now signs in with a temporary account's password,
+checks incorrect credentials and foreign origins are rejected, saves/reloads
+records, signs out, signs back in, and verifies the records remain. Temporary test
+accounts and records were removed. `python scripts/verify-connected.py --run
+--signup` additionally passed with two fresh registrations through the actual web
+session endpoint, immediate authenticated dashboard access, sign-out, and password
+re-login. Without `--signup`, test users are admin-created and registration itself
+is not exercised. Email quota errors now explain the confirmation-email limit
+separately from excessive login attempts. No confirmation email is needed or sent
+in the current development configuration.
+
+## Connected family workspace — 4 October 2026
+
+`LINEA_MODE=connected` now runs the real family workspace: Supabase email sign-in,
+verified backend identity, and user-scoped Postgres reads/writes under RLS.
+Profiles, daily routine and contacts save together in one database transaction;
+new elder consent stays pending. Existing check-ins and alerts can be read, and
+alert handling is idempotently persisted. No sample records are seeded in this
+mode. SQLite demo data is not migrated into real accounts.
+
+The connected migration is `supabase/migrations/202610040001_connected_workspace.sql`.
+It was applied to the configured Supabase project through the Management API.
+It adds owner-checked profile and alert functions and removes direct elder writes
+that could create a profile without contacts. The running API uses the public key
+and the signed-in user's access token, not the service-role key. The management
+token used during setup is not stored in the repository or application environment.
+
+The local configuration now has `LINEA_MODE=connected` in both environment files,
+`NEXT_PUBLIC_LINEA_MODE=connected`, and
+`NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000`. Both loopback callback URLs are on the
+project's Auth redirect allowlist. Start API and web using the existing commands
+below, then open `http://127.0.0.1:3000/sign-up` to register or `/sign-in` to enter
+your email and password. The callback also supports a Supabase email `token_hash`
+for custom email templates if confirmation is enabled later.
+
+The built-in mailer is still configured, but development signup no longer uses it.
+Delivering account emails to arbitrary family addresses will require custom SMTP.
+See https://supabase.com/docs/guides/auth/auth-smtp.
+
+Phone calls, simulation endpoints and family voice controls are disabled in
+connected mode, with clear UI status. Push subscriptions can be stored, but push
+delivery is still unconnected. Fully automated voice (`LINEA_MODE=live`) remains
+gated; saving a call preference does not schedule or place calls. The older
+integration notes below describe the state before this connected workspace work.
+
+Verification: backend and frontend suites, typecheck, formatting/linting, SQL
+syntax parsing and production build passed. `python scripts/verify-connected.py
+--run` also passed against the configured project and running local web/API. It
+created two disposable users without sending email, exercised the Auth callback,
+SSR session cookies and frontend proxy, created/edited/reloaded profile/contact
+records, verified failed edits roll back atomically, tested cross-account RLS/API
+denials, read real persisted call detail, handled an alert twice without resetting
+its timestamp, and verified disabled simulations and sign-out. All generated
+users and records were removed. The script requires a service-role key only for
+creating and cleaning up its exact test records; normal app access does not.
+
 ## Integration preparation — 4 October 2026
 
 Handoff is on `keith-branch`, including the preparation commit from

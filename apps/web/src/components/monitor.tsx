@@ -80,7 +80,13 @@ export function Monitoring({
           </div>
         </div>
         <div className="connection-schedule">
-          <span className="eyebrow">{active ? 'Current check-in' : 'Daily call'}</span>
+          <span className="eyebrow">
+            {active
+              ? 'Current check-in'
+              : data.mode === 'demo'
+                ? 'Daily call'
+                : 'Preferred call time'}
+          </span>
           <strong>{active ? callLabel(active.state) : p.call_time}</strong>
           <span>
             <Clock3 size={14} />
@@ -90,25 +96,27 @@ export function Monitoring({
         <div className="connection-action">
           {active ? (
             <Link className="button primary" href={`/call/${active.id}`}>
-              {active.state === 'connected' ? 'Join call' : 'View call'}
+              {data.mode === 'demo' && active.state === 'connected' ? 'Join call' : 'View call'}
               <ArrowUpRight size={17} />
             </Link>
           ) : (
             <button
               className="button primary"
-              disabled={busy || p.consent === 'declined'}
+              disabled={busy || p.consent === 'declined' || data.mode !== 'demo'}
               onClick={onCall}
             >
               <Phone size={17} />
-              {busy ? 'Starting…' : 'Call now'}
+              {data.mode !== 'demo' ? 'Calling unavailable' : busy ? 'Starting…' : 'Call now'}
             </button>
           )}
           <small>
-            {p.consent === 'pending'
-              ? 'Consent is asked on the first call'
-              : p.consent === 'declined'
-                ? 'Calling stopped · consent declined'
-                : 'Simulated call'}
+            {data.mode !== 'demo'
+              ? 'Profile saved · phone service not connected'
+              : p.consent === 'pending'
+                ? 'Consent is asked on the first call'
+                : p.consent === 'declined'
+                  ? 'Calling stopped · consent declined'
+                  : 'Simulated call'}
           </small>
         </div>
       </Panel>

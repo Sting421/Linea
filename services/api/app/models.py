@@ -165,7 +165,9 @@ class Alert(StrictModel):
     created_at: datetime = Field(default_factory=now)
     handled_at: datetime | None = None
     handled_by: str | None = None
-    notification_status: Literal["demo_recorded", "pending", "sent", "failed"] = "demo_recorded"
+    notification_status: Literal["demo_recorded", "not_connected", "pending", "sent", "failed"] = (
+        "demo_recorded"
+    )
     revision: int = 1
 
 
