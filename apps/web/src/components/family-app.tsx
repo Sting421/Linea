@@ -7,6 +7,7 @@ import { api, post } from '@/lib/api';
 import { localDate, titleCase } from '@/lib/semantics';
 import type { Dashboard, Alert, CheckIn } from '@/lib/types';
 import { Shell, Panel, Empty, AlertLog } from './ui';
+import { WorkspaceSkeleton, ConfigurationSkeleton } from './loading-states';
 import { requiresSetup, profileSetupId, SETUP_STORAGE_KEY } from '@/lib/setup-state';
 import { Monitoring, DayView } from './monitor';
 import { Onboarding } from './onboarding';
@@ -85,7 +86,7 @@ export function FamilyApp({
     <Shell
       section={setupNeeded ? 'Setup' : section}
       profile={data?.profile ?? null}
-      setup={setupNeeded !== false || (!!data && !data.profile)}
+      setup={setupNeeded === true || (!!data && !data.profile)}
       mode={data?.mode}
     >
       {error && (
@@ -106,11 +107,16 @@ export function FamilyApp({
         </div>
       )}
       {!data || setupNeeded === null ? (
-        <div className="loading-state" role="status">
-          <div className="skeleton skeleton-heading" />
-          <div className="skeleton skeleton-card" />
-          <p>Loading your family workspace…</p>
-        </div>
+        error ? (
+          <Panel>
+            <Empty
+              title="Workspace unavailable"
+              body="Your workspace could not be loaded. Try again using the button above."
+            />
+          </Panel>
+        ) : (
+          <WorkspaceSkeleton section={section} date={date} callId={callId} />
+        )
       ) : setupNeeded || !data.profile || section === 'Elder profile' ? (
         <Onboarding
           key={data.profile?.id ?? 'new'}
@@ -241,13 +247,22 @@ function SettingsView({
       mode: string;
       checks: { name: string; state: string }[];
     } | null>(null),
+    [configError, setConfigError] = useState(''),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
-  useEffect(() => {
-    api<{ mode: string; checks: { name: string; state: string }[] }>('configuration')
-      .then(setConfig)
-      .catch((e) => setError(e.message));
+  const loadConfig = useCallback(async () => {
+    setConfigError('');
+    try {
+      setConfig(
+        await api<{ mode: string; checks: { name: string; state: string }[] }>('configuration'),
+      );
+    } catch (e) {
+      setConfigError((e as Error).message);
+    }
   }, []);
+  useEffect(() => {
+    void loadConfig();
+  }, [loadConfig]);
   async function enablePush() {
     setBusy(true);
     setError('');
@@ -344,9 +359,11 @@ function SettingsView({
         <Panel className="config-panel">
           <div className="panel-heading">
             <h2>Connection status</h2>
-            <span className="badge status-neutral">
-              {config?.mode === 'demo' ? 'Local demo' : 'Connected workspace'}
-            </span>
+            {config && (
+              <span className="badge status-neutral">
+                {config.mode === 'demo' ? 'Local Demo' : 'Connected Workspace'}
+              </span>
+            )}
           </div>
           <p className="muted">Service availability</p>
           {config ? (
@@ -362,8 +379,17 @@ function SettingsView({
                 </li>
               ))}
             </ul>
+          ) : configError ? (
+            <div>
+              <p role="alert" className="error-message">
+                {configError}
+              </p>
+              <button className="text-button" onClick={() => void loadConfig()}>
+                <RefreshCw size={15} /> Try again
+              </button>
+            </div>
           ) : (
-            <p>Loading connection status…</p>
+            <ConfigurationSkeleton />
           )}
         </Panel>
       </div>

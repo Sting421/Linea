@@ -106,11 +106,11 @@ export function Onboarding({
             >
               {titleCase(profile.consent)}
             </strong>
+            <MetricHelp label="Call consent information" iconOnly>
+              <p>Consent belongs to your loved one. Setting up their profile does not grant it.</p>
+              {profile.consent_words && <p>“{profile.consent_words}”</p>}
+            </MetricHelp>
           </div>
-          <MetricHelp label="Consent record">
-            <p>Consent belongs to your loved one. Setting up their profile does not grant it.</p>
-            {profile.consent_words && <p>“{profile.consent_words}”</p>}
-          </MetricHelp>
         </div>
       )}
       <div className="setup-layout">

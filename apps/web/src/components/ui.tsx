@@ -121,14 +121,27 @@ export function Tooltip({
     </div>
   );
 }
-export function MetricHelp({ label, children }: { label: string; children: React.ReactNode }) {
+export function MetricHelp({
+  label,
+  children,
+  iconOnly = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  iconOnly?: boolean;
+}) {
   return (
     <Tooltip
       className="metric-help"
       trigger={(id) => (
-        <button type="button" aria-describedby={id} className="metric-help-trigger">
-          <Info size={14} />
-          {label}
+        <button
+          type="button"
+          aria-label={iconOnly ? label : undefined}
+          aria-describedby={id}
+          className="metric-help-trigger"
+        >
+          <Info size={14} aria-hidden="true" />
+          {!iconOnly && label}
         </button>
       )}
     >

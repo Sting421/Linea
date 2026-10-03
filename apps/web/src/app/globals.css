@@ -25,6 +25,7 @@
   --shadow-raised: 5px 5px 14px #100f164d, -3px -3px 10px #38324038;
   --shadow-inset: inset 2px 2px 5px #11101780, inset -2px -2px 5px #3b34452b;
   --focus: #ffdb86;
+  --skeleton-fill: color-mix(in srgb, var(--surface-raised) 80%, var(--text-muted));
 }
 * {
   box-sizing: border-box;
@@ -1339,14 +1340,17 @@ label small {
   color: var(--text-secondary);
 }
 .consent-status {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
   margin-left: auto;
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+.consent-status > span,
 .consent-status .badge {
-  width: fit-content;
+  white-space: nowrap;
 }
 .profile-sections {
   display: grid;
@@ -1434,7 +1438,7 @@ label small {
 }
 .settings-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 .settings-grid .panel > .muted {
@@ -1442,8 +1446,8 @@ label small {
   line-height: 1.6;
   margin-bottom: 20px;
 }
-.config-panel {
-  grid-column: 1 / -1;
+.config-panel .panel-heading {
+  flex-wrap: wrap;
 }
 .data-rules {
   margin: 0;
@@ -1470,7 +1474,7 @@ label small {
   list-style: none;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   column-gap: 28px;
 }
 .config-list li {
@@ -1525,21 +1529,206 @@ label small {
   margin: 16px 0;
 }
 .loading-state {
-  color: var(--text-muted);
-  font-size: 0.8125rem;
+  width: 100%;
 }
 .skeleton {
-  border-radius: 12px;
-  background: #332b3e;
+  display: block;
+  flex-shrink: 0;
+  max-width: 100%;
+  height: 12px;
+  border-radius: 4px;
+  background: var(--skeleton-fill);
 }
-.skeleton-heading {
+.skeleton-width-full {
+  width: 100%;
+}
+.skeleton-width-long {
+  width: 80%;
+}
+.skeleton-width-medium {
+  width: 60%;
+}
+.skeleton-width-short {
+  width: 35%;
+}
+.skeleton-title {
+  height: 20px;
+}
+.skeleton-value {
+  height: 38px;
+}
+.skeleton-control {
+  height: 44px;
+  border-radius: var(--radius-control);
+}
+.skeleton-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+.skeleton-plot {
+  height: 190px;
+  border-radius: 6px;
+  background:
+    linear-gradient(to bottom, var(--skeleton-fill) 1px, transparent 1px) 0 0 / 100% 95px,
+    var(--inset);
+}
+.skeleton-ring {
+  width: 180px;
+  height: 180px;
+  margin: 8px auto 18px;
+  border: 20px solid var(--skeleton-fill);
+  border-radius: 50%;
+  background: transparent;
+}
+.skeleton-lines,
+.skeleton-identity {
+  display: grid;
+  gap: 10px;
+}
+.skeleton-identity {
+  flex: 1;
+  min-width: 0;
+}
+.skeleton-page-title {
+  flex: 1;
+}
+.skeleton-page-title > .skeleton {
+  max-width: 220px;
+  margin-top: 10px;
+}
+.skeleton-content > .page-heading > .skeleton-control {
+  width: 140px;
+}
+.skeleton-content .connection-schedule {
+  width: 180px;
+}
+.skeleton-content .connection-action {
+  width: 160px;
+}
+.skeleton-range {
+  margin-top: 20px;
+}
+.skeleton-range > .skeleton-title {
+  width: 180px;
+}
+.skeleton-range > .skeleton-control {
+  width: 80px;
+}
+.skeleton-content .stat-card > .skeleton:last-child {
+  margin: 12px 0;
+}
+.skeleton-chart-footer {
+  margin-top: 16px;
+}
+.skeleton-report-bars {
+  display: grid;
+  align-content: space-evenly;
+  height: 206px;
+}
+.skeleton-report-bars .skeleton {
+  height: 24px;
+}
+.skeleton-rows {
+  width: 100%;
+}
+.skeleton-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--line);
+}
+.skeleton-row:last-child {
+  border-bottom: 0;
+}
+.skeleton-row > .skeleton-width-medium {
   width: 50%;
-  height: 48px;
-  margin-bottom: 24px;
 }
-.skeleton-card {
-  height: 170px;
-  margin-bottom: 24px;
+.skeleton-row > .skeleton-width-short {
+  width: 25%;
+}
+.skeleton-calendar > .skeleton-line {
+  margin: 0 auto 8px;
+}
+.skeleton-day {
+  height: 44px;
+  border-radius: 8px;
+}
+.skeleton-filter {
+  margin-bottom: 20px;
+  width: min(420px, 100%);
+}
+.skeleton-filter > .skeleton {
+  flex: 1;
+}
+.skeleton-content .alert-log .skeleton-lines {
+  padding: 10px 0;
+}
+.skeleton-profile-tabs {
+  align-content: start;
+}
+.skeleton-form {
+  display: grid;
+  gap: 24px;
+}
+.skeleton-form > div:not(.form-row),
+.skeleton-form .form-row > div {
+  display: grid;
+  gap: 10px;
+}
+.skeleton-content .back-link {
+  width: 150px;
+}
+.skeleton-call-room > .skeleton {
+  margin-bottom: 16px;
+}
+.skeleton-call-room .live-orbit .skeleton-avatar {
+  width: 120px;
+  height: 120px;
+}
+.skeleton-call-room .call-controls {
+  width: 160px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    animation: skeleton-breathe 2s ease-in-out infinite;
+  }
+}
+@keyframes skeleton-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (max-width: 1000px) {
+  .skeleton-content .connection-action {
+    width: 100%;
+  }
+  .skeleton-content .connection-action > .skeleton-control {
+    width: 160px;
+  }
+  .skeleton-content .connection-action > .skeleton-line {
+    width: 100px;
+  }
+}
+@media (max-width: 760px) {
+  .skeleton-content .connection-schedule {
+    width: 100%;
+  }
+  .skeleton-content .connection-schedule > .skeleton {
+    width: 30%;
+  }
+  .skeleton-profile-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .skeleton-content .page-heading > .skeleton-control {
+    width: 90px;
+  }
 }
 .back-link {
   display: inline-flex;
@@ -1915,9 +2104,6 @@ dialog.modal::backdrop {
   .profile-strip {
     flex-wrap: wrap;
   }
-  .profile-strip > .metric-help {
-    margin-left: auto;
-  }
   .log-evidence {
     min-width: 150px;
   }
@@ -2194,7 +2380,7 @@ dialog.modal::backdrop {
     padding: 16px;
     gap: 12px;
   }
-  .profile-strip > .metric-help {
+  .consent-status {
     margin-left: 0;
   }
   .profile-sections {
@@ -2213,9 +2399,6 @@ dialog.modal::backdrop {
   .settings-grid,
   .config-list {
     grid-template-columns: 1fr;
-  }
-  .config-panel {
-    grid-column: auto;
   }
   .error-banner,
   .success-banner {
