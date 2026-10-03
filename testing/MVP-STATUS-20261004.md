@@ -2,6 +2,21 @@
 
 ## Current handoff
 
+### Follow-up: repeated wellbeing question and skipped medicine question
+
+Phone test report: the call asked how the elder was doing twice and never asked
+about medicine; a hedged "I'm fine, I think" produced a 503 on the completion route.
+The deploy record still names `311bd5e`, which predates the evidence gate and the
+interpretation-failure recovery. On that release an inexact model quote raises and
+returns 503, and a copied drug name completes the medicine beat. Confirm the running
+hash from `/health` before the next test.
+
+The current build also now binds each scripted reply to the question actually asked.
+An answer the model files under another open routine beat moves to the active beat,
+so the question is not repeated. A volunteered or hedged dose report is recorded,
+but only an answer to the dose question (or its clarification) completes the medicine
+beat. Evidence matching tolerates case, apostrophe style and spacing only.
+
 ### Follow-up: failed interpretation and skipped medicine in the next phone test
 
 The teammate's terminal confirmed the running symlink still targeted `1d66ce2`,

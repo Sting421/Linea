@@ -197,6 +197,16 @@ Extraction definitions (facts only; the server applies policy):
 """
 
 
+def quoted(quote, text):
+    """Exact-quote evidence, tolerant only of case, apostrophe style, and spacing."""
+
+    def norm(value):
+        value = value.replace("\u2019", "'").replace("\u2018", "'").casefold()
+        return " ".join(value.split())
+
+    return bool(quote and quote.strip() and norm(quote) in norm(text))
+
+
 class OpenAIClassifier:
     def __init__(self, key: str, model: str, client=None, retriever=None):
         self.key, self.model = key, model
@@ -274,14 +284,10 @@ class OpenAIClassifier:
         answers = {}
         for key in ("sleep", "medicine", "feeling", "anything"):
             value, quote = getattr(data, key), getattr(data.evidence, key)
-            if value is not None and quote and quote.strip() and quote in text:
+            if value is not None and quoted(quote, text):
                 answers[key] = value
         medicine_quote = data.evidence.medicine
-        medicine_result = (
-            data.medicine_result
-            if medicine_quote and medicine_quote.strip() and medicine_quote in text
-            else None
-        )
+        medicine_result = data.medicine_result if quoted(medicine_quote, text) else None
         if medicine_result is None:
             answers.pop("medicine", None)
         for fact in data.concerns:

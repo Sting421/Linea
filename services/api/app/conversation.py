@@ -35,6 +35,30 @@ def next_question(c: CheckIn, p: Profile) -> str:
     return f"Thank you for talking with me, {p.preferred_name}. Take care. Your next scheduled check-in is at {p.call_time}."
 
 
+def dose_question_asked(c: CheckIn) -> bool:
+    """True when the elder's latest turn answers a question about today's dose."""
+    if c.active_question == "medicine":
+        return True
+    if c.active_question and c.active_question.startswith("concern:"):
+        facts = c.facts.get(c.active_question.removeprefix("concern:"))
+        return bool(facts and facts.concern == "MEDICINE_NOT_TAKEN")
+    return False
+
+
+def bind_answers(c: CheckIn, answers: dict) -> dict:
+    # Each scripted reply answers the question that was actually asked. An answer
+    # filed under a different open beat ("I'm fine" to the sleep question) is moved
+    # to the active beat, so that question is not repeated and the other is still
+    # asked later. The medicine beat is never completed by a volunteered answer.
+    answers = {k: v for k, v in answers.items() if k != "medicine"}
+    beat = c.active_question
+    if beat in ("sleep", "feeling", "anything") and beat not in answers:
+        stray = next((k for k in ("sleep", "feeling", "anything") if k in answers), None)
+        if stray:
+            answers[beat] = answers.pop(stray)
+    return answers
+
+
 def merge_facts(old: Facts | None, incoming: Facts) -> Facts:
     if not old:
         return incoming
@@ -53,6 +77,8 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
     if c.state not in ("connected",):
         raise ValueError("A connected phone leg is required")
     c.transcript.append({"speaker": "elder", "text": t.text, "at": now().isoformat()})
+    dose_asked = dose_question_asked(c)
+    answers = bind_answers(c, t.answers)
     if t.stop or t.end_call:
         c.intentional_end = True
         c.retry_at = None
@@ -61,10 +87,11 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
     if t.stop:
         p.consent = "declined"
         p.consent_words, p.consent_at = t.text, now()
-    c.answers.update(t.answers)
+    c.answers.update(answers)
     if t.medicine_result is not None:
         c.medicine_result = t.medicine_result
-        c.answers["medicine"] = t.medicine_result
+        if dose_asked:
+            c.answers["medicine"] = t.medicine_result
     assessments = []
     for incoming in t.concerns:
         previous = c.facts.get(incoming.incident_id)
@@ -78,7 +105,8 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
             and facts.medicine_result
         ):
             c.medicine_result, c.medicine_due = facts.medicine_result, facts.due
-            c.answers["medicine"] = facts.medicine_result
+            if dose_asked:
+                c.answers["medicine"] = facts.medicine_result
         if not result.new_event:
             old = next((a for a in c.alerts if a.incident_id == facts.incident_id), None)
             if old:

@@ -114,7 +114,7 @@ def test_duplicate_turn_and_incident_do_not_duplicate_alert():
     assert len(c.alerts) == 1 and c.alerts[0].tier == "emergency"
 
 
-def test_out_of_order_answers_skip_completed_beats():
+def test_out_of_order_answers_skip_completed_beats_but_still_ask_medicine():
     p, c = setup()
     reply = turn(
         c,
@@ -126,7 +126,42 @@ def test_out_of_order_answers_skip_completed_beats():
             medicine_result="taken",
         ),
     )
+    # A volunteered dose report is recorded, but only an answer to the dose
+    # question completes that beat.
+    assert c.medicine_result == "taken" and c.active_question == "medicine"
+    assert p.medicine in reply
+    reply = turn(c, p, Turn(turn_id="2", text="Yes", medicine_result="taken"))
     assert "anything else" in reply and c.active_question == "anything"
+
+
+def test_answer_filed_under_another_beat_answers_the_question_asked():
+    p, c = setup()
+    c.active_question = "sleep"
+    reply = turn(c, p, Turn(turn_id="1", text="I'm fine", answers={"feeling": "fine"}))
+    assert c.answers == {"sleep": "fine"} and c.active_question == "medicine"
+    assert p.medicine in reply
+    turn(c, p, Turn(turn_id="2", text="Yes, I took it", medicine_result="taken"))
+    assert c.active_question == "feeling"
+    reply = turn(c, p, Turn(turn_id="3", text="Good", answers={"sleep": "good"}))
+    assert c.answers["feeling"] == "good" and c.active_question == "anything"
+    assert "feeling" not in reply
+
+
+def test_hedged_routine_answer_does_not_complete_medicine_beat():
+    p, c = setup()
+    c.answers["sleep"] = "well"
+    c.active_question = "feeling"
+    turn(
+        c,
+        p,
+        Turn(
+            turn_id="1",
+            text="I'm fine, I think.",
+            answers={"feeling": "fine"},
+            medicine_result="unknown",
+        ),
+    )
+    assert "medicine" not in c.answers and c.active_question == "medicine"
 
 
 def test_profile_drug_name_from_legacy_interpreter_cannot_satisfy_medicine_beat():
@@ -256,6 +291,7 @@ def test_near_fall_and_actual_prompt_are_recorded():
 def test_medicine_not_yet_due_records_answer_without_alert():
     p, c = setup()
     c.answers["sleep"] = "well"
+    c.active_question = "medicine"
     reply = turn(
         c,
         p,
