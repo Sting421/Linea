@@ -348,3 +348,28 @@ def test_reported_missed_dose_of_unapproved_medicine_still_needs_review():
     with mock.patch.object(interpretation, "now", return_value=due):
         BrainBridge(model).completion("No, I forgot", "t1", c, p, [])
     assert c.alerts and c.alerts[0].tier == "significant"
+
+
+def test_unclear_reply_to_sleep_question_is_not_a_dose_report():
+    # Phone test: ASR heard "It's not okay." for the sleep question. Read as
+    # dose uncertainty it skipped the medicine question (or alerted family).
+    p, c = setup()
+    p.medicine = "Biogesic"
+    c.active_question, c.active_prompt = "sleep", "How did you sleep last night?"
+    text = "It's not okay."
+    model = classifier(
+        {
+            "sleep": "not okay",
+            "medicine_result": "unknown",
+            "evidence": {"sleep": text, "medicine": text},
+            "concerns": [
+                {"incident_id": "m1", "concern": "MEDICINE_NOT_TAKEN", "subject": "elder"}
+            ],
+        }
+    )
+    due = datetime(2026, 10, 3, 4, 0, tzinfo=timezone.utc)  # 12:00 Asia/Manila
+    with mock.patch.object(interpretation, "now", return_value=due):
+        reply = BrainBridge(model).completion(text, "t1", c, p, [])
+    assert not c.alerts and not c.facts and "family" not in reply
+    assert c.answers == {"sleep": "not okay"} and c.active_question == "medicine"
+    assert "Biogesic" in reply

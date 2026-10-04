@@ -7,6 +7,14 @@ QUESTIONS = {
     "feeling": "How are you feeling today?",
     "anything": "Is there anything else you would like to share?",
 }
+DOSE_PROBLEMS = (
+    "access_barrier",
+    "refusal",
+    "adverse_effect",
+    "instruction_conflict",
+    "possible_dose_error",
+    "reported_large_excess_or_poisoning",
+)
 NO_ADVICE = "I can't advise you about doses. Please ask a pharmacist or doctor."
 REVIEW = "Please get medical advice about this episode."
 
@@ -43,6 +51,28 @@ def dose_question_asked(c: CheckIn) -> bool:
         facts = c.facts.get(c.active_question.removeprefix("concern:"))
         return bool(facts and facts.concern == "MEDICINE_NOT_TAKEN")
     return False
+
+
+def unasked_dose_result(c: CheckIn, t: Turn) -> Turn:
+    """Ignore a dose result given in reply to a different question.
+
+    A misheard or hedged answer to another question ("It's not okay" to the sleep
+    question) must not be recorded as a dose report or alert anyone. A reported
+    dose problem or emergency is kept; the dose question is then asked directly.
+    """
+    if dose_question_asked(c):
+        return t
+    t.medicine_result = None
+    t.answers.pop("medicine", None)
+    kept = []
+    for f in t.concerns:
+        if f.concern == "MEDICINE_NOT_TAKEN" and f.incident_id not in c.facts:
+            f.medicine_result = None
+            if not (f.red_flags or any(getattr(f, key) is True for key in DOSE_PROBLEMS)):
+                continue
+        kept.append(f)
+    t.concerns = kept
+    return t
 
 
 def bind_answers(c: CheckIn, t: Turn) -> dict:

@@ -7,6 +7,7 @@ import logging
 import httpx
 from pydantic import Field
 
+from .conversation import DOSE_PROBLEMS
 from .models import Facts, StrictModel, Turn
 
 
@@ -40,15 +41,6 @@ class Interpretation(StrictModel):
     evidence: AnswerEvidence = Field(default_factory=AnswerEvidence)
     concerns: list[ExtractedFacts] = Field(default_factory=list, max_length=5)
 
-
-DOSE_PROBLEMS = (
-    "access_barrier",
-    "refusal",
-    "adverse_effect",
-    "instruction_conflict",
-    "possible_dose_error",
-    "reported_large_excess_or_poisoning",
-)
 
 SERVER_FACTS = {
     "due",

@@ -2,6 +2,16 @@
 
 ## Current handoff
 
+### Follow-up: unclear sleep answer skipped the medicine question
+
+Phone test at 08:26 Asia/Manila: ASR heard "It's not okay." for the sleep question
+and Linea went straight to the feeling question; the summary reported medicine
+unknown. Only the pre-fix build reproduces that sequence, so the API was probably
+not yet running `164d9e7`. The current code had a related fault: the same reply
+could be recorded as a dose report and, for an unapproved medicine that is due,
+alert family. A dose result is now accepted only in reply to the dose question
+(or its clarification). Reported dose problems and emergency features still count.
+
 ### Follow-up: sleep asked twice, then a family notice on build eb178aa
 
 Phone test on `eb178aa` (Biogesic profile): the sleep question was asked twice, and
