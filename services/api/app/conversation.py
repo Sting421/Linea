@@ -45,17 +45,28 @@ def dose_question_asked(c: CheckIn) -> bool:
     return False
 
 
-def bind_answers(c: CheckIn, answers: dict) -> dict:
+def bind_answers(c: CheckIn, t: Turn) -> dict:
     # Each scripted reply answers the question that was actually asked. An answer
     # filed under a different open beat ("I'm fine" to the sleep question) is moved
     # to the active beat, so that question is not repeated and the other is still
     # asked later. The medicine beat is never completed by a volunteered answer.
-    answers = {k: v for k, v in answers.items() if k != "medicine"}
+    answers = {k: v for k, v in t.answers.items() if k != "medicine"}
     beat = c.active_question
     if beat in ("sleep", "feeling", "anything") and beat not in answers:
         stray = next((k for k in ("sleep", "feeling", "anything") if k in answers), None)
         if stray:
             answers[beat] = answers.pop(stray)
+        elif not (t.concerns or t.stop or t.end_call or t.advice) and (
+            sum(
+                1
+                for line in c.transcript
+                if line["speaker"] == "linea" and line["text"].endswith(QUESTIONS[beat])
+            )
+            >= 2
+        ):
+            # The question was already repeated once; take this reply as the
+            # answer rather than asking an open-ended question a third time.
+            answers[beat] = t.text
     return answers
 
 
@@ -78,7 +89,7 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
         raise ValueError("A connected phone leg is required")
     c.transcript.append({"speaker": "elder", "text": t.text, "at": now().isoformat()})
     dose_asked = dose_question_asked(c)
-    answers = bind_answers(c, t.answers)
+    answers = bind_answers(c, t)
     if t.stop or t.end_call:
         c.intentional_end = True
         c.retry_at = None

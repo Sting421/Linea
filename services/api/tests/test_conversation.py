@@ -1,4 +1,4 @@
-from app.conversation import opening, turn
+from app.conversation import QUESTIONS, opening, turn
 from app.interpretation import prepare
 from app.lifecycle import join, leave
 from app.models import CheckIn, Contact, Facts, Profile, Turn
@@ -330,3 +330,13 @@ def test_previous_not_yet_due_report_is_not_a_logged_missed_dose():
         datetime(2026, 10, 3, 2, 0, tzinfo=timezone.utc),
     )
     assert not t.concerns[0].repeated
+
+
+def test_routine_question_is_not_asked_a_third_time():
+    p, c = setup()
+    c.transcript.append({"speaker": "linea", "text": "Hello. " + QUESTIONS["sleep"], "at": ""})
+    c.active_question = "sleep"
+    reply = turn(c, p, Turn(turn_id="1", text="I slept fine"))
+    assert reply == QUESTIONS["sleep"] and "sleep" not in c.answers
+    reply = turn(c, p, Turn(turn_id="2", text="I said I slept fine"))
+    assert c.answers["sleep"] == "I said I slept fine" and c.active_question == "medicine"

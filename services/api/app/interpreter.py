@@ -41,6 +41,15 @@ class Interpretation(StrictModel):
     concerns: list[ExtractedFacts] = Field(default_factory=list, max_length=5)
 
 
+DOSE_PROBLEMS = (
+    "access_barrier",
+    "refusal",
+    "adverse_effect",
+    "instruction_conflict",
+    "possible_dose_error",
+    "reported_large_excess_or_poisoning",
+)
+
 SERVER_FACTS = {
     "due",
     "dose_period",
@@ -117,7 +126,9 @@ def output_schema():
         "even when also an associated symptom of an existing concern. A short reply "
         "to active_prompt must update the existing concern even without naming it: "
         "'No, nothing else' to an associated-symptoms question sets "
-        "emergency_features_absent=true for that incident. Do not return an empty list."
+        "emergency_features_absent=true for that incident. A routine answer about sleep, "
+        "mood, or feeling fine is not a concern: return an empty list when the latest "
+        "utterance reports no supported concern and clarifies no existing one."
     )
     return schema
 
@@ -300,6 +311,17 @@ class OpenAIClassifier:
                 # overwrite it with a conflicting duplicate extraction. Null
                 # leaves an already established incident result intact on merge.
                 fact.medicine_result = medicine_result
+        # A new medicine concern that reports neither a dose result nor a dose
+        # problem is not a fact about the elder, so it cannot start an incident.
+        data.concerns = [
+            fact
+            for fact in data.concerns
+            if fact.concern != "MEDICINE_NOT_TAKEN"
+            or fact.incident_id in call.facts
+            or fact.medicine_result
+            or fact.red_flags
+            or any(getattr(fact, key) is True for key in DOSE_PROBLEMS)
+        ]
         return Turn(
             turn_id="interpreted",
             text=text,

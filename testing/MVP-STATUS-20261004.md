@@ -2,6 +2,22 @@
 
 ## Current handoff
 
+### Follow-up: sleep asked twice, then a family notice on build eb178aa
+
+Phone test on `eb178aa` (Biogesic profile): the sleep question was asked twice, and
+"I said I slept fine" was answered with "I am trying to reach your family about this."
+Reproduced locally: the extraction instruction told the model never to return an
+empty concern list, so a plain sleep answer could carry an invented
+MEDICINE_NOT_TAKEN concern with no dose result. Policy then applied the
+non-Losartan rule ("No approved omission policy") before checking whether any
+dose answer existed, escalating to Significant.
+
+Fixes: the instruction now allows an empty list for routine answers; a new medicine
+concern that reports no dose result and no dose problem is dropped; a missing dose
+answer is asked about before the unapproved-medicine rule applies (a reported
+missed Biogesic dose still needs review); a routine question that has already been
+repeated takes the next reply as its answer instead of being asked a third time.
+
 ### Follow-up: repeated wellbeing question and skipped medicine question
 
 Phone test report: the call asked how the elder was doing twice and never asked
