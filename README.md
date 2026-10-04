@@ -17,8 +17,6 @@
   <p>
     <a href="https://linea.aldrinvitorillo.dev"><strong>Family app ↗</strong></a>
     &nbsp; · &nbsp;
-    <a href="#run-locally">Run locally</a>
-    &nbsp; · &nbsp;
     <a href="testing/README.md">Verification guide</a>
     &nbsp; · &nbsp;
     <a href="IMPLEMENTATION-NOTES.md">Implementation notes</a>
