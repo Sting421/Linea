@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src=".github/assets/linea-logo.svg" alt="Linea logo" width="88" height="88">
+  <img src="https://linea.aldrinvitorillo.dev/linea-mark.svg" alt="Linea logo" width="88" height="88">
 
   <h1>Linea</h1>
 
@@ -494,6 +494,6 @@ For current product decisions, use this authority order: [handoff](HANDOFF-linea
 ---
 
 <p align="center">
-  <img src=".github/assets/linea-logo.svg" alt="" width="32" height="32"><br>
+  <img src="https://linea.aldrinvitorillo.dev/linea-mark.svg" alt="" width="32" height="32"><br>
   <sub><strong>Linea · Team KEIAS</strong><br>Keeping families connected, one LINEA at a time.</sub>
 </p>
