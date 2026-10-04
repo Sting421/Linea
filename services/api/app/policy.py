@@ -55,13 +55,7 @@ def assess(f: Facts) -> Assessment:
                 new_event=False,
                 resume=True,
             )
-        if f.approved_medicine is not True:
-            return Assessment(
-                tier="significant",
-                reason="No approved omission policy for this medicine",
-                review=True,
-                resume=True,
-            )
+        # Nothing is reported about the dose yet: ask, whatever the medicine.
         if f.medicine_result is None:
             return Assessment(
                 tier="significant" if f.clarification_failures >= 2 else None,
@@ -70,6 +64,13 @@ def assess(f: Facts) -> Assessment:
                 if f.clarification_failures < 2
                 else None,
                 unresolved=True,
+            )
+        if f.approved_medicine is not True:
+            return Assessment(
+                tier="significant",
+                reason="No approved omission policy for this medicine",
+                review=True,
+                resume=True,
             )
         if f.medicine_result == "unknown" and f.clarification_failures < 2:
             return Assessment(

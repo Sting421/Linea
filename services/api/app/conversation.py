@@ -7,6 +7,14 @@ QUESTIONS = {
     "feeling": "How are you feeling today?",
     "anything": "Is there anything else you would like to share?",
 }
+DOSE_PROBLEMS = (
+    "access_barrier",
+    "refusal",
+    "adverse_effect",
+    "instruction_conflict",
+    "possible_dose_error",
+    "reported_large_excess_or_poisoning",
+)
 NO_ADVICE = "I can't advise you about doses. Please ask a pharmacist or doctor."
 REVIEW = "Please get medical advice about this episode."
 
@@ -35,6 +43,63 @@ def next_question(c: CheckIn, p: Profile) -> str:
     return f"Thank you for talking with me, {p.preferred_name}. Take care. Your next scheduled check-in is at {p.call_time}."
 
 
+def dose_question_asked(c: CheckIn) -> bool:
+    """True when the elder's latest turn answers a question about today's dose."""
+    if c.active_question == "medicine":
+        return True
+    if c.active_question and c.active_question.startswith("concern:"):
+        facts = c.facts.get(c.active_question.removeprefix("concern:"))
+        return bool(facts and facts.concern == "MEDICINE_NOT_TAKEN")
+    return False
+
+
+def unasked_dose_result(c: CheckIn, t: Turn) -> Turn:
+    """Ignore a dose result given in reply to a different question.
+
+    A misheard or hedged answer to another question ("It's not okay" to the sleep
+    question) must not be recorded as a dose report or alert anyone. A reported
+    dose problem or emergency is kept; the dose question is then asked directly.
+    """
+    if dose_question_asked(c):
+        return t
+    t.medicine_result = None
+    t.answers.pop("medicine", None)
+    kept = []
+    for f in t.concerns:
+        if f.concern == "MEDICINE_NOT_TAKEN" and f.incident_id not in c.facts:
+            f.medicine_result = None
+            if not (f.red_flags or any(getattr(f, key) is True for key in DOSE_PROBLEMS)):
+                continue
+        kept.append(f)
+    t.concerns = kept
+    return t
+
+
+def bind_answers(c: CheckIn, t: Turn) -> dict:
+    # Each scripted reply answers the question that was actually asked. An answer
+    # filed under a different open beat ("I'm fine" to the sleep question) is moved
+    # to the active beat, so that question is not repeated and the other is still
+    # asked later. The medicine beat is never completed by a volunteered answer.
+    answers = {k: v for k, v in t.answers.items() if k != "medicine"}
+    beat = c.active_question
+    if beat in ("sleep", "feeling", "anything") and beat not in answers:
+        stray = next((k for k in ("sleep", "feeling", "anything") if k in answers), None)
+        if stray:
+            answers[beat] = answers.pop(stray)
+        elif not (t.concerns or t.stop or t.end_call or t.advice) and (
+            sum(
+                1
+                for line in c.transcript
+                if line["speaker"] == "linea" and line["text"].endswith(QUESTIONS[beat])
+            )
+            >= 2
+        ):
+            # The question was already repeated once; take this reply as the
+            # answer rather than asking an open-ended question a third time.
+            answers[beat] = t.text
+    return answers
+
+
 def merge_facts(old: Facts | None, incoming: Facts) -> Facts:
     if not old:
         return incoming
@@ -53,6 +118,8 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
     if c.state not in ("connected",):
         raise ValueError("A connected phone leg is required")
     c.transcript.append({"speaker": "elder", "text": t.text, "at": now().isoformat()})
+    dose_asked = dose_question_asked(c)
+    answers = bind_answers(c, t)
     if t.stop or t.end_call:
         c.intentional_end = True
         c.retry_at = None
@@ -61,10 +128,11 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
     if t.stop:
         p.consent = "declined"
         p.consent_words, p.consent_at = t.text, now()
-    c.answers.update(t.answers)
+    c.answers.update(answers)
     if t.medicine_result is not None:
         c.medicine_result = t.medicine_result
-        c.answers["medicine"] = t.medicine_result
+        if dose_asked:
+            c.answers["medicine"] = t.medicine_result
     assessments = []
     for incoming in t.concerns:
         previous = c.facts.get(incoming.incident_id)
@@ -78,7 +146,8 @@ def turn(c: CheckIn, p: Profile, t: Turn) -> str:
             and facts.medicine_result
         ):
             c.medicine_result, c.medicine_due = facts.medicine_result, facts.due
-            c.answers["medicine"] = facts.medicine_result
+            if dose_asked:
+                c.answers["medicine"] = facts.medicine_result
         if not result.new_event:
             old = next((a for a in c.alerts if a.incident_id == facts.incident_id), None)
             if old:

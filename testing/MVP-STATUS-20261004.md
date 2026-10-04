@@ -2,6 +2,47 @@
 
 ## Current handoff
 
+### Follow-up: unclear sleep answer skipped the medicine question
+
+Phone test at 08:26 Asia/Manila: ASR heard "It's not okay." for the sleep question
+and Linea went straight to the feeling question; the summary reported medicine
+unknown. Only the pre-fix build reproduces that sequence, so the API was probably
+not yet running `164d9e7`. The current code had a related fault: the same reply
+could be recorded as a dose report and, for an unapproved medicine that is due,
+alert family. A dose result is now accepted only in reply to the dose question
+(or its clarification). Reported dose problems and emergency features still count.
+
+### Follow-up: sleep asked twice, then a family notice on build eb178aa
+
+Phone test on `eb178aa` (Biogesic profile): the sleep question was asked twice, and
+"I said I slept fine" was answered with "I am trying to reach your family about this."
+Reproduced locally: the extraction instruction told the model never to return an
+empty concern list, so a plain sleep answer could carry an invented
+MEDICINE_NOT_TAKEN concern with no dose result. Policy then applied the
+non-Losartan rule ("No approved omission policy") before checking whether any
+dose answer existed, escalating to Significant.
+
+Fixes: the instruction now allows an empty list for routine answers; a new medicine
+concern that reports no dose result and no dose problem is dropped; a missing dose
+answer is asked about before the unapproved-medicine rule applies (a reported
+missed Biogesic dose still needs review); a routine question that has already been
+repeated takes the next reply as its answer instead of being asked a third time.
+
+### Follow-up: repeated wellbeing question and skipped medicine question
+
+Phone test report: the call asked how the elder was doing twice and never asked
+about medicine; a hedged "I'm fine, I think" produced a 503 on the completion route.
+The deploy record still names `311bd5e`, which predates the evidence gate and the
+interpretation-failure recovery. On that release an inexact model quote raises and
+returns 503, and a copied drug name completes the medicine beat. Confirm the running
+hash from `/health` before the next test.
+
+The current build also now binds each scripted reply to the question actually asked.
+An answer the model files under another open routine beat moves to the active beat,
+so the question is not repeated. A volunteered or hedged dose report is recorded,
+but only an answer to the dose question (or its clarification) completes the medicine
+beat. Evidence matching tolerates case, apostrophe style and spacing only.
+
 ### Follow-up: failed interpretation and skipped medicine in the next phone test
 
 The teammate's terminal confirmed the running symlink still targeted `1d66ce2`,

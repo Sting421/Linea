@@ -7,6 +7,7 @@ import logging
 import httpx
 from pydantic import Field
 
+from .conversation import DOSE_PROBLEMS
 from .models import Facts, StrictModel, Turn
 
 
@@ -117,7 +118,9 @@ def output_schema():
         "even when also an associated symptom of an existing concern. A short reply "
         "to active_prompt must update the existing concern even without naming it: "
         "'No, nothing else' to an associated-symptoms question sets "
-        "emergency_features_absent=true for that incident. Do not return an empty list."
+        "emergency_features_absent=true for that incident. A routine answer about sleep, "
+        "mood, or feeling fine is not a concern: return an empty list when the latest "
+        "utterance reports no supported concern and clarifies no existing one."
     )
     return schema
 
@@ -197,6 +200,16 @@ Extraction definitions (facts only; the server applies policy):
 """
 
 
+def quoted(quote, text):
+    """Exact-quote evidence, tolerant only of case, apostrophe style, and spacing."""
+
+    def norm(value):
+        value = value.replace("\u2019", "'").replace("\u2018", "'").casefold()
+        return " ".join(value.split())
+
+    return bool(quote and quote.strip() and norm(quote) in norm(text))
+
+
 class OpenAIClassifier:
     def __init__(self, key: str, model: str, client=None, retriever=None):
         self.key, self.model = key, model
@@ -274,14 +287,10 @@ class OpenAIClassifier:
         answers = {}
         for key in ("sleep", "medicine", "feeling", "anything"):
             value, quote = getattr(data, key), getattr(data.evidence, key)
-            if value is not None and quote and quote.strip() and quote in text:
+            if value is not None and quoted(quote, text):
                 answers[key] = value
         medicine_quote = data.evidence.medicine
-        medicine_result = (
-            data.medicine_result
-            if medicine_quote and medicine_quote.strip() and medicine_quote in text
-            else None
-        )
+        medicine_result = data.medicine_result if quoted(medicine_quote, text) else None
         if medicine_result is None:
             answers.pop("medicine", None)
         for fact in data.concerns:
@@ -294,6 +303,17 @@ class OpenAIClassifier:
                 # overwrite it with a conflicting duplicate extraction. Null
                 # leaves an already established incident result intact on merge.
                 fact.medicine_result = medicine_result
+        # A new medicine concern that reports neither a dose result nor a dose
+        # problem is not a fact about the elder, so it cannot start an incident.
+        data.concerns = [
+            fact
+            for fact in data.concerns
+            if fact.concern != "MEDICINE_NOT_TAKEN"
+            or fact.incident_id in call.facts
+            or fact.medicine_result
+            or fact.red_flags
+            or any(getattr(fact, key) is True for key in DOSE_PROBLEMS)
+        ]
         return Turn(
             turn_id="interpreted",
             text=text,

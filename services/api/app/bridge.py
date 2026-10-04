@@ -7,7 +7,7 @@ vendor endpoint is exposed by the demo API.
 import hashlib
 import logging
 
-from .conversation import turn
+from .conversation import turn, unasked_dose_result
 from .interpretation import prepare
 from .models import Alert, CheckIn, Profile, Turn, now
 from .ports import Classifier
@@ -50,6 +50,7 @@ class BrainBridge:
         else:
             call.interpretation_failures = 0
         interpreted.turn_id, interpreted.text = turn_id, text
+        interpreted = unasked_dose_result(call, interpreted)
         interpreted = prepare(interpreted, call, profile, history)
         reply = turn(call, profile, interpreted)
         call.turn_hashes[turn_id] = hashlib.sha256(text.encode()).hexdigest()
