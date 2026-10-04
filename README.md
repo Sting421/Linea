@@ -1,28 +1,52 @@
-# Linea
+<div align="center">
 
-**Keeping families connected, one LINEA at a time.**
+  <img src=".github/assets/linea-logo.svg" alt="Linea logo" width="88" height="88">
 
-Linea is a voice-first welfare check system for older adults. It calls the elder on the ordinary phone they already use, asks about their daily routine and wellbeing, and brings family into the conversation when a concern needs attention. Family members use a web dashboard to review check-ins, receive alerts, and join an active call.
+  <h1>Linea</h1>
 
-Pronounced **lin-ya**, from the Filipino word *linya*, meaning “line.” Built by **Team KEIAS** for **Build Over Nights 2026 · Agora Track (Voice First)**.
+  <p><strong>Keeping families connected, one LINEA at a time.</strong></p>
 
-[Repository](https://github.com/Sting421/Linea) · [Family app](https://linea.aldrinvitorillo.dev) · [Implementation notes](IMPLEMENTATION-NOTES.md) · [Verification guide](testing/README.md)
+  <p>Voice-first check-ins for older adults.<br>Everyday phone calls. Meaningful updates. Family within reach.</p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Voice-Agora-30233f?style=flat-square&amp;labelColor=30233f&amp;color=c2a2f0" alt="Voice powered by Agora">
+    <img src="https://img.shields.io/badge/Built_by-Team_KEIAS-ffca52?style=flat-square&amp;labelColor=30233f" alt="Built by Team KEIAS">
+    <img src="https://img.shields.io/badge/Build_Over_Nights-2026-c2a2f0?style=flat-square&amp;labelColor=30233f" alt="Build Over Nights 2026">
+  </p>
+
+  <p>
+    <a href="https://linea.aldrinvitorillo.dev"><strong>Family app ↗</strong></a>
+    &nbsp; · &nbsp;
+    <a href="#run-locally">Run locally</a>
+    &nbsp; · &nbsp;
+    <a href="testing/README.md">Verification guide</a>
+    &nbsp; · &nbsp;
+    <a href="IMPLEMENTATION-NOTES.md">Implementation notes</a>
+  </p>
+
+  <p><sub>Pronounced <strong>lin-ya</strong>, from the Filipino word <em>linya</em>, meaning “line.”<br>Built for Build Over Nights 2026 · Agora Track (Voice First).</sub></p>
+
+</div>
+
+---
+
+Linea calls the elder on the ordinary phone they already use, asks about their daily routine and wellbeing, and brings family into the conversation when a concern needs attention. Family members use a web dashboard to review check-ins, receive alerts, and join an active call.
+
+| A familiar voice | A clearer picture | A closer connection |
+| --- | --- | --- |
+| Check-ins on a regular mobile or landline phone, without an app to install. | Summaries, medicine reports, and concern history in one family workspace. | Alerts and the ability to join an eligible live call when family is needed. |
+
+> [!NOTE]
+> The MVP is implemented; full browser/phone audio and push acceptance remain unverified in the recorded evidence. See [deployment and implementation status](#deployment-and-implementation-status) for the 4 October 2026 snapshot.
 
 ## Contents
 
-- [System overview](#system-overview)
-- [Features and MVP scope](#features-and-mvp-scope)
-- [System architecture](#system-architecture)
-- [Technology stack](#technology-stack)
-- [Data model and privacy](#data-model-and-privacy)
-- [Repository structure](#repository-structure)
-- [Run locally](#run-locally)
-- [Configuration](#configuration)
-- [API overview](#api-overview)
-- [Testing and verification](#testing-and-verification)
-- [Deployment and implementation status](#deployment-and-implementation-status)
-- [Collaborators](#collaborators)
-- [Project documentation](#project-documentation)
+| Explore the product | Build and run | Go deeper |
+| --- | --- | --- |
+| [System overview](#system-overview) | [Run locally](#run-locally) | [Data model and privacy](#data-model-and-privacy) |
+| [Features and MVP scope](#features-and-mvp-scope) | [Configuration](#configuration) | [API overview](#api-overview) |
+| [System architecture](#system-architecture) | [Repository structure](#repository-structure) | [Testing and verification](#testing-and-verification) |
+| [Technology stack](#technology-stack) | [Deployment status](#deployment-and-implementation-status) | [Collaborators](#collaborators) · [Documentation](#project-documentation) |
 
 ## System overview
 
@@ -42,7 +66,8 @@ A typical check-in follows this flow:
 5. Authorized family can join an eligible active call, hear a briefing, and speak with the elder. Linea enters LISTEN mode during the handoff.
 6. The completed logical check-in produces a summary, transcript, medicine result, alerts, and a calendar outcome.
 
-The core principle is **AI interprets; FastAPI policy decides.** Consent transitions, safety tiers, spoken responses, retries, and lifecycle decisions belong to backend code.
+> [!TIP]
+> **AI interprets; FastAPI policy decides.** Consent transitions, safety tiers, spoken responses, retries, and lifecycle decisions belong to backend code.
 
 ## Features and MVP scope
 
@@ -186,6 +211,9 @@ Notification and retention roles use the same worker entry point. Push delivery 
 
 ## Technology stack
 
+<details>
+<summary><strong>Explore the stack and pinned versions</strong></summary>
+
 Versions below come from the repository manifests, not historical planning documents.
 
 | Layer | Technologies used |
@@ -208,7 +236,12 @@ Versions below come from the repository manifests, not historical planning docum
 | Quality tooling | Node test runner via `tsx`, Testing Library, JSDOM, pytest, Ruff, Prettier, and SQL parsing with `pglast`. |
 | Deployment | Linux **systemd** services, **Nginx**, HTTPS certificates, and immutable release directories; API Dockerfile included. |
 
+</details>
+
 ## Data model and privacy
+
+<details>
+<summary><strong>Review data ownership, authorization, and retention</strong></summary>
 
 Supabase migrations define the production data model:
 
@@ -231,6 +264,8 @@ Retention rules are:
 - **Raw call audio:** not stored by the application for the MVP.
 
 Retention boundaries are tied to the original check-in end; handling or reading records does not extend them. Provider recording settings, backups, and deletion behavior require their own verification, as described in [the acceptance guide](testing/README.md).
+
+</details>
 
 ## Repository structure
 
@@ -319,6 +354,9 @@ Windows helpers are available as `scripts/dev.ps1 -Service api` and `scripts/dev
 
 ## Configuration
 
+<details>
+<summary><strong>View environment variables and integration settings</strong></summary>
+
 See [the API environment example](services/api/.env.example) and [the web environment example](apps/web/.env.local.example) for the complete variable list.
 
 | Area | Key settings |
@@ -335,7 +373,12 @@ See [the API environment example](services/api/.env.example) and [the web enviro
 
 Keep private environment files, speech properties, and acceptance evidence outside Git. Only intended public values belong in `NEXT_PUBLIC_*` variables.
 
+</details>
+
 ## API overview
+
+<details>
+<summary><strong>Browse family, call-control, and provider endpoints</strong></summary>
 
 Family requests pass through the Next.js `/api/backend/...` proxy. FastAPI exposes these main routes:
 
@@ -358,6 +401,8 @@ Family requests pass through the Next.js `/api/backend/...` proxy. FastAPI expos
 | POST | `/provider/checkins/{cid}/legs/{lid}/chat/completions` | Serve Agora’s authenticated custom completion endpoint. |
 
 Demo-only event, turn, and attempt routes under `/demo/checkins/...` support synthetic review. They are unavailable in connected/live mode. See [the checked-in contract](contracts/openapi.json) and the running API’s `/docs` for request schemas.
+
+</details>
 
 ## Testing and verification
 
@@ -421,6 +466,9 @@ Contribution descriptions for Keith and Sting421 reflect repository history and 
 
 For current product decisions, use this authority order: [handoff](HANDOFF-linea-build-over-nights.md), [MVP lock](linea/05-mvp-lock.md), [business rules](linea/02-business-rules.md), then [architecture](linea/03-architecture.md). Some documents preserve earlier plans; their current override sections and implementation notes explain superseding decisions.
 
+<details>
+<summary><strong>Open the complete documentation index</strong></summary>
+
 | Document | Purpose |
 | --- | --- |
 | [HANDOFF-linea-build-over-nights.md](HANDOFF-linea-build-over-nights.md) | Team context and settled implementation decisions. |
@@ -440,3 +488,12 @@ For current product decisions, use this authority order: [handoff](HANDOFF-linea
 | [shared/agora-platform-reference.md](shared/agora-platform-reference.md) | Provider integration reference. |
 | [deploy/README.md](deploy/README.md) | Hosted API, web, and worker operations. |
 | [evidence/sources.md](evidence/sources.md) | Evidence inventory. |
+
+</details>
+
+---
+
+<p align="center">
+  <img src=".github/assets/linea-logo.svg" alt="" width="32" height="32"><br>
+  <sub><strong>Linea · Team KEIAS</strong><br>Keeping families connected, one LINEA at a time.</sub>
+</p>
